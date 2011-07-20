@@ -30,6 +30,7 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="IdProvider" IDEtalkID="9E530C57DF3731C3572C107B9CF026FB" />
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
     <option name="OPTION_SCOPE" value="protected" />
@@ -176,12 +177,16 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6 (1)" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="SvnBranchConfigurationManager">
+    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="" />
   </component>
+  <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
     <library name="jinput">
       <CLASSES>
@@ -194,12 +199,11 @@
     </library>
     <library name="jogl-2.0">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" />
-        <root url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" />
+        <root url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/jar" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/jar" recursive="false" />
     </library>
     <library name="log4j">
       <CLASSES>
