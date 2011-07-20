@@ -444,13 +444,24 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         Matrix4x4 modelViewMatrix = Matrix4x4.createFromFloatArray(modelView, true);
         DisplaySubsystem.getInstance().setModelViewMatrix(modelViewMatrix);
 
+        /*System.out.print("Projection: ");
+        for(int i = 0; i < 16; i++) {
+            System.out.print(projection[i] + ", ");
+        }
+        System.out.println();
+        System.out.print("ModelView: ");
+        for(int i = 0; i < 16; i++) {
+            System.out.print(modelView[i] + ", ");
+        }
+        System.out.println();    */
+
         int[] viewport = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
 
         float cx = (viewport[0] + viewport[2]) / 2f;
         float cy = (viewport[1] + viewport[3]) / 2f;
-        float near = 0.001f;
-        float far = 1000f;
+        float near = 0f;
+        float far = 1f;
 
         float[] projectedNear = new float[3];
         float[] projectedFar = new float[3];
@@ -458,10 +469,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         glu.gluUnProject(cx, cy, near, modelView, 0, projection, 0, viewport, 0, projectedNear, 0);
         glu.gluUnProject(cx, cy, far, modelView, 0, projection, 0, viewport, 0, projectedFar, 0);
 
-        //log.info("Projected near: (" + projectedNear[0] + ", " + projectedNear[1] + ", " + projectedNear[2] + ").");
-        //log.info("Projected far: (" + projectedFar[0] + ", " + projectedFar[1] + ", " + projectedFar[2] + ").");
-        //log.info("Difference: ("  + (projectedFar[0] - projectedNear[0]) + ", " + (projectedFar[1] - projectedNear[1]) + ", " + (projectedFar[2] - projectedNear[2]) + ").");
-        //log.info("=====");
+        /*log.info("Projected near: (" + projectedNear[0] + ", " + projectedNear[1] + ", " + projectedNear[2] + ").");
+        log.info("Projected far: (" + projectedFar[0] + ", " + projectedFar[1] + ", " + projectedFar[2] + ").");
+        log.info("Difference: ("  + (projectedFar[0] - projectedNear[0]) + ", " + (projectedFar[1] - projectedNear[1]) + ", " + (projectedFar[2] - projectedNear[2]) + ").");
+        log.info("=====");*/
     }
 
     @Override
@@ -470,5 +481,41 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
 
         gl.glFlush();
+    }
+
+    public static void printFloatArray(float[] array) {
+        for (int i = 0; i < array.length; i++) {
+            System.out.print(array[i] + ", ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        FloatProject glu = new FloatProject();
+
+        float[] projection =  {1.7139367f, 0.0f, 0.0f, 0.0f, 0.0f, 2.4142134f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0000019f, -1.0f, 0.0f, 0.0f, -0.002000002f, 0.0f};
+        float[] modelView = {0.997551f, 0.04120647f, -0.05651576f, 0.0f, 0.0f, 0.8080276f, 0.58914477f, 0.0f, 0.06994286f, -0.587702f, 0.80604875f, 0.0f, 0.041037202f, -0.3843069f, -4.7210293f, 1.0f};
+
+        Matrix4x4 projectionMatrix = Matrix4x4.createFromFloatArray(projection, true);
+        Matrix4x4 modelViewMatrix = Matrix4x4.createFromFloatArray(modelView, true);
+
+        //printFloatArray(Matrix4x4.mult(projectionMatrix, modelViewMatrix).inverse().toColumnMajorArray());
+        //System.out.println(Matrix4x4.mult(modelViewMatrix, projectionMatrix).inverse());
+
+        float[] multResult = new float[16];
+        glu.gluMultMatricesf(modelView, 0, projection, 0, multResult);
+        glu.gluInvertMatrixf(multResult, multResult);
+
+        float[] transformed = new float[3];
+        int[] viewport = {0, 0, 500, 500};
+        glu.gluUnProject(250, 250, 0, modelView, 0, projection, 0, viewport, 0, transformed, 0);
+        Point3D ptTransformed = new Point3D(transformed[0], transformed[1], transformed[2]);
+        System.out.println(ptTransformed);
+
+        Viewport port = new Viewport(0, 0, 500, 500);
+        Point3D realTransformed = port.unproject(new Point3D(250, 250, 0), modelViewMatrix, projectionMatrix);
+        System.out.println(realTransformed);
+        //printFloatArray(multResult);
+
     }
 }

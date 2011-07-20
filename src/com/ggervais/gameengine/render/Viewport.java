@@ -67,15 +67,19 @@ public class Viewport {
 
         Point3D normalizedCoordinates = Point3D.zero();
         normalizedCoordinates.x(2 * (point.x()  - this.x) / this.width - 1);
-        normalizedCoordinates.x(2 * (point.y()  - this.y) / this.height - 1);
+        normalizedCoordinates.y(2 * (point.y()  - this.y) / this.height - 1);
         normalizedCoordinates.z(2 * (point.z()) - 1);
 
-        System.out.println(point + " -> " + normalizedCoordinates);
+        //System.out.println(point + " -> " + normalizedCoordinates);
 
-        Matrix4x4 modelViewMultipliedByProjection = Matrix4x4.mult(modelViewMatrix, projectionMatrix);
+        Matrix4x4 modelViewMultipliedByProjection = Matrix4x4.mult(projectionMatrix, modelViewMatrix);
         Matrix4x4 inverse = modelViewMultipliedByProjection.inverse();
 
         result = inverse.mult(normalizedCoordinates);
+        result.w(1.0f / result.w());
+        result.x(result.x() * result.w());
+        result.y(result.y() * result.w());
+        result.z(result.z() * result.w());
 
         return result;
     }

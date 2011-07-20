@@ -99,20 +99,20 @@ public class DisplaySubsystem implements Subsystem {
 
         Point3D nearPoint = Point3D.copy(this.viewport.getCenter());
         Point3D farPoint = Point3D.copy(this.viewport.getCenter());
-        nearPoint.z(this.near);
-        farPoint.z(this.far);
+        nearPoint.z(0);
+        farPoint.z(1);
 
         Point3D transformedNearPoint = this.viewport.unproject(nearPoint, this.modelViewMatrix, this.projectionMatrix);
         Point3D transformedFarPoint = this.viewport.unproject(farPoint, this.modelViewMatrix, this.projectionMatrix);
 
-        //log.info(nearPoint + " " + farPoint);
-        //log.info(transformedNearPoint + " " + transformedFarPoint);
-        //log.info("=====");
+        //System.out.println(transformedNearPoint + " " + transformedFarPoint);
+        //System.out.println(transformedFarPoint.sub(transformedNearPoint).normalized());
+        //System.out.println("=====");
 
         Point3D rayOrigin = transformedNearPoint.copy();
         Vector3D rayDirection = Point3D.sub(transformedFarPoint, transformedNearPoint).normalized();
 
-        log.info(rayDirection);
+        System.out.println(rayOrigin + " " + rayDirection);
 
         pickingRay.setOrigin(rayOrigin);
         pickingRay.setDirection(rayDirection);

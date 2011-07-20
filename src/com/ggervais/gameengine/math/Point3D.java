@@ -4,6 +4,7 @@ public class Point3D {
 	private float x;
 	private float y;
 	private float z;
+    private float w;
 	
 	public Point3D() {
 		this(0, 0, 0);
@@ -13,7 +14,13 @@ public class Point3D {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+        this.w = 1;
 	}
+
+    public Point3D(float x, float y, float z, float w) {
+        this(x, y, z);
+        w(w);
+    }
 	
 	public static Point3D zero() {
 		return new Point3D(0.0f, 0.0f, 0.0f);
@@ -58,10 +65,12 @@ public class Point3D {
 	public float x() { return this.x; }
 	public float y() { return this.y; }
 	public float z() { return this.z; }
-	
+    public float w() { return this.w; }
+
 	public void x(float x) { this.x = x; }
 	public void y(float y) { this.y = y; }
 	public void z(float z) { this.z = z; }
+    public void w(float w) { this.w = w; }
 	
 	public String toString() { return "(" + x() + ", " + y() + ", " + z() + ")"; }
 

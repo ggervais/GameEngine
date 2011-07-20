@@ -59,22 +59,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DisplaySubsystem.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="DisplaySubsystem.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="104" column="59" selection-start="2699" selection-end="2699" vertical-scroll-proportion="0.0">
+            <state line="105" column="64" selection-start="2809" selection-end="2809" vertical-scroll-proportion="0.18674698">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GLRenderer.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="GLRenderer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="398" column="31" selection-start="14519" selection-end="14519" vertical-scroll-proportion="0.2857143">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="446" column="10" selection-start="16320" selection-end="16320" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -91,10 +89,8 @@
       <file leaf-file-name="Viewport.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="68" column="48" selection-start="1515" selection-end="1515" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="14" column="84" selection-start="348" selection-end="348" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -102,8 +98,19 @@
       <file leaf-file-name="Matrix4x4.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="175" column="19" selection-start="6328" selection-end="6328" vertical-scroll-proportion="0.0">
+            <state line="153" column="16" selection-start="5305" selection-end="5305" vertical-scroll-proportion="0.0">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FloatProject.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/FloatProject.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="809" column="51" selection-start="23553" selection-end="23553" vertical-scroll-proportion="-9.28">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -111,7 +118,7 @@
       <file leaf-file-name="Vector3D.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Vector3D.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="113" column="38" selection-start="2553" selection-end="2553" vertical-scroll-proportion="0.0">
+            <state line="113" column="9" selection-start="2490" selection-end="2490" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -120,7 +127,7 @@
       <file leaf-file-name="Point3D.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Point3D.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="50" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.0">
+            <state line="69" column="44" selection-start="1491" selection-end="1491" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -158,7 +165,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/timing/ParticleEmitterController.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/timing/LifeController.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Node.java" />
@@ -167,13 +173,14 @@
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/input/InputSubsystem.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/ViewMatrix.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Ray.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Point3D.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Vector3D.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Point3D.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/FloatProject.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java" />
       </list>
     </option>
   </component>
@@ -210,6 +217,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Favorites" />
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -367,14 +376,38 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="render" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="opengl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GameEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GameEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gameengine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="math" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Favorites" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -391,9 +424,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -541,10 +574,27 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="3">
+    <configuration default="false" name="Test picking" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.render.opengl.GLRenderer" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=$PROJECT_DIR$/lib/jinput:$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/lib" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="GameEngine" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Application.GameEngine Test Application" />
       <item index="1" class="java.lang.String" itemvalue="Application.test" />
       <item index="2" class="java.lang.String" itemvalue="Application.Matrix inverse" />
+      <item index="3" class="java.lang.String" itemvalue="Application.Test picking" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -597,7 +647,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="66" y="-5" width="1374" height="905" extended-state="6" />
+    <frame x="66" y="-5" width="1384" height="877" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -610,7 +660,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24981132" sideWeight="0.4762533" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32754716" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32754716" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5" sideWeight="0.0" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -657,11 +707,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/hs_err_pid14947.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="21" selection-start="380" selection-end="380" vertical-scroll-proportion="-17.55" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/ViewMatrix.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="29" column="24" selection-start="1124" selection-end="1124" vertical-scroll-proportion="0.0" />
@@ -687,6 +732,11 @@
         <state line="28" column="43" selection-start="956" selection-end="956" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.all-noawt.jar!/javax/media/opengl/glu/GLU.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="162" column="19" selection-start="9498" selection-end="9498" vertical-scroll-proportion="0.3605442" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/BillboardNode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="12" column="47" selection-start="369" selection-end="369" vertical-scroll-proportion="0.0" />
@@ -697,63 +747,59 @@
         <state line="73" column="8" selection-start="1820" selection-end="2197" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Point3D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="50" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Vector3D.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="38" selection-start="2553" selection-end="2553" vertical-scroll-proportion="0.0">
+        <state line="113" column="9" selection-start="2490" selection-end="2490" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="175" column="19" selection-start="6328" selection-end="6328" vertical-scroll-proportion="0.0">
+        <state line="153" column="16" selection-start="5305" selection-end="5305" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.all-noawt.jar!/javax/media/opengl/glu/GLU.class">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/FloatProject.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="162" column="19" selection-start="9498" selection-end="9498" vertical-scroll-proportion="0.3605442">
-          <folding />
+        <state line="809" column="51" selection-start="23553" selection-end="23553" vertical-scroll-proportion="-9.28">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Point3D.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="16" selection-start="3091" selection-end="3091" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="104" column="59" selection-start="2699" selection-end="2699" vertical-scroll-proportion="0.0">
+        <state line="69" column="44" selection-start="1491" selection-end="1491" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="48" selection-start="1515" selection-end="1515" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="14" column="84" selection-start="348" selection-end="348" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="112" column="16" selection-start="3091" selection-end="3091" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="398" column="31" selection-start="14519" selection-end="14519" vertical-scroll-proportion="0.2857143">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="446" column="10" selection-start="16320" selection-end="16320" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="105" column="64" selection-start="2809" selection-end="2809" vertical-scroll-proportion="0.18674698">
+          <folding />
         </state>
       </provider>
     </entry>

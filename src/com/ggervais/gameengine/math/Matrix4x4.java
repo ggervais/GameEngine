@@ -167,17 +167,19 @@ public class Matrix4x4 {
 	}
 
     public Vector3D mult(Vector3D vector) {
-		float x = vector.x() * getElement(1, 1) + vector.y() * getElement(1, 2) + vector.z() * getElement(1,3) + 1 * getElement(1, 4);
-		float y = vector.x() * getElement(2, 1) + vector.y() * getElement(2, 2) + vector.z() * getElement(2,3) + 1 * getElement(2, 4);
-		float z = vector.x() * getElement(3, 1) + vector.y() * getElement(3, 2) + vector.z() * getElement(3,3) + 1 * getElement(3, 4);
-		return new Vector3D(x, y, z);
+		float x = vector.x() * getElement(1, 1) + vector.y() * getElement(1, 2) + vector.z() * getElement(1, 3) + vector.w() * getElement(1, 4);
+		float y = vector.x() * getElement(2, 1) + vector.y() * getElement(2, 2) + vector.z() * getElement(2, 3) + vector.w() * getElement(2, 4);
+		float z = vector.x() * getElement(3, 1) + vector.y() * getElement(3, 2) + vector.z() * getElement(3, 3) + vector.w() * getElement(3, 4);
+        float w = vector.x() * getElement(4, 1) + vector.y() * getElement(4, 2) + vector.z() * getElement(4, 3) + vector.w() * getElement(4, 4);
+		return new Vector3D(x, y, z, w);
 	}
 
 	public Point3D mult(Point3D point) {
-		float x = point.x() * getElement(1, 1) + point.y() * getElement(1, 2) + point.z() * getElement(1,3) + 1 * getElement(1, 4);
-		float y = point.x() * getElement(2, 1) + point.y() * getElement(2, 2) + point.z() * getElement(2,3) + 1 * getElement(2, 4);
-		float z = point.x() * getElement(3, 1) + point.y() * getElement(3, 2) + point.z() * getElement(3,3) + 1 * getElement(3, 4);
-		return new Point3D(x, y, z);
+		float x = point.x() * getElement(1, 1) + point.y() * getElement(1, 2) + point.z() * getElement(1, 3) + point.w() * getElement(1, 4);
+		float y = point.x() * getElement(2, 1) + point.y() * getElement(2, 2) + point.z() * getElement(2, 3) + point.w() * getElement(2, 4);
+		float z = point.x() * getElement(3, 1) + point.y() * getElement(3, 2) + point.z() * getElement(3, 3) + point.w() * getElement(3, 4);
+        float w = point.x() * getElement(4, 1) + point.y() * getElement(4, 2) + point.z() * getElement(4, 3) + point.w() * getElement(4, 4);
+		return new Point3D(x, y, z, w);
 	}
 
 	public void mult(float k) {
