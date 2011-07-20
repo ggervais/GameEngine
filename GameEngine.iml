@@ -21,7 +21,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="jinput" level="project" />
-    <orderEntry type="library" name="jogl-2.0" level="project" />
+    <orderEntry type="library" name="jogl-2.0-windows-32-bits" level="project" />
     <orderEntry type="library" name="log4j" level="project" />
   </component>
 </module>

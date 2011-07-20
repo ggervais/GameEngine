@@ -87,7 +87,7 @@
       <file leaf-file-name="GLRenderer.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="473" column="36" selection-start="17501" selection-end="17501" vertical-scroll-proportion="0.6631016">
+            <state line="473" column="35" selection-start="17501" selection-end="17501" vertical-scroll-proportion="0.6631016">
               <folding />
             </state>
           </provider>
@@ -396,7 +396,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="project.structure.proportion" value="0.15" />
@@ -431,7 +431,7 @@
       <recent name="com.ggervais.gameengine.exception" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.GameEngine Test Windows">
+  <component name="RunManager" selected="Application.GameEngine Test Windows 32-bits">
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -573,7 +573,7 @@
       <method />
     </configuration>
     <configuration default="false" name="Test picking" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <extension name="snapshooter" />
       <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.render.opengl.GLRenderer" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=$PROJECT_DIR$/lib/jinput:$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/lib" />
@@ -587,13 +587,13 @@
       <module name="GameEngine" />
       <envs />
       <RunnerSettings RunnerId="Profile ">
-        <option name="myExternalizedOptions" />
+        <option name="myExternalizedOptions" value="&#13;&#10;use-64-bit=false&#13;&#10;additional-options2=onexit\=snapshot&#13;&#10;" />
       </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="GameEngine Test Windows" type="Application" factoryName="Application">
+    <configuration default="false" name="GameEngine Test Windows 64-bits" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <extension name="snapshooter" />
       <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.testapp.Main" />
@@ -614,12 +614,34 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="5">
+    <configuration default="false" name="GameEngine Test Windows 32-bits" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <extension name="snapshooter" />
+      <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.testapp.Main" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=$PROJECT_DIR$/lib/jinput;$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-i586/lib" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="GameEngine" />
+      <envs />
+      <RunnerSettings RunnerId="Profile ">
+        <option name="myExternalizedOptions" value="&#13;&#10;use-64-bit=false&#13;&#10;additional-options2=onexit\=snapshot&#13;&#10;" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Application.GameEngine Test Application" />
       <item index="1" class="java.lang.String" itemvalue="Application.test" />
       <item index="2" class="java.lang.String" itemvalue="Application.Matrix inverse" />
       <item index="3" class="java.lang.String" itemvalue="Application.Test picking" />
-      <item index="4" class="java.lang.String" itemvalue="Application.GameEngine Test Windows" />
+      <item index="4" class="java.lang.String" itemvalue="Application.GameEngine Test Windows 64-bits" />
+      <item index="5" class="java.lang.String" itemvalue="Application.GameEngine Test Windows 32-bits" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -828,7 +850,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="473" column="36" selection-start="17501" selection-end="17501" vertical-scroll-proportion="0.6631016">
+        <state line="473" column="35" selection-start="17501" selection-end="17501" vertical-scroll-proportion="0.6631016">
           <folding />
         </state>
       </provider>
