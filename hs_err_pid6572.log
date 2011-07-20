@@ -1,0 +1,518 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x7a598b1e, pid=6572, tid=2038496112
+#
+# JRE version: 6.0_24-b07
+# Java VM: Java HotSpot(TM) Server VM (19.1-b02 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libnvidia-glcore.so.270.41.06+0xd88b1e]
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x7b029000):  JavaThread "main-SharedResourceRunner" daemon [_thread_in_native, id=6602, stack(0x797bf000,0x79810000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x696c2f6a
+
+Registers:
+EAX=0x696c2f62, EBX=0x696c2f62, ECX=0x7b04a330, EDX=0x00000000
+ESP=0x7980e9d0, EBP=0x00000001, ESI=0x7b02b880, EDI=0x7980ea4c
+EIP=0x7a598b1e, CR2=0x696c2f6a, EFLAGS=0x00210202
+
+Register to memory mapping:
+
+EAX=0x696c2f62
+0x696c2f62 is pointing to unknown location
+
+EBX=0x696c2f62
+0x696c2f62 is pointing to unknown location
+
+ECX=0x7b04a330
+0x7b04a330 is pointing to unknown location
+
+EDX=0x00000000
+0x00000000 is pointing to unknown location
+
+ESP=0x7980e9d0
+0x7980e9d0 is pointing into the stack for thread: 0x7b029000
+"main-SharedResourceRunner" daemon prio=10 tid=0x7b029000 nid=0x19ca runnable [0x7980e000]
+   java.lang.Thread.State: RUNNABLE
+
+EBP=0x00000001
+0x00000001 is pointing to unknown location
+
+ESI=0x7b02b880
+0x7b02b880 is pointing to unknown location
+
+EDI=0x7980ea4c
+0x7980ea4c is pointing into the stack for thread: 0x7b029000
+"main-SharedResourceRunner" daemon prio=10 tid=0x7b029000 nid=0x19ca runnable [0x7980e000]
+   java.lang.Thread.State: RUNNABLE
+
+
+Top of Stack: (sp=0x7980e9d0)
+0x7980e9d0:   7aff15d8 6880e984 01000000 7afafd6e
+0x7980e9e0:   000019ac 7b02b880 00000018 7a598fd4
+0x7980e9f0:   7b02b880 00000018 00000001 09c78298
+0x7980ea00:   7b089c78 7b089c78 7980eaf8 7af8e78f
+0x7980ea10:   00000001 00000018 7980ea4c 7b029000
+0x7980ea20:   00000000 00000000 09aaee00 00000000
+0x7980ea30:   00000000 7b02a710 09aaee00 09aaee08
+0x7980ea40:   09aaf1f4 b7266e88 14ccccc9 00006801 
+
+Instructions: (pc=0x7a598b1e)
+0x7a598b0e:   00 00 8b 9e 88 00 00 00 85 db 0f 84 97 00 00 00
+0x7a598b1e:   8b 43 08 8d 96 88 00 00 00 89 5c 24 08 89 14 24 
+
+Stack: [0x797bf000,0x79810000],  sp=0x7980e9d0,  free space=318k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libnvidia-glcore.so.270.41.06+0xd88b1e]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  jogamp.opengl.x11.glx.GLX.dispatch_glXMakeContextCurrent1(JJJJJ)Z+0
+j  jogamp.opengl.x11.glx.GLX.glXMakeContextCurrent(JJJJ)Z+33
+j  jogamp.opengl.x11.glx.X11GLXContext.glXMakeContextCurrent(JJJJ)Z+16
+j  jogamp.opengl.x11.glx.X11GLXContext.createImplRaw()Z+543
+j  jogamp.opengl.x11.glx.X11GLXContext.createImpl()Z+6
+j  jogamp.opengl.GLContextImpl.makeCurrentLocking()I+126
+j  jogamp.opengl.GLContextImpl.makeCurrent()I+106
+j  jogamp.opengl.x11.glx.X11GLXDrawableFactory$SharedResourceImplementation.createSharedResource(Ljava/lang/String;)Ljogamp/opengl/SharedResourceRunner$Resource;+237
+j  jogamp.opengl.SharedResourceRunner.run()V+213
+j  java.lang.Thread.run()V+11
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x09af8400 JavaThread "XToolkit-Shutdown-Thread" [_thread_blocked, id=6605, stack(0x796a4000,0x796f5000)]
+  0x09af7400 JavaThread "Thread-1" [_thread_blocked, id=6604, stack(0x796f5000,0x79746000)]
+  0x09af6c00 JavaThread "SIGTERM handler" daemon [_thread_blocked, id=6603, stack(0x7b93a000,0x7b98b000)]
+=>0x7b029000 JavaThread "main-SharedResourceRunner" daemon [_thread_in_native, id=6602, stack(0x797bf000,0x79810000)]
+  0x7b006000 JavaThread "AWT-EventQueue-0" [_thread_blocked, id=6601, stack(0x7b1a4000,0x7b1f5000)]
+  0x7b004000 JavaThread "AWT-Shutdown" [_thread_blocked, id=6600, stack(0x7b288000,0x7b2d9000)]
+  0x09b45000 JavaThread "AWT-XAWT" daemon [_thread_in_native, id=6599, stack(0x7b2d9000,0x7b32a000)]
+  0x09acd800 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=6598, stack(0x7b35a000,0x7b3ab000)]
+  0x098b0400 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=6590, stack(0x7b721000,0x7b772000)]
+  0x098acc00 JavaThread "CompilerThread1" daemon [_thread_blocked, id=6589, stack(0x7b772000,0x7b7f3000)]
+  0x098ab000 JavaThread "CompilerThread0" daemon [_thread_blocked, id=6588, stack(0x7b7f3000,0x7b874000)]
+  0x09625400 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=6582, stack(0x7b98b000,0x7b9dc000)]
+  0x09622800 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_in_native, id=6580, stack(0x7b9dc000,0x7ba2d000)]
+  0x09619800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=6579, stack(0x7ba31000,0x7ba82000)]
+  0x09608400 JavaThread "Finalizer" daemon [_thread_blocked, id=6578, stack(0x7ba82000,0x7bad3000)]
+  0x09606c00 JavaThread "Reference Handler" daemon [_thread_blocked, id=6577, stack(0x7bad3000,0x7bb24000)]
+  0x09587000 JavaThread "main" [_thread_blocked, id=6573, stack(0xb6a14000,0xb6a65000)]
+
+Other Threads:
+  0x09603000 VMThread [stack: 0x7bb24000,0x7bba5000] [id=6576]
+  0x098b2000 WatcherThread [stack: 0x7b6a0000,0x7b721000] [id=6591]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 15296K, used 9920K [0xa2410000, 0xa3520000, 0xb3560000)
+  eden space 13120K, 69% used [0xa2410000,0xa2cf9508,0xa30e0000)
+  from space 2176K, 36% used [0xa30e0000,0xa31a6dc0,0xa3300000)
+  to   space 2176K, 0% used [0xa3300000,0xa3300000,0xa3520000)
+ PSOldGen        total 34944K, used 0K [0x80160000, 0x82380000, 0xa2410000)
+  object space 34944K, 0% used [0x80160000,0x80160000,0x82380000)
+ PSPermGen       total 16384K, used 7909K [0x7c160000, 0x7d160000, 0x80160000)
+  object space 16384K, 48% used [0x7c160000,0x7c919798,0x7d160000)
+
+Dynamic libraries:
+08048000-08052000 r-xp 00000000 08:02 153707     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/bin/java
+08052000-08053000 rwxp 00009000 08:02 153707     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/bin/java
+0957b000-09cb9000 rwxp 00000000 00:00 0          [heap]
+7959a000-79653000 rwxp 00000000 00:00 0 
+79653000-79656000 ---p 00000000 00:00 0 
+79656000-796a4000 rwxp 00000000 00:00 0 
+796a4000-796a7000 ---p 00000000 00:00 0 
+796a7000-796f5000 rwxp 00000000 00:00 0 
+796f5000-796f8000 ---p 00000000 00:00 0 
+796f8000-797bf000 rwxp 00000000 00:00 0 
+797bf000-797c2000 ---p 00000000 00:00 0 
+797c2000-79810000 rwxp 00000000 00:00 0 
+79810000-7aec5000 r-xp 00000000 08:02 154243     /usr/lib/nvidia-current/libnvidia-glcore.so.270.41.06
+7aec5000-7af21000 rwxp 016b4000 08:02 154243     /usr/lib/nvidia-current/libnvidia-glcore.so.270.41.06
+7af21000-7af32000 rwxp 00000000 00:00 0 
+7af32000-7afd3000 r-xp 00000000 08:02 154239     /usr/lib/nvidia-current/libGL.so.270.41.06
+7afd3000-7aff1000 rwxp 000a1000 08:02 154239     /usr/lib/nvidia-current/libGL.so.270.41.06
+7aff1000-7b000000 rwxp 00000000 00:00 0 
+7b000000-7b0e6000 rwxp 00000000 00:00 0 
+7b0e6000-7b100000 ---p 00000000 00:00 0 
+7b117000-7b132000 rwxs 2ef80000 00:05 9259       /dev/nvidia0
+7b132000-7b1a2000 r-xp 00000000 08:03 4014110    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_desktop.so
+7b1a2000-7b1a3000 r-xp 0006f000 08:03 4014110    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_desktop.so
+7b1a3000-7b1a4000 rwxp 00070000 08:03 4014110    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_desktop.so
+7b1a4000-7b1a7000 ---p 00000000 00:00 0 
+7b1a7000-7b1f5000 rwxp 00000000 00:00 0 
+7b1f5000-7b1f6000 r-xs 00000000 08:02 563892     /var/cache/fontconfig/26de28bc8622bbc1fb67fd234c21975f-le32d4.cache-3
+7b1f6000-7b1f7000 r-xs 00000000 08:02 556846     /var/cache/fontconfig/c05880de57d1f5e948fdfacc138775d9-le32d4.cache-3
+7b1f7000-7b1fd000 r-xs 00000000 08:02 556843     /var/cache/fontconfig/945677eb7aeaf62f1d50efc3fb3ec7d8-le32d4.cache-3
+7b1fd000-7b1ff000 r-xs 00000000 08:02 556844     /var/cache/fontconfig/99e8ed0e538f840c565b6ed5dad60d56-le32d4.cache-3
+7b1ff000-7b202000 r-xs 00000000 08:02 556854     /var/cache/fontconfig/e383d7ea5fbe662a33d9b44caf393297-le32d4.cache-3
+7b202000-7b207000 r-xs 00000000 08:02 563893     /var/cache/fontconfig/401a5dd6b567794a1d18dd9342dfa604-le32d4.cache-3
+7b207000-7b209000 r-xs 00000000 08:02 556831     /var/cache/fontconfig/2cd17615ca594fa2959ae173292e504c-le32d4.cache-3
+7b209000-7b20a000 r-xs 00000000 08:02 556855     /var/cache/fontconfig/e7071f4a29fa870f4323321c154eba04-le32d4.cache-3
+7b20a000-7b20d000 r-xs 00000000 08:02 556840     /var/cache/fontconfig/6eb3985aa4124903f6ff08ba781cd364-le32d4.cache-3
+7b20d000-7b20e000 r-xs 00000000 08:02 556835     /var/cache/fontconfig/4c73fe0c47614734b17d736dbde7580a-le32d4.cache-3
+7b20e000-7b20f000 r-xs 00000000 08:02 556828     /var/cache/fontconfig/0d8c3b2ac0904cb8a57a757ad11a4a08-le32d4.cache-3
+7b20f000-7b210000 r-xs 00000000 08:02 556838     /var/cache/fontconfig/6a53c69dea097a2d716e069445527da8-le32d4.cache-3
+7b210000-7b214000 r-xs 00000000 08:02 556845     /var/cache/fontconfig/a755afe4a08bf5b97852ceb7400b47bc-le32d4.cache-3
+7b214000-7b218000 r-xs 00000000 08:02 558741     /var/cache/fontconfig/515ca1ebc4b18308bea979be5704f9db-le32d4.cache-3
+7b218000-7b21f000 r-xs 00000000 08:02 525846     /var/cache/fontconfig/6d41288fd70b0be22e8c3a91e032eec0-le32d4.cache-3
+7b21f000-7b22a000 r-xs 00000000 08:02 556829     /var/cache/fontconfig/0f34bcd4b6ee430af32735b75db7f02b-le32d4.cache-3
+7b22a000-7b22d000 r-xs 00000000 08:02 556851     /var/cache/fontconfig/d60319d88cac85ba9e1a07bd06cfbb8c-le32d4.cache-3
+7b22d000-7b22e000 r-xs 00000000 08:02 556026     /var/cache/fontconfig/4794a0821666d79190d59a36cb4f44b5-le32d4.cache-3
+7b22e000-7b250000 r-xs 00000000 08:02 563437     /var/cache/fontconfig/365b55f210c0a22e9a19e35191240f32-le32d4.cache-3
+7b25a000-7b26e000 r-xp 00000000 08:03 4014112    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_es2.so
+7b26e000-7b26f000 r-xp 00013000 08:03 4014112    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_es2.so
+7b26f000-7b270000 rwxp 00014000 08:03 4014112    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_es2.so
+7b270000-7b271000 r-xp 00000000 08:02 154231     /usr/lib/nvidia-current/tls/libnvidia-tls.so.270.41.06
+7b271000-7b272000 rwxp 00000000 08:02 154231     /usr/lib/nvidia-current/tls/libnvidia-tls.so.270.41.06
+7b273000-7b286000 r-xp 00000000 08:03 4014111    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_es1.so
+7b286000-7b287000 r-xp 00012000 08:03 4014111    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_es1.so
+7b287000-7b288000 rwxp 00013000 08:03 4014111    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libjogl_es1.so
+7b288000-7b28b000 ---p 00000000 00:00 0 
+7b28b000-7b2d9000 rwxp 00000000 00:00 0 
+7b2d9000-7b2dc000 ---p 00000000 00:00 0 
+7b2dc000-7b32a000 rwxp 00000000 00:00 0 
+7b32a000-7b32e000 r-xp 00000000 08:02 136692     /usr/lib/i386-linux-gnu/libXfixes.so.3.1.0
+7b32e000-7b32f000 r-xp 00003000 08:02 136692     /usr/lib/i386-linux-gnu/libXfixes.so.3.1.0
+7b32f000-7b330000 rwxp 00004000 08:02 136692     /usr/lib/i386-linux-gnu/libXfixes.so.3.1.0
+7b330000-7b338000 r-xp 00000000 08:02 136702     /usr/lib/i386-linux-gnu/libXrender.so.1.3.0
+7b338000-7b339000 r-xp 00007000 08:02 136702     /usr/lib/i386-linux-gnu/libXrender.so.1.3.0
+7b339000-7b33a000 rwxp 00008000 08:02 136702     /usr/lib/i386-linux-gnu/libXrender.so.1.3.0
+7b33a000-7b342000 r-xp 00000000 08:02 136684     /usr/lib/i386-linux-gnu/libXcursor.so.1.0.2
+7b342000-7b343000 r-xp 00007000 08:02 136684     /usr/lib/i386-linux-gnu/libXcursor.so.1.0.2
+7b343000-7b344000 rwxp 00008000 08:02 136684     /usr/lib/i386-linux-gnu/libXcursor.so.1.0.2
+7b345000-7b349000 r-xp 00000000 08:03 4014114    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libnativewindow_x11.so
+7b349000-7b34a000 r-xp 00003000 08:03 4014114    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libnativewindow_x11.so
+7b34a000-7b34b000 rwxp 00004000 08:03 4014114    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libnativewindow_x11.so
+7b34b000-7b34d000 r-xp 00000000 08:02 136698     /usr/lib/i386-linux-gnu/libXinerama.so.1.0.0
+7b34d000-7b34e000 r-xp 00001000 08:02 136698     /usr/lib/i386-linux-gnu/libXinerama.so.1.0.0
+7b34e000-7b34f000 rwxp 00002000 08:02 136698     /usr/lib/i386-linux-gnu/libXinerama.so.1.0.0
+7b34f000-7b353000 r-xp 00000000 08:02 136706     /usr/lib/i386-linux-gnu/libXxf86vm.so.1.0.0
+7b353000-7b354000 r-xp 00003000 08:02 136706     /usr/lib/i386-linux-gnu/libXxf86vm.so.1.0.0
+7b354000-7b355000 rwxp 00004000 08:02 136706     /usr/lib/i386-linux-gnu/libXxf86vm.so.1.0.0
+7b355000-7b356000 r-xp 00000000 08:03 4014113    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libnativewindow_awt.so
+7b356000-7b357000 r-xp 00000000 08:03 4014113    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libnativewindow_awt.so
+7b357000-7b358000 rwxp 00001000 08:03 4014113    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libnativewindow_awt.so
+7b358000-7b359000 r-xp 00000000 08:02 153760     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libjawt.so
+7b359000-7b35a000 rwxp 00000000 08:02 153760     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libjawt.so
+7b35a000-7b35d000 ---p 00000000 00:00 0 
+7b35d000-7b3ab000 rwxp 00000000 00:00 0 
+7b3ab000-7b424000 r-xp 00000000 08:02 153804     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libfontmanager.so
+7b424000-7b42e000 rwxp 00078000 08:02 153804     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libfontmanager.so
+7b42e000-7b433000 rwxp 00000000 00:00 0 
+7b433000-7b437000 r-xp 00000000 08:02 136688     /usr/lib/i386-linux-gnu/libXdmcp.so.6.0.0
+7b437000-7b438000 r-xp 00003000 08:02 136688     /usr/lib/i386-linux-gnu/libXdmcp.so.6.0.0
+7b438000-7b439000 rwxp 00004000 08:02 136688     /usr/lib/i386-linux-gnu/libXdmcp.so.6.0.0
+7b439000-7b43b000 r-xp 00000000 08:02 136680     /usr/lib/i386-linux-gnu/libXau.so.6.0.0
+7b43b000-7b43c000 r-xp 00001000 08:02 136680     /usr/lib/i386-linux-gnu/libXau.so.6.0.0
+7b43c000-7b43d000 rwxp 00002000 08:02 136680     /usr/lib/i386-linux-gnu/libXau.so.6.0.0
+7b43d000-7b454000 r-xp 00000000 08:02 136828     /usr/lib/i386-linux-gnu/libxcb.so.1.1.0
+7b454000-7b455000 r-xp 00016000 08:02 136828     /usr/lib/i386-linux-gnu/libxcb.so.1.1.0
+7b455000-7b456000 rwxp 00017000 08:02 136828     /usr/lib/i386-linux-gnu/libxcb.so.1.1.0
+7b456000-7b463000 r-xp 00000000 08:02 136696     /usr/lib/i386-linux-gnu/libXi.so.6.1.0
+7b463000-7b464000 r-xp 0000c000 08:02 136696     /usr/lib/i386-linux-gnu/libXi.so.6.1.0
+7b464000-7b465000 rwxp 0000d000 08:02 136696     /usr/lib/i386-linux-gnu/libXi.so.6.1.0
+7b465000-7b469000 r-xp 00000000 08:02 133973     /usr/lib/libXtst.so.6.1.0
+7b469000-7b46a000 r-xp 00003000 08:02 133973     /usr/lib/libXtst.so.6.1.0
+7b46a000-7b46b000 rwxp 00004000 08:02 133973     /usr/lib/libXtst.so.6.1.0
+7b46b000-7b581000 r-xp 00000000 08:02 136678     /usr/lib/i386-linux-gnu/libX11.so.6.3.0
+7b581000-7b582000 ---p 00116000 08:02 136678     /usr/lib/i386-linux-gnu/libX11.so.6.3.0
+7b582000-7b583000 r-xp 00116000 08:02 136678     /usr/lib/i386-linux-gnu/libX11.so.6.3.0
+7b583000-7b585000 rwxp 00117000 08:02 136678     /usr/lib/i386-linux-gnu/libX11.so.6.3.0
+7b585000-7b586000 rwxp 00000000 00:00 0 
+7b586000-7b593000 r-xp 00000000 08:02 136690     /usr/lib/i386-linux-gnu/libXext.so.6.4.0
+7b593000-7b594000 r-xp 0000c000 08:02 136690     /usr/lib/i386-linux-gnu/libXext.so.6.4.0
+7b594000-7b595000 rwxp 0000d000 08:02 136690     /usr/lib/i386-linux-gnu/libXext.so.6.4.0
+7b595000-7b59d000 r-xs 00000000 08:02 556850     /var/cache/fontconfig/d52a8644073d54c13679302ca1180695-le32d4.cache-3
+7b59d000-7b5a5000 r-xs 00000000 08:02 564351     /var/cache/fontconfig/e13b20fdb08344e0e664864cc2ede53d-le32d4.cache-3
+7b5a5000-7b5a8000 r-xs 00000000 08:02 563887     /var/cache/fontconfig/7ef2298fde41cc6eeb7af42e48b7d293-le32d4.cache-3
+7b5a8000-7b5a9000 r-xp 00000000 08:03 4014089    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libgluegen-rt.so
+7b5a9000-7b5aa000 r-xp 00000000 08:03 4014089    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libgluegen-rt.so
+7b5aa000-7b5ab000 rwxp 00001000 08:03 4014089    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib/libgluegen-rt.so
+7b5ab000-7b5ee000 r-xp 00000000 08:02 153789     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/xawt/libmawt.so
+7b5ee000-7b5f0000 rwxp 00043000 08:02 153789     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/xawt/libmawt.so
+7b5f0000-7b5f1000 rwxp 00000000 00:00 0 
+7b5f1000-7b675000 r-xp 00000000 08:02 153756     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libawt.so
+7b675000-7b67c000 rwxp 00084000 08:02 153756     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libawt.so
+7b67c000-7b6a0000 rwxp 00000000 00:00 0 
+7b6a0000-7b6a1000 ---p 00000000 00:00 0 
+7b6a1000-7b721000 rwxp 00000000 00:00 0 
+7b721000-7b724000 ---p 00000000 00:00 0 
+7b724000-7b772000 rwxp 00000000 00:00 0 
+7b772000-7b775000 ---p 00000000 00:00 0 
+7b775000-7b7f3000 rwxp 00000000 00:00 0 
+7b7f3000-7b7f6000 ---p 00000000 00:00 0 
+7b7f6000-7b874000 rwxp 00000000 00:00 0 
+7b874000-7b876000 r-xs 0000b000 08:02 403217     /opt/idea-IC-103.255/plugins/Groovy/lib/agent/gragent.jar
+7b876000-7b878000 r-xs 00011000 08:02 403161     /opt/idea-IC-103.255/lib/idea_rt.jar
+7b878000-7b881000 r-xs 0006d000 08:03 4670285    /home/ggervais/workspace_new/GameEngine/lib/log4j/log4j-1.2.16.jar
+7b881000-7b882000 r-xs 00001000 08:03 3182839    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.os.x11.jar
+7b882000-7b883000 r-xs 00001000 08:03 3182838    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.os.win.jar
+7b883000-7b885000 r-xs 00001000 08:03 3182835    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.os.osx.jar
+7b885000-7b886000 r-xs 00004000 08:03 3182831    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.ogl.jar
+7b886000-7b887000 r-xs 00001000 08:03 3182828    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.hw.intelgdl.jar
+7b887000-7b888000 r-xs 00001000 08:03 3182824    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.hw.broadcomegl.jar
+7b888000-7b88a000 r-xs 00007000 08:03 3182822    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.event.jar
+7b88a000-7b88c000 r-xs 00016000 08:03 3182821    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.core.jar
+7b88c000-7b88e000 r-xs 00007000 08:03 3182820    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.awt.jar
+7b88e000-7b892000 r-xs 00028000 08:03 3182818    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.all.jar
+7b892000-7b895000 r-xs 00020000 08:03 3182817    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.all-noawt.jar
+7b895000-7b896000 r-xs 00002000 08:03 3182816    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt-natives-linux-i586.jar
+7b896000-7b897000 r-xs 00004000 08:03 3182815    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.os.x11.jar
+7b897000-7b899000 r-xs 00004000 08:03 3182814    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.os.win.jar
+7b899000-7b89b000 r-xs 00009000 08:03 3182813    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.core.jar
+7b89b000-7b89d000 r-xs 0000a000 08:03 3182812    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.awt.jar
+7b89d000-7b8a1000 r-xs 0001c000 08:03 3182511    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.all.jar
+7b8a1000-7b8a4000 r-xs 00012000 08:03 3182507    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.all-noawt.jar
+7b8a4000-7b8a5000 r-xs 00002000 08:03 3182504    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow-natives-linux-i586.jar
+7b8a5000-7b8a7000 r-xs 0001e000 08:03 3182501    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.util.jar
+7b8a7000-7b8a9000 r-xs 0001f000 08:03 3182498    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.util.gldesktop.jar
+7b8a9000-7b8aa000 r-xs 00006000 08:03 3182497    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.util.fixedfuncemu.jar
+7b8aa000-7b8ac000 r-xs 0000a000 08:03 3182492    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.util.awt.jar
+7b8ac000-7b8b2000 r-xs 00041000 08:03 3182489    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.test.jar
+7b8b2000-7b8b3000 r-xs 00001000 08:03 3182485    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.sdk.jar
+7b8b3000-7b8b5000 r-xs 00010000 08:03 3181146    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.os.x11.jar
+7b8b5000-7b8b6000 r-xs 00011000 08:03 3181145    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.os.win.jar
+7b8b6000-7b8b8000 r-xs 00008000 08:03 3181144    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.os.osx.jar
+7b8b8000-7b8b9000 r-xs 0000a000 08:03 3181143    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.glu.tess.jar
+7b8b9000-7b8bb000 r-xs 0000f000 08:03 3181140    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.glu.mipmap.jar
+7b8bb000-7b8bd000 r-xs 0000c000 08:03 3181139    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.glu.gldesktop.jar
+7b8bd000-7b8be000 r-xs 00009000 08:03 3181138    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.gles2.jar
+7b8be000-7b8bf000 r-xs 00010000 08:03 3181136    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.gles2.dbg.jar
+7b8bf000-7b8c0000 r-xs 00007000 08:03 3181135    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.gles1.jar
+7b8c0000-7b8c1000 r-xs 0000f000 08:03 3181134    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.gles1.dbg.jar
+7b8c1000-7b8c3000 r-xs 0002f000 08:03 3181051    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.gldesktop.jar
+7b8c3000-7b8c4000 r-xs 000fa000 08:03 3181050    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.gldesktop.dbg.jar
+7b8c4000-7b8c6000 r-xs 0000b000 08:03 3180979    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.egl.jar
+7b8c6000-7b8c9000 r-xs 0002e000 08:03 3180972    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.core.jar
+7b8c9000-7b8cb000 r-xs 0000f000 08:03 3180936    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.awt.jar
+7b8cb000-7b8d8000 r-xs 00242000 08:03 3180935    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.all.jar
+7b8d8000-7b8e3000 r-xs 00228000 08:03 3180934    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.all-noawt.jar
+7b8e3000-7b8e4000 r-xs 00013000 08:03 3180932    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl-natives-linux-i586.jar
+7b8e4000-7b8e7000 r-xs 00018000 08:03 3180639    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/gluegen-rt.jar
+7b8e7000-7b8e8000 r-xs 00000000 08:03 3180634    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/gluegen-rt-natives-linux-i586.jar
+7b8e8000-7b8e9000 r-xs 0000c000 08:03 3180622    /home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/gluegen-gl.jar
+7b8e9000-7b8eb000 r-xs 00004000 08:03 5242952    /home/ggervais/workspace_new/GameEngine/lib/jinput/jinput-test.jar
+7b8eb000-7b8f0000 r-xs 00030000 08:03 5242951    /home/ggervais/workspace_new/GameEngine/lib/jinput/jinput.jar
+7b8f0000-7b8f7000 r-xs 00036000 08:03 12599540   /home/ggervais/workspace_new/GameEngine/lib/junit-4.9b2.jar
+7b8f7000-7b8f8000 r-xs 00000000 08:02 153890     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/management-agent.jar
+7b8f8000-7b900000 r-xs 00115000 08:02 153899     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/resources.jar
+7b900000-7b90e000 r-xs 00679000 08:02 153626     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/charsets.jar
+7b90e000-7b917000 r-xs 000d7000 08:02 153810     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/javaws.jar
+7b917000-7b929000 r-xs 001ac000 08:02 153812     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/plugin.jar
+7b929000-7b93a000 r-xs 00349000 08:02 153747     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/deploy.jar
+7b93a000-7b93d000 ---p 00000000 00:00 0 
+7b93d000-7b98b000 rwxp 00000000 00:00 0 
+7b98b000-7b98e000 ---p 00000000 00:00 0 
+7b98e000-7b9dc000 rwxp 00000000 00:00 0 
+7b9dc000-7b9df000 ---p 00000000 00:00 0 
+7b9df000-7ba2d000 rwxp 00000000 00:00 0 
+7ba2d000-7ba30000 r-xp 00000000 08:02 153799     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libdt_socket.so
+7ba30000-7ba31000 rwxp 00003000 08:02 153799     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libdt_socket.so
+7ba31000-7ba34000 ---p 00000000 00:00 0 
+7ba34000-7ba82000 rwxp 00000000 00:00 0 
+7ba82000-7ba85000 ---p 00000000 00:00 0 
+7ba85000-7bad3000 rwxp 00000000 00:00 0 
+7bad3000-7bad6000 ---p 00000000 00:00 0 
+7bad6000-7bb24000 rwxp 00000000 00:00 0 
+7bb24000-7bb25000 ---p 00000000 00:00 0 
+7bb25000-7bbd9000 rwxp 00000000 00:00 0 
+7bbd9000-7bd71000 r-xs 03027000 08:02 153827     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/rt.jar
+7bd71000-7bd72000 ---p 00000000 00:00 0 
+7bd72000-7bdf2000 rwxp 00000000 00:00 0 
+7bdf2000-7bdf3000 ---p 00000000 00:00 0 
+7bdf3000-7be7b000 rwxp 00000000 00:00 0 
+7be7b000-7be93000 rwxp 00000000 00:00 0 
+7be93000-7bea5000 rwxp 00000000 00:00 0 
+7bea5000-7bfa5000 rwxp 00000000 00:00 0 
+7bfa5000-7bfad000 rwxp 00000000 00:00 0 
+7bfad000-7bfc5000 rwxp 00000000 00:00 0 
+7bfc5000-7bfd7000 rwxp 00000000 00:00 0 
+7bfd7000-7c0d6000 rwxp 00000000 00:00 0 
+7c0d6000-7c0df000 rwxp 00000000 00:00 0 
+7c0df000-7c15f000 rwxp 00000000 00:00 0 
+7c15f000-7d160000 rwxp 00000000 00:00 0 
+7d160000-80160000 rwxp 00000000 00:00 0 
+80160000-82380000 rwxp 00000000 00:00 0 
+82380000-a2410000 rwxp 00000000 00:00 0 
+a2410000-a3520000 rwxp 00000000 00:00 0 
+a3520000-b3560000 rwxp 00000000 00:00 0 
+b3560000-b3569000 rwxp 00000000 00:00 0 
+b3569000-b3620000 rwxp 00000000 00:00 0 
+b3620000-b3860000 rwxp 00000000 00:00 0 
+b3860000-b6620000 rwxp 00000000 00:00 0 
+b6620000-b662f000 r-xp 00000000 08:02 153758     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libzip.so
+b662f000-b6631000 rwxp 0000e000 08:02 153758     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libzip.so
+b6631000-b663b000 r-xp 00000000 08:02 261489     /lib/i386-linux-gnu/libnss_files-2.13.so
+b663b000-b663c000 r-xp 00009000 08:02 261489     /lib/i386-linux-gnu/libnss_files-2.13.so
+b663c000-b663d000 rwxp 0000a000 08:02 261489     /lib/i386-linux-gnu/libnss_files-2.13.so
+b663d000-b6646000 r-xp 00000000 08:02 261493     /lib/i386-linux-gnu/libnss_nis-2.13.so
+b6646000-b6647000 r-xp 00008000 08:02 261493     /lib/i386-linux-gnu/libnss_nis-2.13.so
+b6647000-b6648000 rwxp 00009000 08:02 261493     /lib/i386-linux-gnu/libnss_nis-2.13.so
+b6648000-b664b000 r-xs 00013000 08:02 153153     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/jce.jar
+b664b000-b6652000 r-xs 00094000 08:02 153152     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/jsse.jar
+b6652000-b6654000 r-xs 00009000 08:02 153814     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/alt-string.jar
+b6654000-b6656000 r-xs 0000e000 08:02 153889     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/alt-rt.jar
+b6656000-b665e000 rwxs 00000000 08:02 651788     /tmp/hsperfdata_ggervais/6572
+b665e000-b677e000 r-xp 00178000 08:02 139490     /usr/lib/locale/locale-archive
+b677e000-b697e000 r-xp 00000000 08:02 139490     /usr/lib/locale/locale-archive
+b697e000-b69b8000 r-xp 00000000 08:02 153800     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libjdwp.so
+b69b8000-b69b9000 rwxp 00039000 08:02 153800     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libjdwp.so
+b69b9000-b69cc000 r-xp 00000000 08:02 261483     /lib/i386-linux-gnu/libnsl-2.13.so
+b69cc000-b69cd000 r-xp 00012000 08:02 261483     /lib/i386-linux-gnu/libnsl-2.13.so
+b69cd000-b69ce000 rwxp 00013000 08:02 261483     /lib/i386-linux-gnu/libnsl-2.13.so
+b69ce000-b69d0000 rwxp 00000000 00:00 0 
+b69d0000-b69d6000 r-xp 00000000 08:02 261485     /lib/i386-linux-gnu/libnss_compat-2.13.so
+b69d6000-b69d7000 r-xp 00005000 08:02 261485     /lib/i386-linux-gnu/libnss_compat-2.13.so
+b69d7000-b69d8000 rwxp 00006000 08:02 261485     /lib/i386-linux-gnu/libnss_compat-2.13.so
+b69d8000-b69e1000 r-xp 00000000 08:02 153796     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libinstrument.so
+b69e1000-b69e2000 rwxp 00008000 08:02 153796     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libinstrument.so
+b69e2000-b69e5000 r-xp 00000000 08:02 153752     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libnpt.so
+b69e5000-b69e6000 rwxp 00002000 08:02 153752     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libnpt.so
+b69e6000-b6a09000 r-xp 00000000 08:02 153753     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libjava.so
+b6a09000-b6a0b000 rwxp 00023000 08:02 153753     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libjava.so
+b6a0b000-b6a12000 r-xp 00000000 08:02 261512     /lib/i386-linux-gnu/librt-2.13.so
+b6a12000-b6a13000 r-xp 00006000 08:02 261512     /lib/i386-linux-gnu/librt-2.13.so
+b6a13000-b6a14000 rwxp 00007000 08:02 261512     /lib/i386-linux-gnu/librt-2.13.so
+b6a14000-b6a17000 ---p 00000000 00:00 0 
+b6a17000-b6a65000 rwxp 00000000 00:00 0 
+b6a65000-b6a89000 r-xp 00000000 08:02 261480     /lib/i386-linux-gnu/libm-2.13.so
+b6a89000-b6a8a000 r-xp 00023000 08:02 261480     /lib/i386-linux-gnu/libm-2.13.so
+b6a8a000-b6a8b000 rwxp 00024000 08:02 261480     /lib/i386-linux-gnu/libm-2.13.so
+b6a8b000-b7218000 r-xp 00000000 08:02 153773     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/server/libjvm.so
+b7218000-b726b000 rwxp 0078d000 08:02 153773     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/server/libjvm.so
+b726b000-b768b000 rwxp 00000000 00:00 0 
+b768b000-b77e5000 r-xp 00000000 08:02 261443     /lib/i386-linux-gnu/libc-2.13.so
+b77e5000-b77e6000 ---p 0015a000 08:02 261443     /lib/i386-linux-gnu/libc-2.13.so
+b77e6000-b77e8000 r-xp 0015a000 08:02 261443     /lib/i386-linux-gnu/libc-2.13.so
+b77e8000-b77e9000 rwxp 0015c000 08:02 261443     /lib/i386-linux-gnu/libc-2.13.so
+b77e9000-b77ec000 rwxp 00000000 00:00 0 
+b77ec000-b77ee000 r-xp 00000000 08:02 261453     /lib/i386-linux-gnu/libdl-2.13.so
+b77ee000-b77ef000 r-xp 00001000 08:02 261453     /lib/i386-linux-gnu/libdl-2.13.so
+b77ef000-b77f0000 rwxp 00002000 08:02 261453     /lib/i386-linux-gnu/libdl-2.13.so
+b77f0000-b77f7000 r-xp 00000000 08:02 153762     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/jli/libjli.so
+b77f7000-b77f9000 rwxp 00006000 08:02 153762     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/jli/libjli.so
+b77f9000-b780e000 r-xp 00000000 08:02 261508     /lib/i386-linux-gnu/libpthread-2.13.so
+b780e000-b780f000 r-xp 00015000 08:02 261508     /lib/i386-linux-gnu/libpthread-2.13.so
+b780f000-b7810000 rwxp 00016000 08:02 261508     /lib/i386-linux-gnu/libpthread-2.13.so
+b7810000-b7813000 rwxp 00000000 00:00 0 
+b7813000-b7814000 rwxs fd060000 00:05 9259       /dev/nvidia0
+b7814000-b781a000 r-xp 00000000 08:02 153776     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/native_threads/libhpi.so
+b781a000-b781b000 rwxp 00006000 08:02 153776     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/native_threads/libhpi.so
+b781b000-b781c000 rwxp 00000000 00:00 0 
+b781c000-b781d000 r-xp 00000000 00:00 0 
+b781d000-b7828000 r-xp 00000000 08:02 153787     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libverify.so
+b7828000-b7829000 rwxp 0000b000 08:02 153787     /usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/libverify.so
+b7829000-b782b000 rwxp 00000000 00:00 0 
+b782b000-b782c000 r-xp 00000000 00:00 0          [vdso]
+b782c000-b7848000 r-xp 00000000 08:02 261430     /lib/i386-linux-gnu/ld-2.13.so
+b7848000-b7849000 r-xp 0001b000 08:02 261430     /lib/i386-linux-gnu/ld-2.13.so
+b7849000-b784a000 rwxp 0001c000 08:02 261430     /lib/i386-linux-gnu/ld-2.13.so
+bfe24000-bfe46000 rwxp 00000000 00:00 0          [stack]
+
+VM Arguments:
+jvm_args: -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:45301,suspend=y,server=n -Djava.library.path=/home/ggervais/workspace_new/GameEngine/lib/jinput:/home/ggervais/workspace_new/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib -javaagent:/opt/idea-IC-103.255/plugins/Groovy/lib/agent/gragent.jar -Dfile.encoding=UTF-8 
+java_command: com.ggervais.gameengine.testapp.Main
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+CLASSPATH=../lib/bootstrap.jar:../lib/util.jar:../lib/jdom.jar:../lib/log4j.jar:../lib/extensions.jar:../lib/trove4j.jar:/usr/lib/jvm/java-6-openjdk/lib/tools.jar:
+PATH=/home/ggervais/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/go/bin
+USERNAME=ggervais
+LD_LIBRARY_PATH=/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386/server:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/../lib/i386:/usr/lib/jvm/java-6-openjdk/jre/lib/i386/server:/usr/lib/jvm/java-6-openjdk/jre/lib/i386:/usr/lib/jvm/java-6-openjdk/jre/../lib/i386:.:
+SHELL=/bin/bash
+DISPLAY=:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x708f80], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x708f80], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x5c4100], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x5c4100], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x5c4100], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x5c4100], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x5c70e0], sa_mask[0]=0x00000004, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x5c6cc0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x5c6cc0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x5c6cc0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x5c6cc0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:squeeze/sid
+
+uname:Linux 2.6.38-8-generic #42-Ubuntu SMP Mon Apr 11 03:31:50 UTC 2011 i686
+libc:glibc 2.13 NPTL 2.13 
+rlimit: STACK 8192k, CORE 0k, NPROC infinity, NOFILE 4096, AS infinity
+load average:0.03 0.04 0.09
+
+/proc/meminfo:
+MemTotal:        3354092 kB
+MemFree:          294992 kB
+Buffers:          525244 kB
+Cached:          1183512 kB
+SwapCached:         1168 kB
+Active:          1663108 kB
+Inactive:        1198548 kB
+Active(anon):     981616 kB
+Inactive(anon):   174028 kB
+Active(file):     681492 kB
+Inactive(file):  1024520 kB
+Unevictable:         164 kB
+Mlocked:              16 kB
+HighTotal:       2498248 kB
+HighFree:         140140 kB
+LowTotal:         855844 kB
+LowFree:          154852 kB
+SwapTotal:        979928 kB
+SwapFree:         975388 kB
+Dirty:               828 kB
+Writeback:             0 kB
+AnonPages:       1152152 kB
+Mapped:           149384 kB
+Shmem:              2596 kB
+Slab:             138024 kB
+SReclaimable:     107216 kB
+SUnreclaim:        30808 kB
+KernelStack:        3216 kB
+PageTables:         7752 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     2656972 kB
+Committed_AS:    2904676 kB
+VmallocTotal:     122880 kB
+VmallocUsed:       70708 kB
+VmallocChunk:      44028 kB
+HardwareCorrupted:     0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       4096 kB
+DirectMap4k:      327672 kB
+DirectMap4M:      581632 kB
+
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 15 stepping 6, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3
+
+Memory: 4k page, physical 3354092k(294992k free), swap 979928k(975388k free)
+
+vm_info: Java HotSpot(TM) Server VM (19.1-b02) for linux-x86 JRE (1.6.0_24-b07), built on Feb  2 2011 16:51:52 by "java_re" with gcc 3.2.1-7a (J2SE release)
+
+time: Fri Jun 17 23:21:07 2011
+elapsed time: 1 seconds
+

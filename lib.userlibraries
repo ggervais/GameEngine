@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<eclipse-userlibraries version="2">
+    <library name="jinput" systemlibrary="false">
+        <archive nativelibpaths="GameEngine/lib/jinput" path="/GameEngine/lib/jinput/jinput.jar"/>
+        <archive nativelibpaths="GameEngine/lib/jinput" path="/GameEngine/lib/jinput/jinput-test.jar"/>
+    </library>
+    <library name="jogl-2.0" systemlibrary="false">
+        <archive nativelibpaths="GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib" path="/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/gluegen-rt.jar"/>
+        <archive nativelibpaths="GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib" path="/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/jogl.all.jar"/>
+        <archive nativelibpaths="GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib" path="/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/nativewindow.all.jar"/>
+        <archive nativelibpaths="GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/lib" path="/GameEngine/lib/jogl-2.0-b23-20110303-linux-i586/jar/newt.all.jar"/>
+    </library>
+</eclipse-userlibraries>
