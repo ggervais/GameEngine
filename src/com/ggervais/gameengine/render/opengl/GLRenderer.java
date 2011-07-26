@@ -321,7 +321,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 			}
 		gl.glEnd();
 
-        OpenGLUtils.drawBoundingBox(gl, geometry.getBoundingBox());
+        //OpenGLUtils.drawBoundingBox(gl, geometry.getBoundingBox());
     }
 
 

@@ -32,10 +32,10 @@ public class Node extends Spatial {
         for (Spatial child : this.children) {
             if (child != null) {
                 if (isFirstChild) {
-                    // Use child bound.
+                    this.boundingBox = child.getBoundingBox().copy();
                     isFirstChild = false;
                 } else {
-
+                    this.boundingBox.grow(child.getBoundingBox());
                 }
             }
         }

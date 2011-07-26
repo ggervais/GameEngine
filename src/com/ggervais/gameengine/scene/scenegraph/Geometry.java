@@ -19,15 +19,13 @@ public class Geometry extends Spatial {
     private static final int DEFAULT_NB_VERTICES_PER_FACE = 3;
     private static final Logger log = Logger.getLogger(Geometry.class);
 
-    private BoundingBox boundingBox;
-    private BoundingSphere boundingSphere;
-
 	protected VertexBuffer vertexBuffer;
 	protected IndexBuffer indexBuffer;
 	protected TextureBuffer textureBuffer; // Per face texture coordinates.
 	protected int nbVerticesPerFace;
 	protected List<Face> faces;
 
+    private BoundingBox modelBoundingBox;
     boolean isBoundingBoxDirty;
     boolean isBoundingSphereDirty;
 
@@ -47,6 +45,7 @@ public class Geometry extends Spatial {
         this.isBoundingBoxDirty = true;
         this.isBoundingSphereDirty = true;
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
+        this.modelBoundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
 	}
 
 	public List<Face> getFaces() {
@@ -72,18 +71,6 @@ public class Geometry extends Spatial {
 	public float getScale() {
 		return 1.0f;
 	}
-
-    public BoundingSphere getBoundingSphere() {
-        return getBoundingSphere(new Matrix4x4());
-    }
-
-    public BoundingSphere getBoundingSphere(Matrix4x4 transform) {
-        if (this.isBoundingSphereDirty) {
-            computeBoundingSphere(transform);
-            this.isBoundingBoxDirty = false;
-        }
-        return this.boundingSphere;
-    }
 
     private void computeBoundingSphere(Matrix4x4 transform) {
         float sumX = 0;
@@ -128,18 +115,6 @@ public class Geometry extends Spatial {
         this.boundingSphere = sphere;
     }
 
-    public BoundingBox getBoundingBox(Matrix4x4 transform) {
-        if (this.isBoundingBoxDirty) {
-            computeBoundingBox(new Matrix4x4());
-            this.isBoundingBoxDirty = false;
-        }
-        return this.boundingBox;
-    }
-
-    public BoundingBox getBoundingBox() {
-        return getBoundingBox(new Matrix4x4());
-    }
-
     private void computeBoundingBox(Matrix4x4 transform) {
         float minX = Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
@@ -166,12 +141,20 @@ public class Geometry extends Spatial {
         Point3D maxCorner = new Point3D(maxX, maxY, maxZ);
         BoundingBox box = new BoundingBox(minCorner, maxCorner);
 
-        this.boundingBox = box;
+        this.modelBoundingBox = box;
     }
 
     @Override
     public void updateWorldBound() {
-        // Transform bounding box/sphere.
+
+        if (this.isBoundingBoxDirty) {
+            computeBoundingBox(new Matrix4x4());
+            this.isBoundingBoxDirty = false;
+        }
+
+        BoundingBox copyBox = this.modelBoundingBox.copy();
+        copyBox.transform(this.worldTransform);
+        this.boundingBox = copyBox;
     }
 
     @Override

@@ -100,21 +100,23 @@ public class Game {
 	}
 
     public void pickCheck(Node nodeToCheck, Ray ray) {
-        Iterator<Spatial> children = nodeToCheck.getChildrenIterator();
-        while(children.hasNext()) {
-            Spatial child = children.next();
-            if (child instanceof Geometry) {
-                BoundingBox box = ((Geometry) child).getBoundingBox().copy();
-                box.transform(child.getWorldTransformation());
-
-                Point3D intersect = box.intersects(ray);
-                if (intersect != null) {
-                    System.out.println(child + " intersects with ray at " + intersect);
+        if (nodeToCheck.getBoundingBox().intersects(ray) != null) {
+            Iterator<Spatial> children = nodeToCheck.getChildrenIterator();
+            while(children.hasNext()) {
+                Spatial child = children.next();
+                if (child instanceof Geometry) {
+                    BoundingBox box = ((Geometry) child).getBoundingBox().copy();
+                    //box.transform(child.getWorldTransformation());
+                    Point3D intersect = box.intersects(ray);
+                    if (intersect != null) {
+                        System.out.println(child + " intersects with ray at " + intersect);
+                    }
+                } else if(child instanceof Node) {
+                    pickCheck((Node) child, ray);
                 }
-            } else if(child instanceof Node) {
-                pickCheck((Node) child, ray);
             }
         }
+
     }
 	
 	public void update(long currentTime) {

@@ -1,5 +1,8 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
 import com.ggervais.gameengine.timing.Controller;
@@ -15,6 +18,8 @@ public abstract class Spatial {
     Map<GlobalStateType, GlobalState> globalStates;
     private List<Controller> controllers;
     private Effect effect;
+    protected BoundingBox boundingBox;
+    protected BoundingSphere boundingSphere;
 
     public Spatial() {
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
@@ -22,6 +27,16 @@ public abstract class Spatial {
         this.localTransform = new Transformation();
         this.controllers = new ArrayList<Controller>();
         this.effect = null; // Effect object is optional.
+        this.boundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
+        this.boundingSphere = new BoundingSphere(Point3D.zero(), 0);
+    }
+
+    public BoundingBox getBoundingBox() {
+        return this.boundingBox;
+    }
+
+    public BoundingSphere getBoundingSphere() {
+        return this.boundingSphere;
     }
 
     public void setEffect(Effect effect) {
