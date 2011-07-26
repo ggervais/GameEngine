@@ -37,19 +37,19 @@ public class RotationMatrixTests extends TestCase {
 		RotationMatrix matrix = new RotationMatrix();
 		
 		// Rounding values prevents precision error (10E-8 instead of 0, for instance).
-		matrix.setYawPitchRow((float) Math.PI / 2, 0.0f, 0.0f);
+		matrix.setYawPitchRoll((float) Math.PI / 2, 0.0f, 0.0f);
 		Point3D newPoint = matrix.mult(point);
 		assertTrue(Math.round(newPoint.x()) == 0);
 		assertTrue(Math.round(newPoint.y()) == 1);
 		assertTrue(Math.round(newPoint.z()) == 0);
 	
-		matrix.setYawPitchRow(0.0f, 0.0f, (float) Math.PI / 2);
+		matrix.setYawPitchRoll(0.0f, 0.0f, (float) Math.PI / 2);
 		newPoint = matrix.mult(newPoint);
 		assertTrue(Math.round(newPoint.x()) == 0);
 		assertTrue(Math.round(newPoint.y()) == 0);
 		assertTrue(Math.round(newPoint.z()) == 1);
 		
-		matrix.setYawPitchRow(0.0f, (float) Math.PI / 2, 0.0f);
+		matrix.setYawPitchRoll(0.0f, (float) Math.PI / 2, 0.0f);
 		newPoint = matrix.mult(newPoint);
 		assertTrue(Math.round(newPoint.x()) == 1);
 		assertTrue(Math.round(newPoint.y()) == 0);

@@ -112,8 +112,6 @@ public class DisplaySubsystem implements Subsystem {
         Point3D rayOrigin = transformedNearPoint.copy();
         Vector3D rayDirection = Point3D.sub(transformedFarPoint, transformedNearPoint).normalized();
 
-        System.out.println(rayOrigin + " " + rayDirection);
-
         pickingRay.setOrigin(rayOrigin);
         pickingRay.setDirection(rayDirection);
 

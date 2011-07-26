@@ -1,14 +1,21 @@
 package com.ggervais.gameengine.game;
 
+import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.math.Ray;
+import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.particle.ParticleSubsystem;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.render.DisplaySubsystem;
+import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import com.ggervais.gameengine.scene.scenegraph.Node;
+import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.awt.image.MemoryImageSource;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -91,6 +98,24 @@ public class Game {
 		this.renderer.getCanvas().requestFocus();
 		mainLoop();
 	}
+
+    public void pickCheck(Node nodeToCheck, Ray ray) {
+        Iterator<Spatial> children = nodeToCheck.getChildrenIterator();
+        while(children.hasNext()) {
+            Spatial child = children.next();
+            if (child instanceof Geometry) {
+                BoundingBox box = ((Geometry) child).getBoundingBox().copy();
+                box.transform(child.getWorldTransformation());
+
+                Point3D intersect = box.intersects(ray);
+                if (intersect != null) {
+                    System.out.println(child + " intersects with ray at " + intersect);
+                }
+            } else if(child instanceof Node) {
+                pickCheck((Node) child, ray);
+            }
+        }
+    }
 	
 	public void update(long currentTime) {
 		
@@ -110,6 +135,8 @@ public class Game {
         Node root = this.scene.getSceneGraphRoot();
         root.updateGeometryState(currentTime, true);
         root.updateRenderState();
+
+        pickCheck(root, DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera()));
 	}
 	
 	private void mainLoop() {

@@ -35,7 +35,7 @@ public class Node extends Spatial {
                     // Use child bound.
                     isFirstChild = false;
                 } else {
-                    // Grow world bound (member of Spatial class)
+
                 }
             }
         }

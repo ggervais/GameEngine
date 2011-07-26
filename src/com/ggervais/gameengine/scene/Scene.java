@@ -178,7 +178,7 @@ public class Scene extends Observable {
         this.sceneGraphRoot = new Node();
         //this.sceneGraphRoot.setLocalTransformation(rootTransform);
 
-        BillboardNode firstCubeNode = new BillboardNode(this.camera);
+        Node firstCubeNode = new Node();
         Node secondCubeNode = new Node();
         secondCubeNode.addChild(gCube2);
         secondCubeNode.addGlobalState(wireframeStateOn);
@@ -188,7 +188,7 @@ public class Scene extends Observable {
         firstCubeNode.addChild(secondCubeNode);
         firstCubeNode.setLocalTransformation(rootTransform);
 
-        BillboardNode quadNode = new BillboardNode(this.camera);
+        Node quadNode = new Node();
 
         QuadGeometry quad = new QuadGeometry();
         quadNode.addChild(quad);
@@ -217,7 +217,8 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5, 0, 1));
 
-        //this.sceneGraphRoot.addChild(firstCubeNode);
+        //this.sceneGraphRoot.addChild(new CubeGeometry());
+        this.sceneGraphRoot.addChild(firstCubeNode);
         //this.sceneGraphRoot.addChild(gCube3);
         //this.sceneGraphRoot.addChild(quadNode);
 
@@ -233,7 +234,7 @@ public class Scene extends Observable {
         //Node node = new Node();
         feController.setControllerObject(node);
         node.addController(feController);
-        this.sceneGraphRoot.addChild(node);
+        //this.sceneGraphRoot.addChild(node);
 	}
 	
 	public List<Texture> getTextures() {

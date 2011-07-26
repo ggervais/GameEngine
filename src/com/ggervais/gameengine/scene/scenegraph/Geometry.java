@@ -3,17 +3,21 @@ package com.ggervais.gameengine.scene.scenegraph;
 import com.ggervais.gameengine.geometry.primitives.*;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.math.Ray;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
+import com.ggervais.gameengine.render.DisplaySubsystem;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalStateType;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class Geometry extends Spatial {
     private static final int DEFAULT_NB_VERTICES_PER_FACE = 3;
+    private static final Logger log = Logger.getLogger(Geometry.class);
 
     private BoundingBox boundingBox;
     private BoundingSphere boundingSphere;

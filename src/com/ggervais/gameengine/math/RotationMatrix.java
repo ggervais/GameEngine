@@ -23,7 +23,7 @@ public class RotationMatrix extends Matrix4x4 {
 		updateMatrix();
 	}
 	
-	public void setYawPitchRow(float yaw, float pitch, float roll) {
+	public void setYawPitchRoll(float yaw, float pitch, float roll) {
 		this.yaw = yaw;
 		this.pitch = pitch;
 		this.roll = roll;

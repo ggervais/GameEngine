@@ -197,6 +197,14 @@
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/jinput" recursive="false" />
     </library>
+    <library name="jogl-2.0-linux-32-bits">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" recursive="false" />
+    </library>
     <library name="jogl-2.0-windows-32-bits">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/jar" />
@@ -204,14 +212,6 @@
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/jar" recursive="false" />
-    </library>
-    <library name="log4j">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/log4j" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/log4j" recursive="false" />
     </library>
     <library name="jogl-2.0-windows-64-bits">
       <CLASSES>
@@ -221,13 +221,13 @@
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-i586/jar" recursive="false" />
     </library>
-    <library name="jogl-2.0-linux-32-bits">
+    <library name="log4j">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" />
+        <root url="file://$PROJECT_DIR$/lib/log4j" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-linux-i586/jar" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/log4j" recursive="false" />
     </library>
   </component>
 </project>

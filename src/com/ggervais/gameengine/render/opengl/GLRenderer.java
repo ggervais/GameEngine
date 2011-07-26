@@ -20,10 +20,7 @@ import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.material.Material;
-import com.ggervais.gameengine.math.Matrix4x4;
-import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.RotationMatrix;
-import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.particle.Particle;
 import com.ggervais.gameengine.particle.ParticleEmitter;
 import com.ggervais.gameengine.particle.ParticleSubsystem;
@@ -323,6 +320,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 				}
 			}
 		gl.glEnd();
+
+        OpenGLUtils.drawBoundingBox(gl, geometry.getBoundingBox());
     }
 
 
@@ -442,8 +441,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         Matrix4x4 modelViewMatrix = Matrix4x4.createFromFloatArray(modelView, true);
         DisplaySubsystem.getInstance().setModelViewMatrix(modelViewMatrix);
 
-        System.out.println(modelViewMatrix);
-
         int[] viewport = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
 
@@ -470,6 +467,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     public void endRendering() {
 
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
+
+        Ray ray = DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
+        Point3D finalPoint = Point3D.add(ray.getOrigin(), ray.getDirection().multiplied(5));
+
+        //OpenGLUtils.drawBaseAxis(gl, finalPoint, 0.10f);
 
         gl.glFlush();
     }
