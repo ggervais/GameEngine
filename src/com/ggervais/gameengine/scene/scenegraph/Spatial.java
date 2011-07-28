@@ -6,7 +6,6 @@ import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
 import com.ggervais.gameengine.timing.Controller;
-import com.sun.xml.internal.messaging.saaj.util.transform.EfficientStreamingTransformer;
 
 import java.util.*;
 
@@ -175,6 +174,10 @@ public abstract class Spatial {
         }
     }
 
+    public Transformation getLocalTransformation() {
+        return this.localTransform;
+    }
+
     public void setLocalTransformation(Transformation localTransform) {
         this.localTransform = localTransform;
     }
@@ -185,7 +188,7 @@ public abstract class Spatial {
 
     public void addController(Controller controller) {
         if (controller.getControlledObject() == null) {
-            controller.setControllerObject(this);
+            controller.setControlledObject(this);
         }
         this.controllers.add(controller);
     }

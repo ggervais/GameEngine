@@ -13,6 +13,7 @@ import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.particle.*;
+import com.ggervais.gameengine.physics.MotionController;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
@@ -157,6 +158,9 @@ public class Scene extends Observable {
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
 		this.camera = new FreeFlyCamera();
 
+
+        // SceneGraph initialization
+
         WireframeState wireframeStateOn = new WireframeState(true);
         WireframeState wireframeStateOff = new WireframeState(false);
         ZBufferState zBufferState = new ZBufferState(true);
@@ -217,9 +221,12 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5, 0, 1));
 
+        MotionController controller = new MotionController(new Vector3D(0, -9.81f, 0), new Vector3D(0, 9.81f, 0));
+        firstCubeNode.addController(controller);
+
         //this.sceneGraphRoot.addChild(new CubeGeometry());
         this.sceneGraphRoot.addChild(firstCubeNode);
-        //this.sceneGraphRoot.addChild(gCube3);
+        this.sceneGraphRoot.addChild(gCube3);
         //this.sceneGraphRoot.addChild(quadNode);
 
         ParticleEmitterConfiguration configuration = new ParticleEmitterConfiguration();

@@ -21,11 +21,11 @@ public abstract class ParticleEmitterController extends Controller {
     }
 
     public void setControllerObject(Node node) {
-        super.setControllerObject(node);
+        super.setControlledObject(node);
     }
 
     @Override
-    public void setControllerObject(Spatial object) {
+    public void setControlledObject(Spatial object) {
         throw new IllegalArgumentException();
     }
 }

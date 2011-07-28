@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ShooterEmitter extends ParticleEmitter{
+public class ShooterEmitter extends ParticleEmitter {
 
     private static final Logger log = Logger.getLogger(ShooterEmitter.class);
 

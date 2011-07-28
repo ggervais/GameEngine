@@ -27,13 +27,16 @@ public abstract class Controller {
         this.lastUpdateTime = 0;
     }
 
-    public void setControllerObject(Spatial object) {
+    public void setControlledObject(Spatial object) {
         this.controlledSpatialObject = object;
     }
 
     public void update(long currentTime) {
         if (this.lastUpdateTime == 0) {
             this.lastUpdateTime = currentTime;
+        }
+        if (this.startTime == 0) {
+            this.startTime = currentTime;
         }
         doUpdate(currentTime);
         this.lastUpdateTime = currentTime;
