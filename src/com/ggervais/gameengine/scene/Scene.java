@@ -173,7 +173,7 @@ public class Scene extends Observable {
 
         Transformation rootTransform = new Transformation();
         rootTransform.setTranslation(1, 1, 1);
-        rootTransform.setRotation(0, 0, 0);
+        rootTransform.setRotation(fortyFiveDegrees, fortyFiveDegrees * 3, 0);
 
         Transformation third = new Transformation();
         third.setTranslation(-2, 0, 0);
@@ -221,7 +221,7 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5, 0, 1));
 
-        MotionController controller = new MotionController(new Vector3D(0, -9.81f, 0), new Vector3D(0, 9.81f, 0));
+        MotionController controller = new MotionController(new Vector3D(0, -0.981f, 0), 1, fortyFiveDegrees, fortyFiveDegrees);
         firstCubeNode.addController(controller);
 
         //this.sceneGraphRoot.addChild(new CubeGeometry());

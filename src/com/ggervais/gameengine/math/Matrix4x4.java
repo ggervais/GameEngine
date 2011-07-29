@@ -372,4 +372,8 @@ public class Matrix4x4 {
 
         log.info(testMatrix.inverse());
     }
+
+    public float[] getElements() {
+        return this.elements;
+    }
 }

@@ -77,10 +77,8 @@
       <file leaf-file-name="MotionController.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/physics/MotionController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="38" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="78" column="32" selection-start="3614" selection-end="3614" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -88,25 +86,34 @@
       <file leaf-file-name="Transformation.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Transformation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="28" selection-start="2122" selection-end="2122" vertical-scroll-proportion="0.0">
+            <state line="92" column="17" selection-start="3169" selection-end="3169" vertical-scroll-proportion="-4.12">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Scene.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RotationMatrix.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/RotationMatrix.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="167" column="6" selection-start="4875" selection-end="4875" vertical-scroll-proportion="0.61165047">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Matrix4x4.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="376" column="29" selection-start="13770" selection-end="13770" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Scene.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="217" column="38" selection-start="8223" selection-end="8223" vertical-scroll-proportion="0.35928145">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Spatial.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="177" column="35" selection-start="5568" selection-end="5568" vertical-scroll-proportion="-13.64">
+            <state line="175" column="72" selection-start="6784" selection-end="6784" vertical-scroll-proportion="-3.6">
               <folding />
             </state>
           </provider>
@@ -115,25 +122,7 @@
       <file leaf-file-name="Controller.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/timing/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="26" selection-start="1105" selection-end="1105" vertical-scroll-proportion="-8.4">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ShooterEmitter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ShooterEmitter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="41" selection-start="321" selection-end="321" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ParticleEmitter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ParticleEmitter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="41" selection-start="717" selection-end="717" vertical-scroll-proportion="0.0">
+            <state line="38" column="26" selection-start="1105" selection-end="1105" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -160,7 +149,16 @@
       <file leaf-file-name="Vector3D.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Vector3D.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="113" column="61" selection-start="2542" selection-end="2542" vertical-scroll-proportion="0.0">
+            <state line="133" column="63" selection-start="3041" selection-end="3041" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ShooterEmitter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ShooterEmitter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="41" selection-start="321" selection-end="321" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -180,9 +178,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/RotationMatrix.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/boundingvolumes/AxisAlignedBoundingBox.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/test/AxisAlignedBoundingBoxTests.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/test/BoundingBoxTests.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/boundingvolumes/BoundingBox.java" />
@@ -194,8 +189,11 @@
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ShooterEmitter.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/timing/Controller.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/MotionController.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Vector3D.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Transformation.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/MotionController.java" />
       </list>
     </option>
   </component>
@@ -356,9 +354,9 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -737,7 +735,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-5" width="1376" height="906" extended-state="6" />
+    <frame x="66" y="-5" width="1374" height="905" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -799,16 +797,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="185" column="0" selection-start="5627" selection-end="5627" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="311" column="60" selection-start="12029" selection-end="12029" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/physics/boundingvolumes/BoundingBox.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="62" selection-start="356" selection-end="356" vertical-scroll-proportion="0.0" />
@@ -821,86 +809,86 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Node.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="37" selection-start="795" selection-end="795" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="30" column="37" selection-start="795" selection-end="795" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/physics/collision/Collision.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="13" selection-start="151" selection-end="151" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="5" column="13" selection-start="151" selection-end="151" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ShooterEmitter.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="41" selection-start="321" selection-end="321" vertical-scroll-proportion="0.0">
+        <state line="177" column="35" selection-start="5568" selection-end="5568" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ParticleEmitter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="41" selection-start="717" selection-end="717" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="24" column="41" selection-start="717" selection-end="717" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/Particle.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/ShooterEmitter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="34" selection-start="1569" selection-end="1569" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/MathUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="35" selection-start="360" selection-end="360" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="10" column="41" selection-start="321" selection-end="321" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Vector3D.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="61" selection-start="2542" selection-end="2542" vertical-scroll-proportion="0.0">
+        <state line="133" column="63" selection-start="3041" selection-end="3041" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/Matrix4x4.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="376" column="29" selection-start="13770" selection-end="13770" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/timing/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="26" selection-start="1105" selection-end="1105" vertical-scroll-proportion="-8.4">
+        <state line="38" column="26" selection-start="1105" selection-end="1105" vertical-scroll-proportion="0.0">
           <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/particle/Particle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="34" selection-start="1569" selection-end="1569" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/MathUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="35" selection-start="360" selection-end="360" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Transformation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="28" selection-start="2122" selection-end="2122" vertical-scroll-proportion="0.0">
+        <state line="92" column="17" selection-start="3169" selection-end="3169" vertical-scroll-proportion="-4.12">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="177" column="35" selection-start="5568" selection-end="5568" vertical-scroll-proportion="-13.64">
+        <state line="175" column="72" selection-start="6784" selection-end="6784" vertical-scroll-proportion="-3.6">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/physics/MotionController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="38" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="78" column="32" selection-start="3614" selection-end="3614" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/math/RotationMatrix.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="217" column="38" selection-start="8223" selection-end="8223" vertical-scroll-proportion="0.35928145">
+        <state line="167" column="6" selection-start="4875" selection-end="4875" vertical-scroll-proportion="0.61165047">
           <folding />
         </state>
       </provider>

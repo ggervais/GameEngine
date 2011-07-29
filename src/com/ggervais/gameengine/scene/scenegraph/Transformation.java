@@ -62,10 +62,24 @@ public class Transformation {
         updateWorldMatrix();
     }
 
+    public void setTranslation(Vector3D translation) {
+        this.translationMatrix.setElement(1, 4, translation.x());
+        this.translationMatrix.setElement(2, 4, translation.y());
+        this.translationMatrix.setElement(3, 4, translation.z());
+        updateWorldMatrix();
+    }
+
     public void setScale(float x, float y, float z) {
         this.translationMatrix.setElement(1, 1, x);
         this.translationMatrix.setElement(2, 2, y);
         this.translationMatrix.setElement(3, 3, z);
+        updateWorldMatrix();
+    }
+
+    public void setScale(Vector3D scale) {
+        this.scaleMatrix.setElement(1, 1, scale.x());
+        this.scaleMatrix.setElement(2, 2, scale.y());
+        this.scaleMatrix.setElement(3, 3, scale.z());
         updateWorldMatrix();
     }
 
