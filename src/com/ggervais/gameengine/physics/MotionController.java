@@ -48,29 +48,24 @@ public class MotionController extends Controller {
     public void doUpdate(long currentTime) {
         long dt = currentTime - this.startTime;
         float dtSeconds = dt / 1000f;
-        Vector3D currentTranslation = Vector3D.zero();
-
-        Vector3D initialTranslation = this.initialTransformation.getTranslation();
 
         // Newton's laws of motion.
-        currentTranslation.x(initialTranslation.x() + this.initialVelocity.x() * dtSeconds + 0.5f * this.gravity.x() * (dtSeconds * dtSeconds));
-        currentTranslation.y(initialTranslation.y() + this.initialVelocity.y() * dtSeconds + 0.5f * this.gravity.y() * (dtSeconds * dtSeconds));
-        currentTranslation.z(initialTranslation.z() + this.initialVelocity.z() * dtSeconds + 0.5f * this.gravity.z() * (dtSeconds * dtSeconds));
-
-        Vector3D normalizedRotation = currentTranslation.copy().normalized();
+        Vector3D currentVelocity = Vector3D.add(this.initialVelocity, this.gravity.copy().multiplied(dtSeconds));
+        Vector3D currentTranslation = Vector3D.add(this.initialTransformation.getTranslation(), Vector3D.add(this.initialVelocity, currentVelocity).multiplied(0.5f * dtSeconds));
+        Vector3D normalizedRotation = currentVelocity.normalized();
 
         if (this.controlledSpatialObject != null) {
             Transformation transformation = this.controlledSpatialObject.getLocalTransformation();
             if (transformation != null) {
-                transformation.setTranslation(currentTranslation.x(), currentTranslation.y(), currentTranslation.z());
+                transformation.setTranslation(currentTranslation);
 
                 RotationMatrix initialRotation = this.initialTransformation.getRotationMatrix();
 
-                float theta = (float) Math.asin(normalizedRotation.y()); // elevation
-                float phi = (float) Math.atan2(normalizedRotation.x(), normalizedRotation.z());
+                float theta = (float) Math.atan2(normalizedRotation.y(), normalizedRotation.x()); // elevation
+                float phi = (float) Math.atan2(normalizedRotation.z(), normalizedRotation.x());
 
                 //float phi = (float) Math.acos(normalizedRotation.x() / (float) Math.cos(theta));   // spin
-
+                //phi = 0;
 
                 RotationMatrix diffMatrix = RotationMatrix.createFromXYZ(0, -phi, theta);
 

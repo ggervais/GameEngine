@@ -70,9 +70,9 @@ public class Transformation {
     }
 
     public void setScale(float x, float y, float z) {
-        this.translationMatrix.setElement(1, 1, x);
-        this.translationMatrix.setElement(2, 2, y);
-        this.translationMatrix.setElement(3, 3, z);
+        this.scaleMatrix.setElement(1, 1, x);
+        this.scaleMatrix.setElement(2, 2, y);
+        this.scaleMatrix.setElement(3, 3, z);
         updateWorldMatrix();
     }
 
