@@ -157,7 +157,7 @@ public class Scene extends Observable {
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
 		this.camera = new FreeFlyCamera();
-        this.camera.setPosition(new Point3D(0, 0, 50));
+        this.camera.setPosition(new Point3D(0, 0, 10));
 
 
         // SceneGraph initialization
@@ -223,7 +223,7 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5, 0, 1));
 
-        MotionController controller = new MotionController(new Vector3D(0, -9.81f, 0), 30, (float) Math.toRadians(70), 0);
+        MotionController controller = new MotionController(new Vector3D(0, -9.81f / 2, 0), 30, (float) Math.toRadians(70), -fortyFiveDegrees);
         firstCubeNode.addController(controller);
 
         //this.sceneGraphRoot.addChild(new CubeGeometry());

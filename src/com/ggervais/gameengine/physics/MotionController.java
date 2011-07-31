@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.physics;
 
+import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
@@ -61,11 +62,9 @@ public class MotionController extends Controller {
 
                 RotationMatrix initialRotation = this.initialTransformation.getRotationMatrix();
 
-                float theta = (float) Math.atan2(normalizedRotation.y(), normalizedRotation.x()); // elevation
-                float phi = (float) Math.atan2(normalizedRotation.z(), normalizedRotation.x());
-
-                //float phi = (float) Math.acos(normalizedRotation.x() / (float) Math.cos(theta));   // spin
-                //phi = 0;
+                float length = normalizedRotation.length();
+                float theta = (float) Math.asin(MathUtils.clamp(normalizedRotation.y() / length, -1, 1));
+                float phi = (float) Math.asin(MathUtils.clamp(normalizedRotation.z() / (length * (float) Math.cos(theta)), -1, 1));
 
                 RotationMatrix diffMatrix = RotationMatrix.createFromXYZ(0, -phi, theta);
 
