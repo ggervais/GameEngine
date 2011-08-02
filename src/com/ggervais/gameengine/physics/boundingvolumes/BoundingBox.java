@@ -36,8 +36,13 @@ public class BoundingBox {
     }
 
     public void transform(Transformation transformation) {
-        this.minCorner = transformation.getMatrix().mult(this.minCorner);
-        this.maxCorner = transformation.getMatrix().mult(this.maxCorner);
+
+        Point3D minCornerCopy = transformation.getMatrix().mult(this.minCorner);
+        Point3D maxCornerCopy = transformation.getMatrix().mult(this.maxCorner);
+        this.minCorner = new Point3D(Math.min(minCornerCopy.x(), maxCornerCopy.x()), Math.min(minCornerCopy.y(), maxCornerCopy.y()), Math.min(minCornerCopy.z(), maxCornerCopy.z()));
+        this.maxCorner = new Point3D(Math.max(minCornerCopy.x(), maxCornerCopy.x()), Math.max(minCornerCopy.y(), maxCornerCopy.y()), Math.max(minCornerCopy.z(), maxCornerCopy.z()));
+
+
     }
 
     public void transform(Matrix4x4 matrix) {
@@ -170,6 +175,10 @@ public class BoundingBox {
 
     public static BoundingBox copy(BoundingBox box) {
         return box.copy();
+    }
+
+    public String toString() {
+        return this.minCorner + " -> " + this.maxCorner;
     }
 }
 

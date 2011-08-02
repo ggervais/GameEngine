@@ -24,6 +24,7 @@ import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.particle.Particle;
 import com.ggervais.gameengine.particle.ParticleEmitter;
 import com.ggervais.gameengine.particle.ParticleSubsystem;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.*;
 import com.ggervais.gameengine.resource.Resource;
@@ -320,8 +321,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 				}
 			}
 		gl.glEnd();
-
-        //OpenGLUtils.drawBoundingBox(gl, geometry.getBoundingBox());
     }
 
 
@@ -376,6 +375,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void unbindTexture(Texture texture) {
         gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
+    }
+
+    @Override
+    public void drawBoundingBox(BoundingBox box, boolean isPicked) {
+        OpenGLUtils.drawBoundingBox(gl, box, isPicked);
     }
 
     public void reshape(GLAutoDrawable glDrawable, int x, int y, int width,	int height) {
@@ -466,12 +470,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void endRendering() {
 
+        OpenGLUtils.drawAxisGrid(gl, 50);
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
 
         Ray ray = DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
         Point3D finalPoint = Point3D.add(ray.getOrigin(), ray.getDirection().multiplied(5));
-
-        //OpenGLUtils.drawBaseAxis(gl, finalPoint, 0.10f);
 
         gl.glFlush();
     }

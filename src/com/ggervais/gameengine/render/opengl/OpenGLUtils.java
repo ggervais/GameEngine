@@ -112,7 +112,34 @@ public class OpenGLUtils {
 
 		gl.glPopMatrix();
 	}
-	
+
+    public static void drawAxisGrid(GL2 gl, int resolution) {
+        gl.glPushMatrix();
+        gl.glColor4f(1, 1, 1, 0.1f);
+
+        gl.glBegin(GL.GL_LINES);
+        for (int i = -resolution; i < resolution; i++) {
+            gl.glVertex3f(i, 0, -resolution);
+            gl.glVertex3f(i, 0, resolution);
+            gl.glVertex3f(-resolution, 0, i);
+            gl.glVertex3f(resolution, 0, i);
+
+            /*gl.glVertex3f(-resolution, i, 0);
+            gl.glVertex3f(resolution, i, 0);
+            gl.glVertex3f(i, -resolution, 0);
+            gl.glVertex3f(i, resolution, 0);
+
+            gl.glVertex3f(0, i, -resolution);
+            gl.glVertex3f(0, i, resolution);
+            gl.glVertex3f(0, -resolution, i);
+            gl.glVertex3f(0, resolution, i);*/
+        }
+        gl.glEnd();
+
+
+        gl.glPopMatrix();
+    }
+
 	public static void drawBaseAxis(GL2 gl, Point3D position, float scale) {
 		gl.glPushMatrix();
 		
@@ -182,7 +209,15 @@ public class OpenGLUtils {
         gl.glPopMatrix();
     }
 
-    public static void drawBoundingBox(GL2 gl, BoundingBox box) {
+    public static void drawBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {
+
+        drawAugmentedBoundingBox(gl, box, isPicked);
+
+
+        boolean shouldReturn = true;
+        if (shouldReturn) {
+            return;
+        }
 
         gl.glPushMatrix();
 
@@ -196,9 +231,12 @@ public class OpenGLUtils {
         Point3D seventhPoint = Point3D.add(fifthPoint, new Vector3D(0, 0, box.getDepth()));
         Point3D eighthPoint = box.getMaxCorner();
 
-
         gl.glBegin(GL.GL_LINES);
-            gl.glColor3f(1, 0, 0);
+            if (isPicked) {
+                gl.glColor3f(0, 1, 0);
+            } else {
+                gl.glColor3f(1, 0, 0);
+            }
 
             // First
             gl.glVertex3f(firstPoint.x(), firstPoint.y(), firstPoint.z());
@@ -249,6 +287,76 @@ public class OpenGLUtils {
             // Twelfth
             gl.glVertex3f(fourthPoint.x(), fourthPoint.y(), fourthPoint.z());
             gl.glVertex3f(seventhPoint.x(), seventhPoint.y(), seventhPoint.z());
+
+        gl.glEnd();
+
+        gl.glPopMatrix();
+    }
+
+    private static void drawAugmentedBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {
+
+        Point3D firstPoint = Point3D.sub(box.getMinCorner(), new Vector3D(0.1f, 0.1f, 0.1f));
+        Point3D secondPoint = Point3D.add(firstPoint, new Vector3D(box.getWidth() + 0.2f, 0, 0));
+        Point3D thirdPoint = Point3D.add(secondPoint, new Vector3D(0, 0, box.getDepth() + 0.2f));
+        Point3D fourthPoint = Point3D.add(thirdPoint, new Vector3D(-box.getWidth() - 0.2f, 0, 0));
+
+        Point3D fifthPoint = Point3D.add(firstPoint, new Vector3D(0, box.getHeight() + 0.2f, 0));
+        Point3D sixthPoint = Point3D.add(fifthPoint, new Vector3D(box.getWidth() + 0.2f, 0, 0));
+        Point3D seventhPoint = Point3D.add(fifthPoint, new Vector3D(0, 0, box.getDepth() + 0.2f));
+        Point3D eighthPoint = Point3D.add(box.getMaxCorner(), new Vector3D(0.1f, 0.1f, 0.1f));
+
+        gl.glPushMatrix();
+
+
+        gl.glBegin(GL.GL_LINES);
+
+            if (isPicked) {
+                gl.glColor3f(0, 1, 0);
+            } else {
+                gl.glColor3f(1, 0, 0);
+            }
+
+            // First
+            gl.glVertex3f(firstPoint.x(), firstPoint.y(), firstPoint.z());gl.glVertex3f(firstPoint.x() + 0.1f, firstPoint.y(), firstPoint.z());
+            gl.glVertex3f(firstPoint.x(), firstPoint.y(), firstPoint.z());gl.glVertex3f(firstPoint.x(), firstPoint.y() + 0.1f, firstPoint.z());
+            gl.glVertex3f(firstPoint.x(), firstPoint.y(), firstPoint.z());gl.glVertex3f(firstPoint.x(), firstPoint.y(), firstPoint.z() + 0.1f);
+
+            // Second
+            gl.glVertex3f(secondPoint.x(), secondPoint.y(), secondPoint.z());gl.glVertex3f(secondPoint.x() - 0.1f, secondPoint.y(), secondPoint.z());
+            gl.glVertex3f(secondPoint.x(), secondPoint.y(), secondPoint.z());gl.glVertex3f(secondPoint.x(), secondPoint.y() + 0.1f, secondPoint.z());
+            gl.glVertex3f(secondPoint.x(), secondPoint.y(), secondPoint.z());gl.glVertex3f(secondPoint.x(), secondPoint.y(), secondPoint.z() + 0.1f);
+
+            // Third
+            gl.glVertex3f(thirdPoint.x(), thirdPoint.y(), thirdPoint.z());gl.glVertex3f(thirdPoint.x() - 0.1f, thirdPoint.y(), thirdPoint.z());
+            gl.glVertex3f(thirdPoint.x(), thirdPoint.y(), thirdPoint.z());gl.glVertex3f(thirdPoint.x(), thirdPoint.y() + 0.1f, thirdPoint.z());
+            gl.glVertex3f(thirdPoint.x(), thirdPoint.y(), thirdPoint.z());gl.glVertex3f(thirdPoint.x(), thirdPoint.y(), thirdPoint.z() - 0.1f);
+
+            // Fourth
+            gl.glVertex3f(fourthPoint.x(), fourthPoint.y(), fourthPoint.z());gl.glVertex3f(fourthPoint.x() + 0.1f, fourthPoint.y(), fourthPoint.z());
+            gl.glVertex3f(fourthPoint.x(), fourthPoint.y(), fourthPoint.z());gl.glVertex3f(fourthPoint.x(), fourthPoint.y() + 0.1f, fourthPoint.z());
+            gl.glVertex3f(fourthPoint.x(), fourthPoint.y(), fourthPoint.z());gl.glVertex3f(fourthPoint.x(), fourthPoint.y(), fourthPoint.z() - 0.1f);
+
+
+            // Fifth
+            gl.glVertex3f(fifthPoint.x(), fifthPoint.y(), fifthPoint.z());gl.glVertex3f(fifthPoint.x() + 0.1f, fifthPoint.y(), fifthPoint.z());
+            gl.glVertex3f(fifthPoint.x(), fifthPoint.y(), fifthPoint.z());gl.glVertex3f(fifthPoint.x(), fifthPoint.y() - 0.1f, fifthPoint.z());
+            gl.glVertex3f(fifthPoint.x(), fifthPoint.y(), fifthPoint.z());gl.glVertex3f(fifthPoint.x(), fifthPoint.y(), fifthPoint.z() + 0.1f);
+
+            // Sixth
+            gl.glVertex3f(sixthPoint.x(), sixthPoint.y(), sixthPoint.z());gl.glVertex3f(sixthPoint.x() - 0.1f, sixthPoint.y(), sixthPoint.z());
+            gl.glVertex3f(sixthPoint.x(), sixthPoint.y(), sixthPoint.z());gl.glVertex3f(sixthPoint.x(), sixthPoint.y() - 0.1f, sixthPoint.z());
+            gl.glVertex3f(sixthPoint.x(), sixthPoint.y(), sixthPoint.z());gl.glVertex3f(sixthPoint.x(), sixthPoint.y(), sixthPoint.z() + 0.1f);
+
+            // Seventh
+            gl.glVertex3f(eighthPoint.x(), eighthPoint.y(), eighthPoint.z());gl.glVertex3f(eighthPoint.x() - 0.1f, eighthPoint.y(), eighthPoint.z());
+            gl.glVertex3f(eighthPoint.x(), eighthPoint.y(), eighthPoint.z());gl.glVertex3f(eighthPoint.x(), eighthPoint.y() - 0.1f, eighthPoint.z());
+            gl.glVertex3f(eighthPoint.x(), eighthPoint.y(), eighthPoint.z());gl.glVertex3f(eighthPoint.x(), eighthPoint.y(), eighthPoint.z() - 0.1f);
+
+            // Eighth
+            gl.glVertex3f(seventhPoint.x(), seventhPoint.y(), seventhPoint.z());gl.glVertex3f(seventhPoint.x() + 0.1f, seventhPoint.y(), seventhPoint.z());
+            gl.glVertex3f(seventhPoint.x(), seventhPoint.y(), seventhPoint.z());gl.glVertex3f(seventhPoint.x(), seventhPoint.y() - 0.1f, seventhPoint.z());
+            gl.glVertex3f(seventhPoint.x(), seventhPoint.y(), seventhPoint.z());gl.glVertex3f(seventhPoint.x(), seventhPoint.y(), seventhPoint.z() - 0.1f);
+
 
         gl.glEnd();
 

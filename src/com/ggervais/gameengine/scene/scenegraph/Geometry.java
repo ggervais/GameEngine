@@ -116,18 +116,31 @@ public class Geometry extends Spatial {
     }
 
     private void computeBoundingBox(Matrix4x4 transform) {
-        float minX = Float.MAX_VALUE;
+
+
+        // TODO fix precision
+
+        float minX = 999999;
+        float minY = 999999;
+        float minZ = 999999;
+
+        float maxX = -999999;
+        float maxY = -999999;
+        float maxZ = -999999;
+
+        /*float minX = Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
         float minZ = Float.MAX_VALUE;
 
         float maxX = Float.MIN_VALUE;
         float maxY = Float.MIN_VALUE;
-        float maxZ = Float.MIN_VALUE;
+        float maxZ = Float.MIN_VALUE;*/
 
         for (Face face: this.faces) {
             for (int i = 0; i < face.nbVertices(); i++) {
                 Vertex vertex = face.getVertex(i);
                 Point3D position = transform.mult(vertex.getPosition());
+
                 minX = Math.min(position.x(), minX);
                 minY = Math.min(position.y(), minY);
                 minZ = Math.min(position.z(), minZ);
@@ -147,13 +160,16 @@ public class Geometry extends Spatial {
     @Override
     public void updateWorldBound() {
 
+        this.isBoundingBoxDirty = true;
+
         if (this.isBoundingBoxDirty) {
-            computeBoundingBox(new Matrix4x4());
+            computeBoundingBox(this.worldTransform.getMatrix());
             this.isBoundingBoxDirty = false;
         }
 
         BoundingBox copyBox = this.modelBoundingBox.copy();
-        copyBox.transform(this.worldTransform);
+
+        //copyBox.transform(this.worldTransform);
         this.boundingBox = copyBox;
     }
 

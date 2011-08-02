@@ -174,11 +174,12 @@ public class Scene extends Observable {
 
         Transformation rootTransform = new Transformation();
         rootTransform.setTranslation(0, 0, 0);
-        rootTransform.setScale(10, 1, 1);
+        rootTransform.setScale(2, 1, 1);
         //rootTransform.setRotation(fortyFiveDegrees, fortyFiveDegrees * 3, 0);
 
         Transformation third = new Transformation();
         third.setTranslation(-2, 0, 0);
+        third.setRotation(fortyFiveDegrees, 0, fortyFiveDegrees);
         gCube3.setLocalTransformation(third);
 
         this.sceneGraphRoot = new Node();
@@ -208,7 +209,7 @@ public class Scene extends Observable {
         qt.setTranslation(-1, -1, -1);
         qt.setRotation(0, 2 * fortyFiveDegrees, 0);
         QuadGeometry gQuad2 = new QuadGeometry();
-        quadNode.addChild(gQuad2);
+        //quadNode.addChild(gQuad2);
 
         Effect fireEffect2 = new Effect();
         fireEffect2.setColor(new Color(255, 127, 0, 255));
@@ -223,7 +224,7 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5, 0, 1));
 
-        MotionController controller = new MotionController(new Vector3D(0, -9.81f / 2, 0), 30, (float) Math.toRadians(70), -fortyFiveDegrees);
+        MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
         //this.sceneGraphRoot.addChild(new CubeGeometry());

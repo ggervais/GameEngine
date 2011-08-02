@@ -19,6 +19,7 @@ public abstract class Spatial {
     private Effect effect;
     protected BoundingBox boundingBox;
     protected BoundingSphere boundingSphere;
+    private boolean pickedInCurrentUpdate; // TODO temporary code.
 
     public Spatial() {
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
@@ -28,6 +29,7 @@ public abstract class Spatial {
         this.effect = null; // Effect object is optional.
         this.boundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
         this.boundingSphere = new BoundingSphere(Point3D.zero(), 0);
+        this.pickedInCurrentUpdate = false;
     }
 
     public BoundingBox getBoundingBox() {
@@ -203,5 +205,14 @@ public abstract class Spatial {
 
     public List<Controller> getControllers() {
         return this.controllers;
+    }
+
+    // TODO temporary code.
+    public boolean isPickedInCurrentUpdate() {
+        return pickedInCurrentUpdate;
+    }
+
+    public void setPickedInCurrentUpdate(boolean pickedInCurrentUpdate) {
+        this.pickedInCurrentUpdate = pickedInCurrentUpdate;
     }
 }

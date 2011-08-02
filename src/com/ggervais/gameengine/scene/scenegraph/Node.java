@@ -77,4 +77,12 @@ public class Node extends Spatial {
     public int nbChildren() {
         return this.children.size();
     }
+
+    @Override
+    public void setPickedInCurrentUpdate(boolean value) {
+        super.setPickedInCurrentUpdate(value);
+        for (Spatial child : this.children) {
+            child.setPickedInCurrentUpdate(value);
+        }
+    }
 }

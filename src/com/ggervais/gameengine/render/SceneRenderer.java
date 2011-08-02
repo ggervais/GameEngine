@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.ggervais.gameengine.material.texture.Texture;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
@@ -80,11 +81,14 @@ public abstract class SceneRenderer implements Observer {
 
         if (geometry.getEffect() != null) {
             disableTextures(geometry.getEffect());
-
         }
+
         resetColor();
         restoreWorldTransformations();
 
+        // Bounding box is already in world space, so we must restore the previous world transformations
+        // before drawing it.
+        drawBoundingBox(geometry.getBoundingBox(), geometry.isPickedInCurrentUpdate());
     }
 
 
@@ -116,5 +120,6 @@ public abstract class SceneRenderer implements Observer {
     public abstract void resetColor();
     public abstract void bindTexture(Texture texture);
     public abstract void unbindTexture(Texture texture);
+    public abstract void drawBoundingBox(BoundingBox box, boolean isPicked); // TODO temporary code
 
 }
