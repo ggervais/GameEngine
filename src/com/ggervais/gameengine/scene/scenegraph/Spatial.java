@@ -5,6 +5,7 @@ import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
+import com.ggervais.gameengine.scene.scenegraph.visitor.SpatialVisitor;
 import com.ggervais.gameengine.timing.Controller;
 
 import java.util.*;
@@ -214,5 +215,9 @@ public abstract class Spatial {
 
     public void setPickedInCurrentUpdate(boolean pickedInCurrentUpdate) {
         this.pickedInCurrentUpdate = pickedInCurrentUpdate;
+    }
+
+    public void visit(SpatialVisitor visitor) {
+        visitor.visit(this);
     }
 }

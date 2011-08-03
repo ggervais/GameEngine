@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.geometry.*;
+import com.ggervais.gameengine.input.InputSubsystem;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
@@ -18,7 +19,9 @@ import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
+import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
 import com.ggervais.gameengine.timing.FountainEmitterController;
+import net.java.games.input.Component.Identifier.Key;
 import org.apache.log4j.Logger;
 
 public class Scene extends Observable {
@@ -30,6 +33,7 @@ public class Scene extends Observable {
     private List<DisplayableEntity> particles;
 	private List<Texture> textures;
     private Node sceneGraphRoot;
+    private boolean isPreviousSpaceDown = false;
 	
 	public Scene() {
 		this.entities = new ArrayList<DisplayableEntity>();
@@ -259,14 +263,15 @@ public class Scene extends Observable {
 		return this.particles;
 	}
 	
-	public void update() {
+	public void update(long currentTime) {
+
         for (DisplayableEntity e : this.entities) {
             Vector3D rot = e.getRotation();
             //rot.x(rot.x() + (float) Math.toRadians(1.0f));
             //rot.y(rot.y() + (float) Math.toRadians(1.0f));
             //rot.z(rot.z() + (float) Math.toRadians(1.0f));
         }
-		this.camera.update();
+        this.camera.update();
 	}
 	
 	public void render() {

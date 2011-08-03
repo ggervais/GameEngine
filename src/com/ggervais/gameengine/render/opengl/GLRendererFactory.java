@@ -9,9 +9,8 @@ import com.ggervais.gameengine.render.RendererFactory;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.Scene;
 
-public class GLRendererFactory extends RendererFactory {
+public class GLRendererFactory implements RendererFactory {
 	
-	@Override
 	public SceneRenderer buildRenderer(Scene scene) {
 		
 		GLRenderer renderer = new GLRenderer(scene, new GLCanvas());

@@ -10,9 +10,12 @@ import com.ggervais.gameengine.render.DisplaySubsystem;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import com.ggervais.gameengine.scene.scenegraph.Node;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
+import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
+import net.java.games.input.*;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
+import java.awt.Component;
 import java.awt.image.MemoryImageSource;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,10 +42,12 @@ public class Game {
 	private static final int QUANTUM = (int) (1000.0f / 60.0f); // About 16 or 17 milliseconds.
 	private static int WIDTH = 640;
 	private static int HEIGHT = 480;
+    private boolean isPreviousSpaceDown;
 	
 	private List<Subsystem> subsystems;
-	
-	public Game() {
+
+
+    public Game() {
 		init();
 	}
 	
@@ -86,12 +91,13 @@ public class Game {
 	
 	public void init() {
 		this.scene = new Scene();
-		this.renderer = new GLRendererFactory().buildRenderer(this.scene);
-		this.scene.init();
-		
-		initSubsystems();
-		initGUI();
-	}
+        this.renderer = new GLRendererFactory().buildRenderer(this.scene);
+        this.scene.init();
+        this.isPreviousSpaceDown = false;
+
+        initSubsystems();
+        initGUI();
+    }
 	
 	public void start() {
 		this.frame.setVisible(true);
@@ -138,7 +144,17 @@ public class Game {
         DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
         //log.info(DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera()));
 
-		this.scene.update();
+        try {
+            boolean isSpaceDown = InputSubsystem.getInstance().isKeyDown(net.java.games.input.Component.Identifier.Key.SPACE);
+            if (this.isPreviousSpaceDown && !isSpaceDown) {
+                this.scene.getSceneGraphRoot().visit(new PauseVisitor(currentTime));
+            }
+            this.isPreviousSpaceDown = isSpaceDown;
+        } catch(UninitializedSubsystemException use) {
+            log.fatal("InputSubsystem is uninitialized!");
+        }
+
+        this.scene.update(currentTime);
         Node root = this.scene.getSceneGraphRoot();
         root.updateGeometryState(currentTime, true);
         root.updateRenderState();

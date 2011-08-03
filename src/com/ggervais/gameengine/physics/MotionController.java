@@ -47,7 +47,7 @@ public class MotionController extends Controller {
 
     @Override
     public void doUpdate(long currentTime) {
-        long dt = currentTime - this.startTime;
+        long dt = currentTime - this.startTime - this.pauseOffset;
         float dtSeconds = dt / 1000f;
 
         // Newton's laws of motion.

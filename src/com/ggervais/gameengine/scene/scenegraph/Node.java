@@ -3,6 +3,7 @@ package com.ggervais.gameengine.scene.scenegraph;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalStateType;
+import com.ggervais.gameengine.scene.scenegraph.visitor.SpatialVisitor;
 
 import java.util.*;
 
@@ -83,6 +84,14 @@ public class Node extends Spatial {
         super.setPickedInCurrentUpdate(value);
         for (Spatial child : this.children) {
             child.setPickedInCurrentUpdate(value);
+        }
+    }
+
+    @Override
+    public void visit(SpatialVisitor visitor) {
+        super.visit(visitor);;
+        for (Spatial child : this.children) {
+            child.visit(visitor);
         }
     }
 }
