@@ -183,7 +183,7 @@ public class Scene extends Observable {
 
         Transformation third = new Transformation();
         third.setTranslation(-2, 0, 0);
-        third.setRotation(fortyFiveDegrees, 0, fortyFiveDegrees);
+        //third.setRotation(fortyFiveDegrees, 0, fortyFiveDegrees);
         gCube3.setLocalTransformation(third);
 
         this.sceneGraphRoot = new Node();

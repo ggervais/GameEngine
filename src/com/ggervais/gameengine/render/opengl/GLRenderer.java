@@ -467,14 +467,55 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         System.out.println("=====");     */
     }
 
+    private void drawCursor(GL2 gl) {
+        int w = (int) DisplaySubsystem.getInstance().getViewport().getWidth();
+        int h = (int) DisplaySubsystem.getInstance().getViewport().getHeight();
+
+        int cursorWidth = 20;
+        int cursorHeight = 20;
+
+        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glDisable(GL.GL_DEPTH_TEST);
+        gl.glDepthMask(false);
+
+        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+        gl.glOrthof(0, w, h, 0, -1, 1);
+        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+
+        gl.glBegin(GL2.GL_LINES);
+        gl.glColor4f(1, 0, 0, 1);
+        gl.glVertex2f(w / 2f - cursorWidth / 2f, h / 2f);
+        gl.glVertex2f(w / 2f + cursorWidth / 2f, h / 2f);
+        gl.glVertex2f(w / 2f, h / 2f - cursorHeight / 2f);
+        gl.glVertex2f(w / 2f, h / 2f + cursorHeight / 2f);
+        gl.glEnd();
+
+        gl.glPopMatrix();
+
+        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        gl.glDepthMask(true);
+    }
+
     @Override
     public void endRendering() {
+
 
         OpenGLUtils.drawAxisGrid(gl, 50);
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
 
         Ray ray = DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
         Point3D finalPoint = Point3D.add(ray.getOrigin(), ray.getDirection().multiplied(5));
+
+        drawCursor(gl);
 
         gl.glFlush();
     }

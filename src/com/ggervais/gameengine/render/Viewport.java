@@ -83,4 +83,8 @@ public class Viewport {
 
         return result;
     }
+
+    public String toString() {
+        return new Point3D(this.x, this.y, 0) + " -> " + new Vector3D(this.width, this.height, 0);
+    }
 }

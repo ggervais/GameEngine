@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,7 +67,9 @@ public class Game {
 		this.frame.setUndecorated(false);
 		this.frame.setFocusable(true);
 
-
+        BufferedImage cursorImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "blank cursor");
+        this.frame.getContentPane().setCursor(blankCursor);
 
 		Component canvas = this.renderer.getCanvas();
 		
