@@ -1,6 +1,10 @@
 package com.ggervais.gameengine.render.opengl;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.PixelGrabber;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.List;
 
@@ -27,6 +31,7 @@ import com.ggervais.gameengine.particle.ParticleSubsystem;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.*;
+import com.ggervais.gameengine.render.Font;
 import com.ggervais.gameengine.resource.Resource;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
@@ -488,12 +493,21 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glLoadIdentity();
 
         gl.glBegin(GL2.GL_LINES);
-        gl.glColor4f(1, 0, 0, 1);
-        gl.glVertex2f(w / 2f - cursorWidth / 2f, h / 2f);
-        gl.glVertex2f(w / 2f + cursorWidth / 2f, h / 2f);
-        gl.glVertex2f(w / 2f, h / 2f - cursorHeight / 2f);
-        gl.glVertex2f(w / 2f, h / 2f + cursorHeight / 2f);
+            gl.glColor4f(1, 0, 0, 1);
+            gl.glVertex2f(w / 2f - cursorWidth / 2f, h / 2f);
+            gl.glVertex2f(w / 2f + cursorWidth / 2f, h / 2f);
+            gl.glVertex2f(w / 2f, h / 2f - cursorHeight / 2f);
+            gl.glVertex2f(w / 2f, h / 2f + cursorHeight / 2f);
         gl.glEnd();
+
+        /*gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex3f(-0.5f * 100 + w / 2f, 0.5f * 100 + h / 2f, 0);
+            gl.glVertex3f(-0.5f * 100 + w / 2f, -0.5f * 100 + h / 2f, 0);
+            gl.glVertex3f(0.5f * 100 + w / 2f, -0.5f * 100 + h / 2f, 0);
+            gl.glVertex3f(0.5f * 100 + w / 2f, 0.5f * 100 + h / 2f, 0);
+        gl.glEnd();*/
+
+        OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Guillaume Gervais' Test Engine, now with dynamically generated text!");
 
         gl.glPopMatrix();
 

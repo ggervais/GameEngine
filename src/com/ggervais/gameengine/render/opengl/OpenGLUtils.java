@@ -10,10 +10,13 @@ import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
+import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
+import com.ggervais.gameengine.resource.ResourceSubsystem;
+import com.ggervais.gameengine.resource.ResourceType;
 import org.apache.log4j.Logger;
 
 public class OpenGLUtils {
@@ -465,4 +468,50 @@ public class OpenGLUtils {
         
 		return id;
 	}
+
+    public static void drawString(GL2 gl, Point3D position, String text) {
+        // This assumes that the appropriate projections and transformations have been made.
+        Material matAscii = (Material) ResourceSubsystem.getInstance().findResourceByTypeAndName(ResourceType.MATERIAL, "ascii");
+        Texture texture = matAscii.getTexture(0);
+
+        if (texture != null) {
+			gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+		}
+
+        //Vertex vertex1 = new Vertex(new Point3D(-0.5f, 0.5f, 0), Color.WHITE, 0, 0);
+        //Vertex vertex2 = new Vertex(new Point3D(-0.5f, -0.5f, 0), Color.WHITE, 0, 0);
+        //Vertex vertex3 = new Vertex(new Point3D(-0.5f + width, -0.5f, 0), Color.WHITE, 0, 0);
+        //Vertex vertex4 = new Vertex(new Point3D(-0.5f + width, 0.5f, 0), Color.WHITE, 0, 0);
+
+        gl.glColor4f(1, 1, 1, 1);
+        gl.glTranslatef(position.x(), position.y(), position.z());
+        int scale = 25;
+        gl.glBegin(GL2.GL_QUADS);
+
+            for (int i = 0; i < text.length(); i++) {
+                int index = (int) text.charAt(i);
+                int x = (int) Math.ceil(index / 16) - 1;
+                int y = (int) Math.ceil(index % 16);
+
+                float step = 0.0625f; // 1 / 16
+                float tu = y * step;
+                float tv = x * step;
+
+                gl.glTexCoord2f(tu, tv + step);
+                gl.glVertex3f(i * scale, scale, 0);
+
+                gl.glTexCoord2f(tu, tv);
+                gl.glVertex3f(i * scale, 0, 0);
+
+                gl.glTexCoord2f(tu + step, tv);
+                gl.glVertex3f((1 + i) * scale, 0, 0);
+
+                gl.glTexCoord2f(tu + step, tv + step);
+                gl.glVertex3f((1 + i) * scale, scale, 0);
+            }
+        gl.glEnd();
+
+        gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
+
+    }
 }

@@ -34,6 +34,21 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <line_breakpoints>
+      <breakpoint url="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java" line="474" class="com.ggervais.gameengine.render.opengl.OpenGLUtils" package="com.ggervais.gameengine.render.opengl">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </line_breakpoints>
     <breakpoint_any>
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -74,20 +89,40 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GLRendererFactory.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRendererFactory.java">
+      <file leaf-file-name="Scene.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="59" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
+            <state line="96" column="31" selection-start="3750" selection-end="3750" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GLRenderer.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="GLRenderer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="473" column="47" selection-start="17615" selection-end="17615" vertical-scroll-proportion="0.49832776">
+            <state line="509" column="126" selection-start="19049" selection-end="19049" vertical-scroll-proportion="-11.52">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TextureLoader.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/material/texture/TextureLoader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="74" column="58" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Font.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/Font.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="89" column="90" selection-start="2958" selection-end="2958" vertical-scroll-proportion="0.4494382">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -95,70 +130,43 @@
       <file leaf-file-name="OpenGLUtils.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="120" column="45" selection-start="3716" selection-end="3716" vertical-scroll-proportion="-3.6">
+            <state line="484" column="38" selection-start="18704" selection-end="18704" vertical-scroll-proportion="-4.24">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Game.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java">
+      <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Terrain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="65" selection-start="2606" selection-end="2606" vertical-scroll-proportion="0.0">
+            <state line="36" column="36" selection-start="1092" selection-end="1092" vertical-scroll-proportion="-0.2">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Scene.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
+      <file leaf-file-name="Spatial.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="191" column="40" selection-start="7488" selection-end="7488" vertical-scroll-proportion="0.0">
+            <state line="57" column="0" selection-start="1944" selection-end="1944" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GLU.class" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/jar/jogl.all-noawt.jar!/javax/media/opengl/glu/GLU.class">
+      <file leaf-file-name="QuadGeometry.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/QuadGeometry.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="154" column="16" selection-start="8849" selection-end="8849" vertical-scroll-proportion="-4.32">
+            <state line="32" column="98" selection-start="720" selection-end="1069" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DisplaySubsystem.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java">
+      <file leaf-file-name="FontProperties.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/FontProperties.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="26" selection-start="1117" selection-end="1117" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Viewport.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="54" selection-start="2172" selection-end="2172" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Subsystem.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/Subsystem.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="16" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MotionController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/physics/MotionController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="65" selection-start="2010" selection-end="2010" vertical-scroll-proportion="0.0">
+            <state line="7" column="23" selection-start="169" selection-end="169" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -178,22 +186,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Geometry.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/MotionController.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/timing/Controller.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/visitor/SpatialVisitor.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/visitor/UnpauseVisitor.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/visitor/PauseVisitor.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Node.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/RendererFactory.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRendererFactory.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/resource/ResourceType.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/AlphaController.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/FontProperties.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/material/texture/TextureLoader.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/Font.java" />
       </list>
     </option>
   </component>
@@ -362,6 +370,50 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GameEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GameEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gameengine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resource" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GameEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GameEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gameengine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="render" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Favorites" />
@@ -384,9 +436,9 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -394,11 +446,11 @@
       <recent name="com.ggervais.gameengine.geometry" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.ggervais.gameengine.render" />
       <recent name="com.ggervais.gameengine.scene.scenegraph" />
       <recent name="com.ggervais.gameengine.scene.scenegraph.renderstates" />
       <recent name="com.ggervais.gameengine.particle" />
       <recent name="com.ggervais.gameengine.resource" />
-      <recent name="com.ggervais.gameengine" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.ggervais.gameengine.timing" />
@@ -406,7 +458,7 @@
       <recent name="com.ggervais.gameengine.exception" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.GameEngine Test Application">
+  <component name="RunManager" selected="Application.Font">
     <configuration default="false" name="Matrix4x4Tests" type="JUnit" factoryName="JUnit" temporary="true">
       <extension name="coverage" enabled="false" merge="false" />
       <module name="GameEngine" />
@@ -692,16 +744,40 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="9">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.Matrix4x4Tests" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.com.ggervais.gameengine.math.test in GameEngine" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.BoundingBoxTests" />
-      <item index="3" class="java.lang.String" itemvalue="Application.GameEngine Test Application" />
-      <item index="4" class="java.lang.String" itemvalue="Application.test" />
-      <item index="5" class="java.lang.String" itemvalue="Application.Matrix inverse" />
-      <item index="6" class="java.lang.String" itemvalue="Application.Test picking" />
-      <item index="7" class="java.lang.String" itemvalue="Application.GameEngine Test Windows 64-bits" />
-      <item index="8" class="java.lang.String" itemvalue="Application.GameEngine Test Windows 32-bits" />
+    <configuration default="false" name="Font" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" />
+      <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.render.Font" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="GameEngine" />
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="35295" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="10">
+      <item index="0" class="java.lang.String" itemvalue="Application.GameEngine Test Application" />
+      <item index="1" class="java.lang.String" itemvalue="Application.test" />
+      <item index="2" class="java.lang.String" itemvalue="Application.Matrix inverse" />
+      <item index="3" class="java.lang.String" itemvalue="Application.Test picking" />
+      <item index="4" class="java.lang.String" itemvalue="Application.GameEngine Test Windows 64-bits" />
+      <item index="5" class="java.lang.String" itemvalue="Application.GameEngine Test Windows 32-bits" />
+      <item index="6" class="java.lang.String" itemvalue="Application.Font" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.Matrix4x4Tests" />
+      <item index="8" class="java.lang.String" itemvalue="JUnit.com.ggervais.gameengine.math.test in GameEngine" />
+      <item index="9" class="java.lang.String" itemvalue="JUnit.BoundingBoxTests" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -771,20 +847,20 @@
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.49868074" sideWeight="0.99245286" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3976222" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39709762" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32364598" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.323219" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31530344" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24981132" sideWeight="0.4762533" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32226416" sideWeight="0.5065963" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32226416" sideWeight="0.60290235" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4934037" sideWeight="0.0" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.49868074" sideWeight="0.99245286" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -828,36 +904,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/visitor/PauseVisitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="634" selection-end="634" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="221" column="0" selection-start="6813" selection-end="6813" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Node.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="34" selection-start="2433" selection-end="2433" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Camera.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="50" selection-start="749" selection-end="749" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/SceneRenderer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="45" selection-start="812" selection-end="812" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/RendererFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="25" selection-start="111" selection-end="111" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/Subsystem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="16" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0" />
@@ -868,59 +914,103 @@
         <state line="49" column="65" selection-start="2010" selection-end="2010" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/Viewport.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/resource/Resource.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="54" selection-start="2172" selection-end="2172" vertical-scroll-proportion="0.0">
+        <state line="4" column="17" selection-start="125" selection-end="125" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/jar/jogl.all-noawt.jar!/javax/media/opengl/glu/GLU.class">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/resource/ResourceType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="154" column="16" selection-start="8849" selection-end="8849" vertical-scroll-proportion="-4.32">
+        <state line="10" column="34" selection-start="260" selection-end="260" vertical-scroll-proportion="0.4213483">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/game/Game.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/material/texture/Texture.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="65" selection-start="2606" selection-end="2606" vertical-scroll-proportion="0.0">
+        <state line="39" column="57" selection-start="1001" selection-end="1001" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/timing/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="58" column="42" selection-start="1587" selection-end="1587" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/FontProperties.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="23" selection-start="169" selection-end="169" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/QuadGeometry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="98" selection-start="720" selection-end="1069" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="0" selection-start="1944" selection-end="1944" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/AlphaController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="24" selection-start="469" selection-end="469" vertical-scroll-proportion="0.57863504">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Terrain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="36" selection-start="1092" selection-end="1092" vertical-scroll-proportion="-0.2">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/material/texture/TextureLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="74" column="58" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="191" column="40" selection-start="7488" selection-end="7488" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRendererFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="59" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/DisplaySubsystem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="26" selection-start="1117" selection-end="1117" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="45" selection-start="3716" selection-end="3716" vertical-scroll-proportion="-3.6">
+        <state line="96" column="31" selection-start="3750" selection-end="3750" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="473" column="47" selection-start="17615" selection-end="17615" vertical-scroll-proportion="0.49832776">
+        <state line="509" column="126" selection-start="19049" selection-end="19049" vertical-scroll-proportion="-11.52">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="484" column="38" selection-start="18704" selection-end="18704" vertical-scroll-proportion="-4.24">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/Font.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="90" selection-start="2958" selection-end="2958" vertical-scroll-proportion="0.4494382">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

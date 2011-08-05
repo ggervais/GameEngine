@@ -58,6 +58,8 @@ public class Scene extends Observable {
         Texture texTerrain = TextureLoader.loadTexture("assets/textures/heightmap.jpg", true);
         Texture texFlare = TextureLoader.loadTexture("assets/textures/flare.png", 1, 3);
         Texture texShockwave = TextureLoader.loadTexture("assets/textures/shockwave.png");
+        Texture texTitle = TextureLoader.loadTextAsTexture("Guillaume Gervais' Test Game Engine");
+        Texture texAscii = TextureLoader.loadDefaultFontAsciiTexture();
 
         Material matGuillaume = new Material();
         matGuillaume.setName("gg");
@@ -87,6 +89,14 @@ public class Scene extends Observable {
         matShockwave.setName("shockwave");
         matShockwave.addTexture(texShockwave);
 
+        Material matTitle = new Material();
+        matTitle.setName("title");
+        matTitle.addTexture(texTitle);
+
+        Material matAscii = new Material();
+        matAscii.setName("ascii");
+        matAscii.addTexture(texAscii);
+
         ResourceSubsystem resourceSubsystem = ResourceSubsystem.getInstance();
         resourceSubsystem.addResource(matGuillaume);
         resourceSubsystem.addResource(matGraffiti);
@@ -95,6 +105,8 @@ public class Scene extends Observable {
         resourceSubsystem.addResource(matDebris);
         resourceSubsystem.addResource(matFlare);
         resourceSubsystem.addResource(matShockwave);
+        resourceSubsystem.addResource(matTitle);
+        resourceSubsystem.addResource(matAscii);
 
 		float fortyFiveDegrees = (float) Math.toRadians(45);
 
@@ -222,11 +234,14 @@ public class Scene extends Observable {
         gQuad2.setLocalTransformation(qt);
 
         Effect effect = new Effect();
-        effect.setColor(new Color(255, 0, 255, 255));
-        effect.addTexture(texFlare);
+        //effect.setColor(new Color(255, 0, 255, 255));
+        effect.addTexture(texTitle);
+
+        third.setScale(10, 1, 1);
+
         gCube3.setEffect(effect);
         gCube3.addGlobalState(zBufferState);
-        gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5, 0, 1));
+        gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
 
         MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);

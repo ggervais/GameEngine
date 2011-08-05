@@ -12,7 +12,7 @@ public class AlphaController extends Controller {
     private static Logger log = Logger.getLogger(AlphaController.class);
     private float startAlpha;
     private float endAlpha;
-    private float step;
+    private float stepInMs;
     private float currentAlpha;
 
     public AlphaController(Spatial controlledSpatialObject, long startTime, long duration, float startAlpha, float endAlpha) {
@@ -22,14 +22,14 @@ public class AlphaController extends Controller {
 
         this.currentAlpha = startAlpha;
 
-        this.step = (endAlpha - startAlpha) / duration;
+        this.stepInMs = (endAlpha - startAlpha) / duration;
     }
 
     @Override
     public void doUpdate(long currentTime) {
 
-        float diff = (float) (currentTime - this.lastUpdateTime);
-        this.currentAlpha += diff * this.step;
+        float diffInMs = (float) (currentTime - this.lastUpdateTime);
+        this.currentAlpha += diffInMs * this.stepInMs;
 
         Effect effect = this.controlledSpatialObject.getEffect();
         if (effect != null) {
@@ -38,6 +38,8 @@ public class AlphaController extends Controller {
             int g = originalColor.getGreen();
             int b = originalColor.getBlue();
             int a = MathUtils.clamp((int) Math.floor(this.currentAlpha * 255), 0, 255);
+
+            //log.info("Color: " + r + ", " + g + ", " + b + ", " + a);
 
             Color newColor = new Color(r, g, b, a);
             effect.setColor(newColor);

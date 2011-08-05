@@ -8,5 +8,5 @@ package com.ggervais.gameengine.resource;
  * To change this template use File | Settings | File Templates.
  */
 public enum ResourceType {
-    TEXTURE, MATERIAL, SOUND
+    TEXTURE, MATERIAL, SOUND, FONT
 }
