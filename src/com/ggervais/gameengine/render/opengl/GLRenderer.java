@@ -507,7 +507,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glVertex3f(0.5f * 100 + w / 2f, 0.5f * 100 + h / 2f, 0);
         gl.glEnd();*/
 
-        OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Guillaume Gervais' Test Engine, now with dynamically generated text!");
+        Point3D cameraPosition = this.scene.getCamera().getPosition();
+        //OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Guillaume Gervais' Test Engine!");
+        OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Camera position: " + String.format("(%.4f, %.4f, %.4f)", cameraPosition.x(), cameraPosition.y(), cameraPosition.z()));
 
         gl.glPopMatrix();
 

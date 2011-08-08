@@ -483,22 +483,28 @@ public class OpenGLUtils {
         //Vertex vertex3 = new Vertex(new Point3D(-0.5f + width, -0.5f, 0), Color.WHITE, 0, 0);
         //Vertex vertex4 = new Vertex(new Point3D(-0.5f + width, 0.5f, 0), Color.WHITE, 0, 0);
 
+        float aspectRatio = (float) texture.getWidth() / (float) texture.getHeight();
+
+        gl.glPushMatrix();
         gl.glColor4f(1, 1, 1, 1);
         gl.glTranslatef(position.x(), position.y(), position.z());
-        int scale = 25;
+        int scale = 20;
         gl.glBegin(GL2.GL_QUADS);
 
             for (int i = 0; i < text.length(); i++) {
                 int index = (int) text.charAt(i);
-                int x = (int) Math.ceil(index / 16) - 1;
-                int y = (int) Math.ceil(index % 16);
+                int x = index / 16;
+                int y = index % 16;
 
                 float step = 0.0625f; // 1 / 16
                 float tu = y * step;
                 float tv = x * step;
 
+                //tv = 0;
+                //tv = step * 4;
+
                 gl.glTexCoord2f(tu, tv + step);
-                gl.glVertex3f(i * scale, scale, 0);
+                gl.glVertex3f(i * scale, scale / aspectRatio, 0);
 
                 gl.glTexCoord2f(tu, tv);
                 gl.glVertex3f(i * scale, 0, 0);
@@ -507,11 +513,12 @@ public class OpenGLUtils {
                 gl.glVertex3f((1 + i) * scale, 0, 0);
 
                 gl.glTexCoord2f(tu + step, tv + step);
-                gl.glVertex3f((1 + i) * scale, scale, 0);
+                gl.glVertex3f((1 + i) * scale, scale / aspectRatio, 0);
             }
         gl.glEnd();
 
         gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
+        gl.glPopMatrix();
 
     }
 }

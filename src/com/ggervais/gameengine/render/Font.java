@@ -69,7 +69,7 @@ public class Font implements Resource {
             String individualCharacter = character + "";
             FontProperties properties = getFontPropertiesForText(individualCharacter);
             double width = properties.width;
-            double height = properties.ascent + properties.descent;//properties.height;
+            double height = properties.height;//properties.ascent + properties.descent;
 
             minWidth = Math.min(width, minWidth);
             maxWidth = Math.max(width, maxWidth);
@@ -77,13 +77,20 @@ public class Font implements Resource {
             maxHeight = Math.max(height, maxHeight);
         }
 
+        /*if (maxWidth < maxHeight) {
+            maxWidth = maxHeight;
+        } else if (maxHeight < maxWidth) {
+            maxHeight = maxWidth;
+        }*/
+
         double width = maxWidth * 16;
-        double height = maxHeight * 16;
-        this.asciiBitmap = new BufferedImage((int) Math.ceil(width), (int) Math.ceil(height), BufferedImage.TYPE_4BYTE_ABGR);
+        double height = maxHeight * 16 + 16 * 6;
+
+        this.asciiBitmap = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
 
         Graphics g = this.asciiBitmap.getGraphics();
         g.setFont(this.font);
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(0, 0, 0, 255));
         g.fillRect(0, 0, this.asciiBitmap.getWidth(), this.asciiBitmap.getHeight());
         g.setColor(Color.WHITE);
 
@@ -92,7 +99,7 @@ public class Font implements Resource {
                 char character = (char) ((i * 16) + j);
                 String individualCharacter = character + "";
                 int x = j * (int) Math.ceil(maxWidth);
-                int y = i * (int) Math.ceil(maxHeight);
+                int y = i * ((int) maxHeight + 6) + (int) maxHeight - 3;
                 g.drawString(individualCharacter + "", x, y);
             }
         }

@@ -59,7 +59,8 @@ public class Scene extends Observable {
         Texture texFlare = TextureLoader.loadTexture("assets/textures/flare.png", 1, 3);
         Texture texShockwave = TextureLoader.loadTexture("assets/textures/shockwave.png");
         Texture texTitle = TextureLoader.loadTextAsTexture("Guillaume Gervais' Test Game Engine");
-        Texture texAscii = TextureLoader.loadDefaultFontAsciiTexture();
+        Texture texAscii = TextureLoader.loadTexture("assets/textures/font.png");//TextureLoader.loadDefaultFontAsciiTexture();
+        //Texture texAscii = TextureLoader.loadDefaultFontAsciiTexture();
 
         Material matGuillaume = new Material();
         matGuillaume.setName("gg");
