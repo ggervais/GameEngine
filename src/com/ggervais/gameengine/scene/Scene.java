@@ -212,28 +212,6 @@ public class Scene extends Observable {
         //firstCubeNode.addChild(secondCubeNode);
         firstCubeNode.setLocalTransformation(rootTransform);
 
-        Node quadNode = new Node();
-
-        QuadGeometry quad = new QuadGeometry();
-        quadNode.addChild(quad);
-        Effect fireEffect = new Effect();
-
-        fireEffect.setColor(new Color(255, 127, 0, 255));
-        fireEffect.addTexture(texSmoke);
-        quad.setEffect(fireEffect);
-
-        Transformation qt = new Transformation();
-        qt.setTranslation(-1, -1, -1);
-        qt.setRotation(0, 2 * fortyFiveDegrees, 0);
-        QuadGeometry gQuad2 = new QuadGeometry();
-        //quadNode.addChild(gQuad2);
-
-        Effect fireEffect2 = new Effect();
-        fireEffect2.setColor(new Color(255, 127, 0, 255));
-        fireEffect2.addTexture(texSmoke);
-        gQuad2.setEffect(fireEffect2);
-        gQuad2.setLocalTransformation(qt);
-
         Effect effect = new Effect();
         //effect.setColor(new Color(255, 0, 255, 255));
         effect.addTexture(texTitle);
@@ -247,24 +225,13 @@ public class Scene extends Observable {
         MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
-        //this.sceneGraphRoot.addChild(new CubeGeometry());
+        ParticlesGeometry particles = new ParticlesGeometry(10, 20);
+
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(gCube3);
-        //this.sceneGraphRoot.addChild(quadNode);
 
-        ParticleEmitterConfiguration configuration = new ParticleEmitterConfiguration();
-        configuration.texture = texSmoke;
-        configuration.color = new Vector3D(1, 0.5f, 1);
-        configuration.startAlpha = 1;
-        configuration.particleLifeTimeInMs = 1000;
-        configuration.endAlpha = 0;
-        configuration.delayBetweenLaunchInMs = 1000;
-        FountainEmitterController feController = new FountainEmitterController(configuration, 1, fortyFiveDegrees, 1, 5);
-        Node node = new BillboardNode(this.camera);
-        //Node node = new Node();
-        feController.setControllerObject(node);
-        node.addController(feController);
-        //this.sceneGraphRoot.addChild(node);
+        this.sceneGraphRoot.addChild(particles);
+
 	}
 	
 	public List<Texture> getTextures() {
