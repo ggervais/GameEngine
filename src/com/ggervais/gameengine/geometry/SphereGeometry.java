@@ -78,8 +78,8 @@ public class SphereGeometry extends Geometry {
 				this.indexBuffer.addIndex(third);
 				this.indexBuffer.addIndex(fourth);*/
 				
-				this.faces.add(face1);
-				this.faces.add(face2);
+				addFace(face1);
+				addFace(face2);
 				
 				index++;
 			}

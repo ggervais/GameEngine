@@ -171,12 +171,12 @@ public class CubeGeometry extends Geometry {
 		face6.addTextureCoords(texture01);
 		face6.addTextureCoords(texture11);
 		
-		this.faces.add(face1);
-		this.faces.add(face2);
-		this.faces.add(face3);
-		this.faces.add(face4);
-		this.faces.add(face5);
-		this.faces.add(face6);
+		addFace(face1);
+		addFace(face2);
+		addFace(face3);
+		addFace(face4);
+		addFace(face5);
+		addFace(face6);
 	}
 
 }

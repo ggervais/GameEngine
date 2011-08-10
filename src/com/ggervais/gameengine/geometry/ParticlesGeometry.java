@@ -3,7 +3,10 @@ package com.ggervais.gameengine.geometry;
 import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
+import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.math.RotationMatrix;
+import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.Camera;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
@@ -20,6 +23,8 @@ public class ParticlesGeometry extends Geometry {
     private List<Point3D> positions;
     private List<Float> sizes;
     private static Random random = new Random();
+    private int nbActive;
+    private int nbParticles;
 
     public ParticlesGeometry(int nbParticles, float radius) {
         super(3);
@@ -27,6 +32,21 @@ public class ParticlesGeometry extends Geometry {
         this.sizes = new ArrayList<Float>();
         generateStartPositions(nbParticles, radius);
         generateEmptyVertices();
+        this.nbActive = nbParticles;
+        this.nbParticles = nbParticles;
+    }
+
+    public int getNbParticles() {
+        return nbParticles;
+    }
+
+    public int getNbActive() {
+        return this.nbActive;
+    }
+
+    public void setNbActive(int nbActive) {
+        this.nbActive = nbActive;
+        setNbFaces(this.nbActive * 2);
     }
 
     @Override
@@ -54,12 +74,26 @@ public class ParticlesGeometry extends Geometry {
             face2.addVertex(new Vertex());
             face2.addTextureCoords(new TextureCoords());
 
-            this.faces.add(face1);
-            this.faces.add(face2);
+            addFace(face1);
+            addFace(face2);
         }
     }
 
     private void generateParticles(Camera camera) {
+
+        // Should be RotationMatrix, but this works too.
+        Matrix4x4 transposedRotation = this.worldTransform.getRotationMatrix().transposed();
+
+        Vector3D cameraUp = camera.getUp();
+        Vector3D cameraDirection = camera.getDirection();
+
+        Vector3D direction = cameraDirection.normalized();
+        Vector3D right = Vector3D.crossProduct(cameraUp, direction).normalized();
+        Vector3D up = Vector3D.crossProduct(direction, right).normalized();
+
+        Vector3D directionPrime = transposedRotation.mult(direction);
+        Vector3D rightPrime = transposedRotation.mult(right);
+        Vector3D upPrime = transposedRotation.mult(up);
 
         TextureCoords texture00 = new TextureCoords(0, 0);
 		TextureCoords texture10 = new TextureCoords(1, 0);
@@ -72,13 +106,21 @@ public class ParticlesGeometry extends Geometry {
             Point3D position = positions.get(i);
             float size = this.sizes.get(i);
 
-            Face face1 = this.faces.get(faceCounter);
-            Face face2 = this.faces.get(faceCounter + 1);
+            Face face1 = getFace(faceCounter);
+            Face face2 = getFace(faceCounter + 1);
 
-            Point3D p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
+            float halfSize = size * 0.5f;
+
+            Point3D p1 = Point3D.add(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
+            Point3D p2 = Point3D.sub(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
+            Point3D p3 = Point3D.sub(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
+            Point3D p4 = Point3D.add(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
+
+
+            /*Point3D p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
             Point3D p2 = new Point3D((-0.5f + position.x()) * size, (-0.5f + position.y()) * size , position.z() * size);
             Point3D p3 = new Point3D((0.5f + position.x()) * size, (-0.5f + position.y()) * size, position.z() * size);
-            Point3D p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);
+            Point3D p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);*/
 
             face1.getVertex(0).setPosition(p1);
             face1.getTextureCoords(0).setTu(texture00.getTextureU());
@@ -122,4 +164,13 @@ public class ParticlesGeometry extends Geometry {
         }
     }
 
+    public void setPosition(int i, Point3D position) {
+        if (i >= 0 && i < this.positions.size()) {
+            this.positions.set(i, position);
+        }
+    }
+
+    public Point3D getPosition(int i) {
+        return this.positions.get(i);
+    }
 }

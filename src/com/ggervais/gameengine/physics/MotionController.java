@@ -13,15 +13,25 @@ public class MotionController extends Controller {
     private Vector3D gravity; // In m/s^2
     private Vector3D initialVelocity; // In m/s
     private Transformation initialTransformation;
+    private boolean rotateWhileMoving;
 
     public MotionController(Vector3D gravity, float speed, float theta, float phi) {
-        this(gravity, Vector3D.createFromPolarCoordinates(speed, theta, phi));
+        this(gravity, Vector3D.createFromPolarCoordinates(speed, theta, phi), true);
+    }
+
+    public MotionController(Vector3D gravity, float speed, float theta, float phi, boolean rotateWhileMoving) {
+        this(gravity, Vector3D.createFromPolarCoordinates(speed, theta, phi), rotateWhileMoving);
     }
 
     public MotionController(Vector3D gravity, Vector3D initialVelocity) {
+        this(gravity, initialVelocity, true);
+    }
+
+    public MotionController(Vector3D gravity, Vector3D initialVelocity, boolean rotateWhileMoving) {
         this.gravity = gravity;
         this.initialVelocity = initialVelocity;
         this.initialTransformation = new Transformation();
+        this.rotateWhileMoving = rotateWhileMoving;
     }
 
     @Override
@@ -72,7 +82,9 @@ public class MotionController extends Controller {
                 tempMatrix.mult(diffMatrix);
                 tempMatrix.mult(initialRotation);
 
-                transformation.setRotationMatrix(tempMatrix);
+                if (this.rotateWhileMoving) {
+                    transformation.setRotationMatrix(tempMatrix);
+                }
             }
         }
     }

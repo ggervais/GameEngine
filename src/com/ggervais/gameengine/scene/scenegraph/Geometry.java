@@ -1,10 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.primitives.*;
-import com.ggervais.gameengine.math.Matrix4x4;
-import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.Ray;
-import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.DisplaySubsystem;
@@ -23,7 +20,8 @@ public class Geometry extends Spatial {
 	protected IndexBuffer indexBuffer;
 	protected TextureBuffer textureBuffer; // Per face texture coordinates.
 	protected int nbVerticesPerFace;
-	protected List<Face> faces;
+	private List<Face> faces;
+    protected int nbFaces;
 
     private BoundingBox modelBoundingBox;
     boolean isBoundingBoxDirty;
@@ -46,11 +44,34 @@ public class Geometry extends Spatial {
         this.isBoundingSphereDirty = true;
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
         this.modelBoundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
+        this.nbFaces = 0;
 	}
 
-	public List<Face> getFaces() {
-		return this.faces;
-	}
+
+    public void addFace(Face face) {
+        this.faces.add(face);
+        resetNbFaces();
+    }
+
+    public void setNbFaces(int nbFaces) {
+        this.nbFaces = MathUtils.clamp(nbFaces, 0, this.faces.size());
+    }
+
+    public Face getFace(int index) {
+        if (index < 0 || index > this.faces.size() - 1) {
+            return null;
+        }
+
+        return this.faces.get(index);
+    }
+
+    public int getNbFaces() {
+        return this.nbFaces;
+    }
+
+    public void resetNbFaces() {
+        this.nbFaces = this.faces.size();
+    }
 
 	public VertexBuffer getVertexBuffer() {
 		return this.vertexBuffer;

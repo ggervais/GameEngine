@@ -245,6 +245,104 @@ public class Matrix4x4 {
 		return matrixArray;
 	}
 
+    public Matrix4x4 transposed() {
+
+        float[] c1 = new float[4];
+        c1[0] = getElement(1, 1);
+        c1[1] = getElement(1, 2);
+        c1[2] = getElement(1, 3);
+        c1[3] = getElement(1, 4);
+
+        float[] c2 = new float[4];
+        c2[0] = getElement(2, 1);
+        c2[1] = getElement(2, 2);
+        c2[2] = getElement(2, 3);
+        c2[3] = getElement(2, 4);
+
+        float[] c3 = new float[4];
+        c3[0] = getElement(3, 1);
+        c3[1] = getElement(3, 2);
+        c3[2] = getElement(3, 3);
+        c3[3] = getElement(3, 4);
+
+        float[] c4 = new float[4];
+        c4[0] = getElement(4, 1);
+        c4[1] = getElement(4, 2);
+        c4[2] = getElement(4, 3);
+        c4[3] = getElement(4, 4);
+
+        Matrix4x4 newMatrix = new Matrix4x4();
+
+        newMatrix.setElement(1, 1, c1[0]);
+        newMatrix.setElement(2, 1, c1[1]);
+        newMatrix.setElement(3, 1, c1[2]);
+        newMatrix.setElement(4, 1, c1[3]);
+
+        newMatrix.setElement(1, 2, c2[0]);
+        newMatrix.setElement(2, 2, c2[1]);
+        newMatrix.setElement(3, 2, c2[2]);
+        newMatrix.setElement(4, 2, c2[3]);
+
+        newMatrix.setElement(1, 3, c3[0]);
+        newMatrix.setElement(2, 3, c3[1]);
+        newMatrix.setElement(3, 3, c3[2]);
+        newMatrix.setElement(4, 3, c3[3]);
+
+        newMatrix.setElement(1, 4, c4[0]);
+        newMatrix.setElement(2, 4, c4[1]);
+        newMatrix.setElement(3, 4, c4[2]);
+        newMatrix.setElement(4, 4, c4[3]);
+
+        return newMatrix;
+    }
+
+    public void transpose() {
+
+        float[] c1 = new float[4];
+        c1[0] = getElement(1, 1);
+        c1[1] = getElement(1, 2);
+        c1[2] = getElement(1, 3);
+        c1[3] = getElement(1, 4);
+
+        float[] c2 = new float[4];
+        c2[0] = getElement(2, 1);
+        c2[1] = getElement(2, 2);
+        c2[2] = getElement(2, 3);
+        c2[3] = getElement(2, 4);
+
+        float[] c3 = new float[4];
+        c3[0] = getElement(3, 1);
+        c3[1] = getElement(3, 2);
+        c3[2] = getElement(3, 3);
+        c3[3] = getElement(3, 4);
+
+        float[] c4 = new float[4];
+        c4[0] = getElement(4, 1);
+        c4[1] = getElement(4, 2);
+        c4[2] = getElement(4, 3);
+        c4[3] = getElement(4, 4);
+
+        setElement(1, 1, c1[0]);
+        setElement(2, 1, c1[1]);
+        setElement(3, 1, c1[2]);
+        setElement(4, 1, c1[3]);
+
+        setElement(1, 2, c2[0]);
+        setElement(2, 2, c2[1]);
+        setElement(3, 2, c2[2]);
+        setElement(4, 2, c2[3]);
+
+        setElement(1, 3, c3[0]);
+        setElement(2, 3, c3[1]);
+        setElement(3, 3, c3[2]);
+        setElement(4, 3, c3[3]);
+
+        setElement(1, 4, c4[0]);
+        setElement(2, 4, c4[1]);
+        setElement(3, 4, c4[2]);
+        setElement(4, 4, c4[3]);
+    }
+
     public Matrix4x4 copy() {
         Matrix4x4 newMatrix = new Matrix4x4();
         for (int i = 1; i < 4; i++) {

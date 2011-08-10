@@ -303,8 +303,12 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         }
 
 		gl.glBegin(glPrimitiveType);
-			for(int i = 0; i < geometry.getFaces().size(); i++) {
-				Face face = geometry.getFaces().get(i);
+			for(int i = 0; i < geometry.getNbFaces(); i++) {
+				Face face = geometry.getFace(i);
+
+                if (face == null) {
+                    continue;
+                }
 
 				for (int vi = 0; vi < face.nbVertices(); vi++) {
 

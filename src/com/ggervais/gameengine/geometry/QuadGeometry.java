@@ -50,7 +50,7 @@ public class QuadGeometry extends Geometry {
         face.addVertex(vertex4);
         face.addTextureCoords(texture10);
 
-        this.faces.add(face);
+       addFace(face);
     }
 
 }

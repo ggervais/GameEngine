@@ -225,7 +225,14 @@ public class Scene extends Observable {
         MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
-        ParticlesGeometry particles = new ParticlesGeometry(10, 20);
+        ParticlesGeometry particles = new ParticlesGeometry(10, 15);
+        Transformation particleTransformation = new Transformation();
+        particleTransformation.setTranslation(25, 25, 25);
+        particles.setLocalTransformation(particleTransformation);
+        particles.setNbActive(5);
+
+        ParticleController particleController = new ParticleController(new Vector3D(0, -0.0981f, 0), 0, 0, 0);
+        particles.addController(particleController);
 
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(gCube3);
