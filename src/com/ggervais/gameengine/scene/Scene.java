@@ -228,8 +228,8 @@ public class Scene extends Observable {
         ParticlesGeometry particles = new ParticlesGeometry(10, 15);
         Transformation particleTransformation = new Transformation();
         particleTransformation.setTranslation(25, 25, 25);
-        particles.setLocalTransformation(particleTransformation);
-        particles.setNbActive(5);
+        //particles.setLocalTransformation(particleTransformation);
+        //particles.setNbActive(5);
 
         ParticleController particleController = new ParticleController(new Vector3D(0, -0.0981f, 0), 0, 0, 0);
         particles.addController(particleController);

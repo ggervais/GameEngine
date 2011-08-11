@@ -13,11 +13,13 @@ import java.util.Random;
 
 public class ParticleController extends MotionController {
 
-    public static Random random = new Random();
-    public List<Vector3D> particleVelocities;
+    private static Random random = new Random();
+    private List<Vector3D> particleVelocities;
+    private Vector3D systemGravity;
 
     public ParticleController(Vector3D gravity, float speed, float theta, float phi) {
-        super(gravity, speed, theta, phi, false);
+        super(Vector3D.zero(), speed, theta, phi, false);
+        this.systemGravity = gravity;
         this.particleVelocities = new ArrayList<Vector3D>();
     }
 
@@ -32,7 +34,7 @@ public class ParticleController extends MotionController {
                 for (int i = 0; i < particles.getNbParticles(); i++) {
                     float speed = this.random.nextFloat() * 5f;
                     float theta = this.random.nextFloat() * (float) Math.toRadians(45);
-                    float phi = this.random.nextFloat() * (float) Math.toRadians(45);
+                    float phi = this.random.nextFloat() * (float) Math.toRadians(360);
                     this.particleVelocities.add(Vector3D.createFromPolarCoordinates(speed, theta, phi));
                 }
 
@@ -47,11 +49,21 @@ public class ParticleController extends MotionController {
         // This updates particle system's motion (inherited from MotionController).
         super.doUpdate(currentTime);
 
+        float diffInSeconds = (currentTime - this.lastUpdateTime) / 1000f;
+
         // This updates each particle with its velocity.
         ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
         for (int i = 0; i < particles.getNbActive(); i++) {
             // Update particle position.
-            Point3D position = particles.getPosition(i);
+            if (i < this.particleVelocities.size()) {
+                Vector3D velocity = this.particleVelocities.get(i);
+                if (velocity != null) {
+                    Point3D position = particles.getPosition(i);
+                    position.add(velocity.multiplied(diffInSeconds));
+
+                    velocity.add(this.systemGravity.multiplied(diffInSeconds));
+                }
+            }
         }
     }
 }
