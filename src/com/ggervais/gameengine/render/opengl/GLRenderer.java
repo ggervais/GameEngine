@@ -29,7 +29,6 @@ import com.ggervais.gameengine.particle.ParticleSubsystem;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.*;
-import com.ggervais.gameengine.render.Font;
 import com.ggervais.gameengine.resource.Resource;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
@@ -300,7 +299,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
 
-        resetColor();
 		gl.glBegin(glPrimitiveType);
             VertexBuffer vertexBuffer = geometry.getVertexBuffer();
             IndexBuffer indexBuffer = geometry.getIndexBuffer();
@@ -311,6 +309,12 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
                     Vertex vertex = vertexBuffer.getVertex(index);
                     Point3D vertexPosition = vertex.getPosition();
+
+
+                    if (effect != null) {
+                        Color color = effect.getColor(index);
+                        gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+                    }
 
                     TextureCoords coords = null;
                     try {

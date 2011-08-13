@@ -6,6 +6,9 @@ import com.ggervais.gameengine.math.Ray;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BoundingBox {
 	private Point3D minCorner;
 	private Point3D maxCorner;
@@ -37,12 +40,56 @@ public class BoundingBox {
 
     public void transform(Transformation transformation) {
 
-        Point3D minCornerCopy = transformation.getMatrix().mult(this.minCorner);
+        float width = getWidth();
+        float height = getHeight();
+        float depth = getDepth();
+
+        Point3D corner1 = this.minCorner;
+        Point3D corner2 = Point3D.add(this.minCorner, new Vector3D(width, 0, 0));
+        Point3D corner3 = Point3D.add(this.minCorner, new Vector3D(width, 0, depth));
+        Point3D corner4 = Point3D.add(this.minCorner, new Vector3D(0, 0, depth));
+
+        Point3D corner5 = Point3D.add(this.minCorner, new Vector3D(0, height, 0));
+        Point3D corner6 = Point3D.add(this.minCorner, new Vector3D(0, height, depth));
+        Point3D corner7 = Point3D.add(this.minCorner, new Vector3D(width, 0, depth));
+        Point3D corner8 = this.maxCorner;
+
+        List<Point3D> corners = new ArrayList<Point3D>();
+        corners.add(transformation.getMatrix().mult(corner1));
+        corners.add(transformation.getMatrix().mult(corner2));
+        corners.add(transformation.getMatrix().mult(corner3));
+        corners.add(transformation.getMatrix().mult(corner4));
+        corners.add(transformation.getMatrix().mult(corner5));
+        corners.add(transformation.getMatrix().mult(corner6));
+        corners.add(transformation.getMatrix().mult(corner7));
+        corners.add(transformation.getMatrix().mult(corner8));
+
+        float minX = 9999999;
+        float minY = 9999999;
+        float minZ = 9999999;
+
+        float maxX = -9999999;
+        float maxY = -9999999;
+        float maxZ = -9999999;
+
+        for (int i = 0; i < corners.size(); i++) {
+            Point3D p = corners.get(i);
+            minX = Math.min(minX, p.x());
+            minY = Math.min(minY, p.y());
+            minZ = Math.min(minZ, p.z());
+
+            maxX = Math.max(maxX, p.x());
+            maxY = Math.max(maxY, p.y());
+            maxZ = Math.max(maxZ, p.z());
+        }
+
+        /*Point3D minCornerCopy = transformation.getMatrix().mult(this.minCorner);
         Point3D maxCornerCopy = transformation.getMatrix().mult(this.maxCorner);
         this.minCorner = new Point3D(Math.min(minCornerCopy.x(), maxCornerCopy.x()), Math.min(minCornerCopy.y(), maxCornerCopy.y()), Math.min(minCornerCopy.z(), maxCornerCopy.z()));
-        this.maxCorner = new Point3D(Math.max(minCornerCopy.x(), maxCornerCopy.x()), Math.max(minCornerCopy.y(), maxCornerCopy.y()), Math.max(minCornerCopy.z(), maxCornerCopy.z()));
+        this.maxCorner = new Point3D(Math.max(minCornerCopy.x(), maxCornerCopy.x()), Math.max(minCornerCopy.y(), maxCornerCopy.y()), Math.max(minCornerCopy.z(), maxCornerCopy.z()));*/
 
-
+        this.minCorner = new Point3D(minX, minY, minZ);
+        this.maxCorner = new Point3D(maxX, maxY, maxZ);
     }
 
     public void transform(Matrix4x4 matrix) {

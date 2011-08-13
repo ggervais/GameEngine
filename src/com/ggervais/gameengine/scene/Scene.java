@@ -225,17 +225,22 @@ public class Scene extends Observable {
         MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
+        Effect particlesEffect = new Effect();
+        particlesEffect.setColor(Color.PINK);
+
         ParticlesGeometry particles = new ParticlesGeometry(10, 0);
+        particles.setEffect(particlesEffect);
         Transformation particleTransformation = new Transformation();
         particleTransformation.setTranslation(25, 25, 25);
+
         //particles.setLocalTransformation(particleTransformation);
         //particles.setNbActive(5);
 
         ParticleController particleController = new ParticleController(new Vector3D(0, -0.0981f, 0), 0, 0, 0);
         particles.addController(particleController);
 
-        //this.sceneGraphRoot.addChild(new QuadGeometry());
-        //this.sceneGraphRoot.addChild(firstCubeNode);
+        this.sceneGraphRoot.addChild(new QuadGeometry());
+        this.sceneGraphRoot.addChild(firstCubeNode);
 
         this.sceneGraphRoot.addChild(particles);
 

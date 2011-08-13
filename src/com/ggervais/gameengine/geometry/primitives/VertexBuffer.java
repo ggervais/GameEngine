@@ -14,6 +14,10 @@ public class VertexBuffer {
         resetNbVertices();
 	}
 
+    public int getRealSize() {
+        return this.vertices.size();
+    }
+
     private void resetNbVertices() {
         this.nbVertices = this.vertices.size();
     }

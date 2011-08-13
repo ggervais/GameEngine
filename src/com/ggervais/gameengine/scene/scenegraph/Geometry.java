@@ -175,6 +175,15 @@ public class Geometry extends Spatial {
 
     @Override
     public void setEffect(Effect effect) {
+
+        int size = this.vertexBuffer.getRealSize();
+
+        effect.resetColorList();
+        effect.initializeColors(size);
+        for (int i = 0; i < size; i++) {
+            effect.setColor(i, effect.getColor());
+        }
+
         super.setEffect(effect);
     }
 
@@ -182,7 +191,6 @@ public class Geometry extends Spatial {
     public void updateWorldBound() {
 
         this.isBoundingBoxDirty = true;
-
         if (this.isBoundingBoxDirty) {
             computeBoundingBox(this.worldTransform.getMatrix());
             this.isBoundingBoxDirty = false;

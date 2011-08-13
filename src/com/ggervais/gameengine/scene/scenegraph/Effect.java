@@ -14,20 +14,30 @@ public class Effect {
     private List<Vector3D> textureMinBounds;
     private List<Vector3D> textureMaxBounds;
     private static final Random random = new Random();
+    private List<Color> colors;
 
     public Effect() {
         this.color = Color.WHITE;
         this.textures = new ArrayList<Texture>();
         this.textureMinBounds = new ArrayList<Vector3D>();
         this.textureMaxBounds = new ArrayList<Vector3D>();
+        this.colors = new ArrayList<Color>();
     }
 
     public void setColor(Color color) {
         this.color = color;
     }
 
+    public void setColor(int i, Color color) {
+        this.colors.set(i, color);
+    }
+
     public Color getColor() {
         return this.color;
+    }
+
+    public Color getColor(int i) {
+        return this.colors.get(i);
     }
 
     public int nbTextures() {
@@ -61,5 +71,15 @@ public class Effect {
 
     public void clearTextures() {
         this.textures.clear();
+    }
+
+    public void resetColorList() {
+        this.colors.clear();
+    }
+
+    public void initializeColors(int size) {
+        for (int i = 0; i < size; i++) {
+            this.colors.add(Color.WHITE);
+        }
     }
 }

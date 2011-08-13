@@ -73,7 +73,6 @@ public abstract class SceneRenderer implements Observer {
         setWorldTransformations(geometry.getWorldTransformation());
 
         if (geometry.getEffect() != null) {
-            setColor(geometry.getEffect().getColor());
             enableTextures(geometry.getEffect());
         }
 
