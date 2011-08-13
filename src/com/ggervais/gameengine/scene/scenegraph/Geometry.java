@@ -24,10 +24,10 @@ public class Geometry extends Spatial {
     protected int nbFaces;
 
     private BoundingBox modelBoundingBox;
-    boolean isBoundingBoxDirty;
-    boolean isBoundingSphereDirty;
+    private boolean isBoundingBoxDirty;
+    private boolean isBoundingSphereDirty;
 
-    private Map<GlobalStateType, GlobalState> globalStates;
+   private Map<GlobalStateType, GlobalState> globalStates;
 
 	public Geometry() {
 		this(DEFAULT_NB_VERTICES_PER_FACE); // Defaults to triangles.
@@ -47,6 +47,9 @@ public class Geometry extends Spatial {
         this.nbFaces = 0;
 	}
 
+    public void setBoundingBoxDirty(boolean dirty) {
+        this.isBoundingBoxDirty = dirty;
+    }
 
     public void addFace(Face face) {
         this.faces.add(face);
@@ -190,15 +193,15 @@ public class Geometry extends Spatial {
     @Override
     public void updateWorldBound() {
 
-        this.isBoundingBoxDirty = true;
+        //this.isBoundingBoxDirty = true;
         if (this.isBoundingBoxDirty) {
-            computeBoundingBox(this.worldTransform.getMatrix());
+            computeBoundingBox(new Matrix4x4());
             this.isBoundingBoxDirty = false;
         }
 
         BoundingBox copyBox = this.modelBoundingBox.copy();
 
-        //copyBox.transform(this.worldTransform);
+        copyBox.transform(this.worldTransform);
         this.boundingBox = copyBox;
     }
 

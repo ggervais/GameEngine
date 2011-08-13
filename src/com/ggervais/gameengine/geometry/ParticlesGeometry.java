@@ -103,6 +103,8 @@ public class ParticlesGeometry extends Geometry {
 
     private void generateParticles(Camera camera) {
 
+        this.setBoundingBoxDirty(true);
+
         // Should be RotationMatrix, but this works too.
         Matrix4x4 transposedRotation = this.worldTransform.getRotationMatrix().transposed();
 
