@@ -218,14 +218,14 @@ public class Scene extends Observable {
 
         third.setScale(10, 1, 1);
 
-        gCube3.setEffect(effect);
+        //gCube3.setEffect(effect);
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
 
         MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
-        ParticlesGeometry particles = new ParticlesGeometry(10, 15);
+        ParticlesGeometry particles = new ParticlesGeometry(10, 0);
         Transformation particleTransformation = new Transformation();
         particleTransformation.setTranslation(25, 25, 25);
         //particles.setLocalTransformation(particleTransformation);
@@ -234,8 +234,8 @@ public class Scene extends Observable {
         ParticleController particleController = new ParticleController(new Vector3D(0, -0.0981f, 0), 0, 0, 0);
         particles.addController(particleController);
 
-        this.sceneGraphRoot.addChild(firstCubeNode);
-        this.sceneGraphRoot.addChild(gCube3);
+        //this.sceneGraphRoot.addChild(new QuadGeometry());
+        //this.sceneGraphRoot.addChild(firstCubeNode);
 
         this.sceneGraphRoot.addChild(particles);
 

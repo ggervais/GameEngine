@@ -20,17 +20,19 @@ public class ArrowGeometry extends Geometry {
 		Vertex vertex3 = new Vertex(new Point3D(0.75f, 0.25f, 0), Color.GREEN, 0, 0);
 		Vertex vertex4 = new Vertex(new Point3D(0.75f, -0.25f, 0), Color.GREEN, 0, 0);
 
-        Face face1 = new Face();
-        face1.addVertex(vertex1);
-        face1.addVertex(vertex2);
+        this.vertexBuffer.addVertex(vertex1);
+        this.vertexBuffer.addVertex(vertex2);
+        this.vertexBuffer.addVertex(vertex3);
+        this.vertexBuffer.addVertex(vertex4);
 
-        Face face2 = new Face();
-        face2.addVertex(vertex2);
-        face2.addVertex(vertex3);
+        this.indexBuffer.addIndex(0);
+        this.indexBuffer.addIndex(1);
 
-        Face face3 = new Face();
-        face3.addVertex(vertex2);
-        face3.addVertex(vertex4);
+        this.indexBuffer.addIndex(1);
+        this.indexBuffer.addIndex(2);
+
+        this.indexBuffer.addIndex(1);
+        this.indexBuffer.addIndex(4);
 	}
 
 }

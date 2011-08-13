@@ -99,16 +99,15 @@ public class Geometry extends Spatial {
         float sumZ = 0;
 
         int nbVertices = 0;
-        for (Face face: this.faces) {
-            for (int i = 0; i < face.nbVertices(); i++) {
-                Vertex vertex = face.getVertex(i);
-                Point3D position = transform.mult(vertex.getPosition());
-                sumX += position.x();
-                sumY += position.y();
-                sumZ += position.z();
 
-                nbVertices++;
-            }
+        for (int i = 0; i < this.vertexBuffer.size(); i++) {
+            Vertex vertex = this.vertexBuffer.getVertex(i);
+            Point3D position = transform.mult(vertex.getPosition());
+            sumX += position.x();
+            sumY += position.y();
+            sumZ += position.z();
+
+            nbVertices++;
         }
 
         float averageX = sumX / nbVertices;
@@ -118,14 +117,12 @@ public class Geometry extends Spatial {
         Point3D center = new Point3D(averageX, averageY, averageZ);
 
         float radiusSquared = Float.MIN_VALUE;
-        for (Face face: this.faces) {
-            for (int i = 0; i < face.nbVertices(); i++) {
-                Vertex vertex = face.getVertex(i);
-                Point3D position = transform.mult(vertex.getPosition());
+        for (int i = 0; i < this.vertexBuffer.size(); i++) {
+            Vertex vertex = this.vertexBuffer.getVertex(i);
+            Point3D position = transform.mult(vertex.getPosition());
 
-                Vector3D diff = position.sub(center);
-                radiusSquared = Math.max(diff.lengthSquared(), radiusSquared);
-            }
+            Vector3D diff = position.sub(center);
+            radiusSquared = Math.max(diff.lengthSquared(), radiusSquared);
         }
 
         // Only compute sqrt at the end.
@@ -157,18 +154,16 @@ public class Geometry extends Spatial {
         float maxY = Float.MIN_VALUE;
         float maxZ = Float.MIN_VALUE;*/
 
-        for (Face face: this.faces) {
-            for (int i = 0; i < face.nbVertices(); i++) {
-                Vertex vertex = face.getVertex(i);
-                Point3D position = transform.mult(vertex.getPosition());
+        for (int i = 0; i < this.vertexBuffer.size(); i++) {
+            Vertex vertex = this.vertexBuffer.getVertex(i);
+            Point3D position = transform.mult(vertex.getPosition());
 
-                minX = Math.min(position.x(), minX);
-                minY = Math.min(position.y(), minY);
-                minZ = Math.min(position.z(), minZ);
-                maxX = Math.max(position.x(), maxX);
-                maxY = Math.max(position.y(), maxY);
-                maxZ = Math.max(position.z(), maxZ);
-            }
+            minX = Math.min(position.x(), minX);
+            minY = Math.min(position.y(), minY);
+            minZ = Math.min(position.z(), minZ);
+            maxX = Math.max(position.x(), maxX);
+            maxY = Math.max(position.y(), maxY);
+            maxZ = Math.max(position.z(), maxZ);
         }
 
         Point3D minCorner = new Point3D(minX, minY, minZ);
@@ -176,6 +171,11 @@ public class Geometry extends Spatial {
         BoundingBox box = new BoundingBox(minCorner, maxCorner);
 
         this.modelBoundingBox = box;
+    }
+
+    @Override
+    public void setEffect(Effect effect) {
+        super.setEffect(effect);
     }
 
     @Override

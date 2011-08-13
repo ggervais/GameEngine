@@ -28,16 +28,16 @@ public class CubeGeometry extends Geometry {
 		Vertex vertex7 = new Vertex(new Point3D(-0.5f, -0.5f, -0.5f), Color.RED, 1, 0);
 		Vertex vertex8 = new Vertex(new Point3D(0.5f, -0.5f, -0.5f), Color.RED, 1, 1);
 		
-		/*this.vertexBuffer.addVertex(new Vertex(new Point3D(0.5f, 0.5f, 0.5f), Color.RED, 0, 0));
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(-0.5f, 0.5f, 0.5f), Color.RED, 0, 1));
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(-0.5f, -0.5f, 0.5f), Color.RED, 1, 0));
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(0.5f, -0.5f, 0.5f), Color.RED, 1, 1));
-		
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(0.5f, 0.5f, -0.5f), Color.RED, 0, 0));
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(-0.5f, 0.5f, -0.5f), Color.RED, 0, 1));
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(-0.5f, -0.5f, -0.5f), Color.RED, 1, 0));
-		this.vertexBuffer.addVertex(new Vertex(new Point3D(0.5f, -0.5f, -0.5f), Color.RED, 1, 1));
-		
+		this.vertexBuffer.addVertex(vertex1);
+		this.vertexBuffer.addVertex(vertex2);
+        this.vertexBuffer.addVertex(vertex3);
+        this.vertexBuffer.addVertex(vertex4);
+
+        this.vertexBuffer.addVertex(vertex5);
+		this.vertexBuffer.addVertex(vertex6);
+        this.vertexBuffer.addVertex(vertex7);
+        this.vertexBuffer.addVertex(vertex8);
+
 		this.indexBuffer.addIndex(0);
 		this.indexBuffer.addIndex(1);
 		this.indexBuffer.addIndex(2);
@@ -98,7 +98,7 @@ public class CubeGeometry extends Geometry {
 		this.textureBuffer.addCoords(0, 0);
 		this.textureBuffer.addCoords(0, 1);
 		this.textureBuffer.addCoords(1, 1);
-		*/
+
 		
 		TextureCoords texture00 = new TextureCoords(0, 0);
 		TextureCoords texture10 = new TextureCoords(1, 0);

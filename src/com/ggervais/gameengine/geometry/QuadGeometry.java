@@ -37,6 +37,23 @@ public class QuadGeometry extends Geometry {
 		TextureCoords texture01 = new TextureCoords(0, 1);
 		TextureCoords texture11 = new TextureCoords(1, 1);
 
+        this.vertexBuffer.addVertex(vertex1);
+        this.textureBuffer.addCoords(texture00);
+
+        this.vertexBuffer.addVertex(vertex2);
+        this.textureBuffer.addCoords(texture01);
+
+        this.vertexBuffer.addVertex(vertex3);
+        this.textureBuffer.addCoords(texture11);
+
+        this.vertexBuffer.addVertex(vertex4);
+        this.textureBuffer.addCoords(texture10);
+
+        this.indexBuffer.addIndex(0);
+        this.indexBuffer.addIndex(1);
+        this.indexBuffer.addIndex(2);
+        this.indexBuffer.addIndex(3);
+
         Face face = new Face();
         face.addVertex(vertex1);
         face.addTextureCoords(texture00);
@@ -50,7 +67,7 @@ public class QuadGeometry extends Geometry {
         face.addVertex(vertex4);
         face.addTextureCoords(texture10);
 
-       addFace(face);
+        addFace(face);
     }
 
 }

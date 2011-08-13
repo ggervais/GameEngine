@@ -15,12 +15,26 @@ public class ParticleController extends MotionController {
 
     private static Random random = new Random();
     private List<Vector3D> particleVelocities;
+    private List<Long> timesAdded;
     private Vector3D systemGravity;
+    private int initialParticlesStartIndex;
+    private int decayTimeInMs;
+
+    public ParticleController(Vector3D gravity, float speed, float theta, float phi, int decayTimeInMs) {
+        super(Vector3D.zero(), speed, theta, phi, false);
+        this.systemGravity = gravity;
+        this.particleVelocities = new ArrayList<Vector3D>();
+        this.timesAdded = new ArrayList<Long>();
+        this.initialParticlesStartIndex = 0;
+        this.decayTimeInMs = decayTimeInMs;
+    }
 
     public ParticleController(Vector3D gravity, float speed, float theta, float phi) {
         super(Vector3D.zero(), speed, theta, phi, false);
         this.systemGravity = gravity;
         this.particleVelocities = new ArrayList<Vector3D>();
+        this.initialParticlesStartIndex = 0;
+        this.timesAdded = new ArrayList<Long>();
     }
 
     @Override
@@ -29,6 +43,7 @@ public class ParticleController extends MotionController {
             if (controlledObject instanceof ParticlesGeometry) {
                 this.controlledSpatialObject = controlledObject;
                 this.particleVelocities.clear();
+                this.timesAdded.clear();
 
                 ParticlesGeometry particles = (ParticlesGeometry) controlledObject;
                 for (int i = 0; i < particles.getNbParticles(); i++) {
@@ -36,6 +51,7 @@ public class ParticleController extends MotionController {
                     float theta = this.random.nextFloat() * (float) Math.toRadians(45);
                     float phi = this.random.nextFloat() * (float) Math.toRadians(360);
                     this.particleVelocities.add(Vector3D.createFromPolarCoordinates(speed, theta, phi));
+                    this.timesAdded.add(System.currentTimeMillis()); // This should do it for now. Eventually we should have a centralized time source.
                 }
 
             } else {

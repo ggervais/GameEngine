@@ -57,7 +57,9 @@ public class ParticlesGeometry extends Geometry {
     }
 
     private void generateEmptyVertices() {
+        int vertexCounter = 0;
         for (int i = 0; i < positions.size(); i++) {
+
             Face face1 = new Face();
             face1.addVertex(new Vertex());
             face1.addTextureCoords(new TextureCoords());
@@ -76,6 +78,26 @@ public class ParticlesGeometry extends Geometry {
 
             addFace(face1);
             addFace(face2);
+
+            this.vertexBuffer.addVertex(new Vertex());
+            this.vertexBuffer.addVertex(new Vertex());
+            this.vertexBuffer.addVertex(new Vertex());
+            this.vertexBuffer.addVertex(new Vertex());
+
+            this.textureBuffer.addCoords(new TextureCoords());
+            this.textureBuffer.addCoords(new TextureCoords());
+            this.textureBuffer.addCoords(new TextureCoords());
+            this.textureBuffer.addCoords(new TextureCoords());
+
+            this.indexBuffer.addIndex(vertexCounter);
+            this.indexBuffer.addIndex(vertexCounter + 1);
+            this.indexBuffer.addIndex(vertexCounter + 2);
+
+            this.indexBuffer.addIndex(vertexCounter + 2);
+            this.indexBuffer.addIndex(vertexCounter + 3);
+            this.indexBuffer.addIndex(vertexCounter);
+
+            vertexCounter += 4;
         }
     }
 
@@ -88,8 +110,8 @@ public class ParticlesGeometry extends Geometry {
         Vector3D cameraDirection = camera.getDirection();
 
         Vector3D direction = cameraDirection.normalized();
-        Vector3D right = Vector3D.crossProduct(cameraUp, direction).normalized();
-        Vector3D up = Vector3D.crossProduct(direction, right).normalized();
+        Vector3D right = Vector3D.crossProduct(direction, cameraUp).normalized();
+        Vector3D up = Vector3D.crossProduct(right, direction).normalized();
 
         Vector3D directionPrime = transposedRotation.mult(direction);
         Vector3D rightPrime = transposedRotation.mult(right);
@@ -100,54 +122,52 @@ public class ParticlesGeometry extends Geometry {
 		TextureCoords texture01 = new TextureCoords(0, 1);
 		TextureCoords texture11 = new TextureCoords(1, 1);
 
-        int faceCounter = 0;
+        int positionCounter = 0;
         for (int i = 0; i < positions.size(); i++) {
 
             Point3D position = positions.get(i);
             float size = this.sizes.get(i);
 
-            Face face1 = getFace(faceCounter);
-            Face face2 = getFace(faceCounter + 1);
-
             float halfSize = size * 0.5f;
 
+            // This is the inverse of the book, but it works...
             Point3D p1 = Point3D.add(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
             Point3D p2 = Point3D.sub(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
             Point3D p3 = Point3D.sub(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
             Point3D p4 = Point3D.add(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
 
+            //Point3D p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
+            //Point3D p2 = new Point3D((-0.5f + position.x()) * size, (-0.5f + position.y()) * size , position.z() * size);
+            //Point3D p3 = new Point3D((0.5f + position.x()) * size, (-0.5f + position.y()) * size, position.z() * size);
+            //Point3D p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);
 
-            /*Point3D p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
-            Point3D p2 = new Point3D((-0.5f + position.x()) * size, (-0.5f + position.y()) * size , position.z() * size);
-            Point3D p3 = new Point3D((0.5f + position.x()) * size, (-0.5f + position.y()) * size, position.z() * size);
-            Point3D p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);*/
+            Vertex vertex1 = this.vertexBuffer.getVertex(positionCounter);
+            Vertex vertex2 = this.vertexBuffer.getVertex(positionCounter + 1);
+            Vertex vertex3 = this.vertexBuffer.getVertex(positionCounter + 2);
+            Vertex vertex4 = this.vertexBuffer.getVertex(positionCounter + 3);
 
-            face1.getVertex(0).setPosition(p1);
-            face1.getTextureCoords(0).setTu(texture00.getTextureU());
-            face1.getTextureCoords(0).setTv(texture00.getTextureV());
+            TextureCoords tc1 = this.textureBuffer.getCoords(positionCounter);
+            TextureCoords tc2 = this.textureBuffer.getCoords(positionCounter + 1);
+            TextureCoords tc3 = this.textureBuffer.getCoords(positionCounter + 2);
+            TextureCoords tc4 = this.textureBuffer.getCoords(positionCounter + 3);
 
-            face1.getVertex(1).setPosition(p2);
-            face1.getTextureCoords(1).setTu(texture01.getTextureU());
-            face1.getTextureCoords(1).setTv(texture01.getTextureV());
+            vertex1.setPosition(p1);
+            tc1.setTu(texture00.getTextureU());
+            tc1.setTv(texture00.getTextureV());
 
-            face1.getVertex(2).setPosition(p4);
-            face1.getTextureCoords(2).setTu(texture10.getTextureU());
-            face1.getTextureCoords(2).setTv(texture10.getTextureV());
+            vertex2.setPosition(p2);
+            tc2.setTu(texture01.getTextureU());
+            tc2.setTv(texture01.getTextureV());
 
+            vertex3.setPosition(p3);
+            tc3.setTu(texture11.getTextureU());
+            tc3.setTv(texture11.getTextureV());
 
-            face2.getVertex(0).setPosition(p4);
-            face2.getTextureCoords(0).setTu(texture10.getTextureU());
-            face2.getTextureCoords(0).setTv(texture10.getTextureV());
+            vertex4.setPosition(p4);
+            tc4.setTu(texture10.getTextureU());
+            tc4.setTv(texture10.getTextureV());
 
-            face2.getVertex(1).setPosition(p2);
-            face2.getTextureCoords(1).setTu(texture01.getTextureU());
-            face2.getTextureCoords(1).setTv(texture01.getTextureV());
-
-            face2.getVertex(2).setPosition(p3);
-            face2.getTextureCoords(2).setTu(texture11.getTextureU());
-            face2.getTextureCoords(2).setTv(texture11.getTextureV());
-
-            faceCounter += 2;
+            positionCounter += 4;
         }
     }
 

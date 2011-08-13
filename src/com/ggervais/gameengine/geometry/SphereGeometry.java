@@ -9,8 +9,8 @@ import java.awt.*;
 
 public class SphereGeometry extends Geometry {
 
-	private static int DEFAULT_RINGS_WIDTH = 32;
-	private static int DEFAULT_RINGS_HEIGHT = 32;
+	private static int DEFAULT_RINGS_WIDTH = 20;
+	private static int DEFAULT_RINGS_HEIGHT = 20;
 
 	private int nbRingsWidth;
 	private int nbRingsHeight;
@@ -69,14 +69,19 @@ public class SphereGeometry extends Geometry {
 				face2.addVertex(firstVertex);
 				face2.addVertex(thirdVertex);
 				face2.addVertex(fourthVertex);
+
+                /*this.vertexBuffer.addVertex(firstVertex);
+                this.vertexBuffer.addVertex(secondVertex);
+                this.vertexBuffer.addVertex(thirdVertex);
+                this.vertexBuffer.addVertex(fourthVertex);*/
 				
-				/*this.indexBuffer.addIndex(first);
+				this.indexBuffer.addIndex(first);
 				this.indexBuffer.addIndex(second);
 				this.indexBuffer.addIndex(third);
 				
 				this.indexBuffer.addIndex(first);
 				this.indexBuffer.addIndex(third);
-				this.indexBuffer.addIndex(fourth);*/
+				this.indexBuffer.addIndex(fourth);
 				
 				addFace(face1);
 				addFace(face2);

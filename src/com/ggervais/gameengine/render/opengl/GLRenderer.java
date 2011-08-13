@@ -20,9 +20,7 @@ import javax.media.opengl.glu.GLU;
 
 import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.Quad;
-import com.ggervais.gameengine.geometry.primitives.Face;
-import com.ggervais.gameengine.geometry.primitives.TextureCoords;
-import com.ggervais.gameengine.geometry.primitives.Vertex;
+import com.ggervais.gameengine.geometry.primitives.*;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.particle.Particle;
@@ -224,7 +222,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glEnable(GL.GL_DEPTH_TEST);
         gl.glDepthFunc(GL.GL_LEQUAL);
         gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
-        gl.glDisable(GL.GL_CULL_FACE);
+        gl.glEnable(GL.GL_CULL_FACE);
         gl.glEnable(GL.GL_BLEND);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL2.GL_FILL);
@@ -302,21 +300,26 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
 
+        resetColor();
 		gl.glBegin(glPrimitiveType);
-			for(int i = 0; i < geometry.getNbFaces(); i++) {
-				Face face = geometry.getFace(i);
+            VertexBuffer vertexBuffer = geometry.getVertexBuffer();
+            IndexBuffer indexBuffer = geometry.getIndexBuffer();
+            TextureBuffer textureBuffer = geometry.getTextureBuffer();
+			for(int i = 0; i < indexBuffer.size(); i++) {
+                int index = indexBuffer.getIndex(i);
+		        if (index < vertexBuffer.size()) {
 
-                if (face == null) {
-                    continue;
-                }
+                    Vertex vertex = vertexBuffer.getVertex(index);
+                    Point3D vertexPosition = vertex.getPosition();
 
-				for (int vi = 0; vi < face.nbVertices(); vi++) {
+                    TextureCoords coords = null;
+                    try {
+                        coords = textureBuffer.getCoords(i);
+                    } catch (Exception e) {
 
-					Vertex vertex = face.getVertex(vi);
-					Point3D vertexPosition = vertex.getPosition();
+                    }
 
-                    if (face.nbTextureCoords() == face.nbVertices()) {
-                        TextureCoords coords = face.getTextureCoords(vi);
+                    if (coords != null) {
                         float tu = coords.getTextureU();
                         float tv = coords.getTextureV();
 
@@ -326,8 +329,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                         gl.glTexCoord2f(tu, tv);
                     }
 
-					gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
-				}
+                    gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
+
+                }
 			}
 		gl.glEnd();
     }
@@ -456,19 +460,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         int[] viewport = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
-
-        float cx = (viewport[0] + viewport[2]) / 2f;
-        float cy = (viewport[1] + viewport[3]) / 2f;
-        float near = 0.001f;
-        float far = 1000f;
-
-        float[] projectedNear = new float[3];
-        float[] projectedFar = new float[3];
-
-        glu.gluUnProject(cx, cy, near, modelView, 0, projection, 0, viewport, 0, projectedNear, 0);
-        glu.gluUnProject(cx, cy, far, modelView, 0, projection, 0, viewport, 0, projectedFar, 0);
-
-        Matrix4x4 projectionMatrix = Matrix4x4.createFromFloatArray(projection, true);
 
         /*System.out.println("Projected near: (" + projectedNear[0] + ", " + projectedNear[1] + ", " + projectedNear[2] + ").");
         System.out.println("Projected far: (" + projectedFar[0] + ", " + projectedFar[1] + ", " + projectedFar[2] + ").");
