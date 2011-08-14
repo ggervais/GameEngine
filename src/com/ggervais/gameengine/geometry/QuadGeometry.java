@@ -4,6 +4,7 @@ import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 
 import java.awt.*;
@@ -68,6 +69,17 @@ public class QuadGeometry extends Geometry {
         face.addTextureCoords(texture10);
 
         addFace(face);
+    }
+
+    @Override
+    protected void generateTextureCoords(Effect effect) {
+         for (int i = 0; i < effect.nbTextures(); i++) {
+            effect.clearTextureCoordinates(i);
+            effect.addTextureCoordinates(i, new TextureCoords(0, 0));
+            effect.addTextureCoordinates(i, new TextureCoords(0, 1));
+            effect.addTextureCoordinates(i, new TextureCoords(1, 1));
+            effect.addTextureCoordinates(i, new TextureCoords(1, 0));
+        }
     }
 
 }

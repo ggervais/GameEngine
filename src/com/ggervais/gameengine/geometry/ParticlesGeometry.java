@@ -3,12 +3,14 @@ package com.ggervais.gameengine.geometry;
 import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
+import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.Camera;
+import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import org.apache.log4j.Logger;
 
@@ -138,10 +140,10 @@ public class ParticlesGeometry extends Geometry {
             Point3D p3 = Point3D.sub(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
             Point3D p4 = Point3D.add(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
 
-            //Point3D p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
-            //Point3D p2 = new Point3D((-0.5f + position.x()) * size, (-0.5f + position.y()) * size , position.z() * size);
-            //Point3D p3 = new Point3D((0.5f + position.x()) * size, (-0.5f + position.y()) * size, position.z() * size);
-            //Point3D p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);
+            /*p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
+            p2 = new Point3D((-0.5f + position.x()) * size, (-0.5f + position.y()) * size , position.z() * size);
+            p3 = new Point3D((0.5f + position.x()) * size, (-0.5f + position.y()) * size, position.z() * size);
+            p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);*/
 
             Vertex vertex1 = this.vertexBuffer.getVertex(positionCounter);
             Vertex vertex2 = this.vertexBuffer.getVertex(positionCounter + 1);
@@ -189,6 +191,19 @@ public class ParticlesGeometry extends Geometry {
     public void setPosition(int i, Point3D position) {
         if (i >= 0 && i < this.positions.size()) {
             this.positions.set(i, position);
+        }
+    }
+
+    @Override
+    protected void generateTextureCoords(Effect effect) {
+        for (int i = 0; i < effect.nbTextures(); i++) {
+            effect.clearTextureCoordinates(i);
+            for (int j = 0; j < this.positions.size(); j++) {
+                effect.addTextureCoordinates(i, new TextureCoords(0, 0));
+                effect.addTextureCoordinates(i, new TextureCoords(0, 1));
+                effect.addTextureCoordinates(i, new TextureCoords(1, 1));
+                effect.addTextureCoordinates(i, new TextureCoords(1, 0));
+            }
         }
     }
 

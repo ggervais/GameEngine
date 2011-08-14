@@ -278,6 +278,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		}
         Effect effect = geometry.getEffect();
         Texture texture = null;
+        int textureIndex = -1;
         Vector3D minBounds = new Vector3D(0, 0, 0);
         Vector3D maxBounds = new Vector3D(1, 1, 0);
         float w = 1;
@@ -286,6 +287,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         if (effect != null && effect.nbTextures() > 0) {
             texture = effect.getTexture(0);
             if (texture != null) {
+                textureIndex = 0;
                 int tw = texture.getNbCellsWidth();
                 int th = texture.getNbCellsHeight();
                 int nb = tw * th;
@@ -318,7 +320,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
                     TextureCoords coords = null;
                     try {
-                        coords = textureBuffer.getCoords(i);
+                        coords = effect.getTextureCoords(textureIndex, index);
+                        //coords = textureBuffer.getCoords(index);
                     } catch (Exception e) {
 
                     }
@@ -491,23 +494,16 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glPushMatrix();
         gl.glLoadIdentity();
 
+
         gl.glBegin(GL2.GL_LINES);
-            gl.glColor4f(1, 0, 0, 1);
+            gl.glColor4f(1, 1, 1, 1);
             gl.glVertex2f(w / 2f - cursorWidth / 2f, h / 2f);
             gl.glVertex2f(w / 2f + cursorWidth / 2f, h / 2f);
             gl.glVertex2f(w / 2f, h / 2f - cursorHeight / 2f);
             gl.glVertex2f(w / 2f, h / 2f + cursorHeight / 2f);
         gl.glEnd();
 
-        /*gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex3f(-0.5f * 100 + w / 2f, 0.5f * 100 + h / 2f, 0);
-            gl.glVertex3f(-0.5f * 100 + w / 2f, -0.5f * 100 + h / 2f, 0);
-            gl.glVertex3f(0.5f * 100 + w / 2f, -0.5f * 100 + h / 2f, 0);
-            gl.glVertex3f(0.5f * 100 + w / 2f, 0.5f * 100 + h / 2f, 0);
-        gl.glEnd();*/
-
         Point3D cameraPosition = this.scene.getCamera().getPosition();
-        //OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Guillaume Gervais' Test Engine!");
         OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Camera position: " + String.format("(%.4f, %.4f, %.4f)", cameraPosition.x(), cameraPosition.y(), cameraPosition.z()));
 
         gl.glPopMatrix();

@@ -487,8 +487,9 @@ public class OpenGLUtils {
 
         gl.glPushMatrix();
         gl.glColor4f(1, 1, 1, 1);
-        gl.glTranslatef(position.x(), position.y(), position.z());
         int scale = 20;
+        gl.glTranslatef(position.x(), position.y(), position.z());
+        gl.glScalef(scale, scale / aspectRatio, scale);
         gl.glBegin(GL2.GL_QUADS);
 
             for (int i = 0; i < text.length(); i++) {
@@ -503,17 +504,17 @@ public class OpenGLUtils {
                 //tv = 0;
                 //tv = step * 4;
 
-                gl.glTexCoord2f(tu, tv + step);
-                gl.glVertex3f(i * scale, scale / aspectRatio, 0);
-
-                gl.glTexCoord2f(tu, tv);
-                gl.glVertex3f(i * scale, 0, 0);
+                gl.glTexCoord2f(tu + step, tv + step);
+                gl.glVertex3f(i + 1, 1, 0);
 
                 gl.glTexCoord2f(tu + step, tv);
-                gl.glVertex3f((1 + i) * scale, 0, 0);
+                gl.glVertex3f(i + 1, 0, 0);
 
-                gl.glTexCoord2f(tu + step, tv + step);
-                gl.glVertex3f((1 + i) * scale, scale / aspectRatio, 0);
+                gl.glTexCoord2f(tu, tv);
+                gl.glVertex3f(i, 0, 0);
+
+                gl.glTexCoord2f(tu, tv + step);
+                gl.glVertex3f(i, 1, 0);
             }
         gl.glEnd();
 

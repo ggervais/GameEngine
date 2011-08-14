@@ -186,6 +186,11 @@ public class Scene extends Observable {
         CubeGeometry gCube2 = new CubeGeometry();
         CubeGeometry gCube3 = new CubeGeometry();
 
+
+        Effect cubeEffect = new Effect();
+        cubeEffect.addTexture(texGuillaume);
+        gCube1.setEffect(cubeEffect);
+
         Transformation second = new Transformation();
         second.setTranslation(1, 0, 0);
 
@@ -227,8 +232,9 @@ public class Scene extends Observable {
 
         Effect particlesEffect = new Effect();
         particlesEffect.setColor(Color.PINK);
+        particlesEffect.addTexture(texGuillaume);
 
-        ParticlesGeometry particles = new ParticlesGeometry(10, 0);
+        ParticlesGeometry particles = new ParticlesGeometry(20, 0);
         particles.setEffect(particlesEffect);
         Transformation particleTransformation = new Transformation();
         particleTransformation.setTranslation(25, 25, 25);
@@ -239,9 +245,13 @@ public class Scene extends Observable {
         ParticleController particleController = new ParticleController(new Vector3D(0, -0.0981f, 0), 0, 0, 0);
         particles.addController(particleController);
 
-        this.sceneGraphRoot.addChild(new QuadGeometry());
-        this.sceneGraphRoot.addChild(firstCubeNode);
+        Effect quadEffect = new Effect();
+        quadEffect.addTexture(texGuillaume);
+        QuadGeometry quadGeometry = new QuadGeometry();
+        quadGeometry.setEffect(quadEffect);
 
+        this.sceneGraphRoot.addChild(quadGeometry);
+        this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(particles);
 
 	}

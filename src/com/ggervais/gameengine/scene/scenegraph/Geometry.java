@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
-public class Geometry extends Spatial {
+public abstract class Geometry extends Spatial {
     private static final int DEFAULT_NB_VERTICES_PER_FACE = 3;
     private static final Logger log = Logger.getLogger(Geometry.class);
 
@@ -176,6 +176,8 @@ public class Geometry extends Spatial {
         this.modelBoundingBox = box;
     }
 
+    protected abstract void generateTextureCoords(Effect effect);
+
     @Override
     public void setEffect(Effect effect) {
 
@@ -187,8 +189,11 @@ public class Geometry extends Spatial {
             effect.setColor(i, effect.getColor());
         }
 
+        generateTextureCoords(effect);
+
         super.setEffect(effect);
     }
+
 
     @Override
     public void updateWorldBound() {

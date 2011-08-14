@@ -3,6 +3,7 @@ package com.ggervais.gameengine.geometry;
 import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 
 import java.awt.*;
@@ -25,8 +26,13 @@ public class SphereGeometry extends Geometry {
 	public SphereGeometry() {
 		this(DEFAULT_RINGS_WIDTH, DEFAULT_RINGS_HEIGHT);
 	}
-	
-	public void create() {
+
+    @Override
+    protected void generateTextureCoords(Effect effect) {
+        // TODO implement texture coordinates for a sphere.
+    }
+
+    public void create() {
 		int resolutionWidth = this.nbRingsWidth + 1;
 		int resolutionHeight = this.nbRingsHeight + 1;
 		

@@ -65,6 +65,7 @@ public abstract class Controller {
     public void unpause(long currentTime) {
         this.paused = false;
         this.pauseOffset += currentTime - this.lastUpdateTime;
+        this.lastUpdateTime = currentTime;
     }
 
     public boolean isPaused() {
