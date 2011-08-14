@@ -231,7 +231,7 @@ public class Scene extends Observable {
         firstCubeNode.addController(controller);
 
         Effect particlesEffect = new Effect();
-        particlesEffect.setColor(Color.PINK);
+        //particlesEffect.setColor(Color.PINK);
         particlesEffect.addTexture(texGuillaume);
 
         ParticlesGeometry particles = new ParticlesGeometry(20, 0);
@@ -253,6 +253,7 @@ public class Scene extends Observable {
         this.sceneGraphRoot.addChild(quadGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(particles);
+        this.sceneGraphRoot.addChild(new SphereGeometry());
 
 	}
 	

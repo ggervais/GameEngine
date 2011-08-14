@@ -5,7 +5,7 @@ public class AlphaBlendingState extends GlobalState {
     private boolean enabled;
 
     public AlphaBlendingState() {
-        this(true);
+        this(false);
     }
 
     public AlphaBlendingState(boolean enabled) {

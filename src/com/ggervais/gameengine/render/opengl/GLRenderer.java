@@ -65,36 +65,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         drawSceneGraph(this.scene.getSceneGraphRoot());
     }
 
-    public void display2(GLAutoDrawable glDrawable) {
-
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-        gl.glClearColor(0.53f, 0.81f, 0.98f, 1);
-        gl.glClearColor(0, 0, 0, 1);
-
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        Camera camera = this.scene.getCamera();
-        Point3D cameraPosition = camera.getPosition();
-        Point3D cameraLookAt = camera.getLookAt();
-        Vector3D cameraUp = camera.getUp();
-
-        this.glu.gluLookAt(cameraPosition.x(), cameraPosition.y(), cameraPosition.z(),
-        				   cameraLookAt.x(), cameraLookAt.y(), cameraLookAt.z(),
-        				   cameraUp.x(), cameraUp.y(), cameraUp.z());
-
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glEnable(GL.GL_CULL_FACE);
-        gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-
-
-        OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
-
-        gl.glFlush();
-    }
-
 	public void display3(GLAutoDrawable glDrawable) {
 
         //GL2 gl = glDrawable.getGL().getGL2();
