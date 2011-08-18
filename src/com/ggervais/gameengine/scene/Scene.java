@@ -227,7 +227,7 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
 
-        MotionController controller = new MotionController(new Vector3D(0, -9.81f/2, 0), 10f, fortyFiveDegrees, 0);
+        MotionController controller = new MotionController(new Vector3D(0, -9.81f / 2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
         Effect particlesEffect = new Effect();
@@ -242,7 +242,7 @@ public class Scene extends Observable {
         //particles.setLocalTransformation(particleTransformation);
         //particles.setNbActive(5);
 
-        ParticleController particleController = new ParticleController(new Vector3D(0, -0.0981f, 0), 0, 0, 0);
+        ParticleController particleController = new ParticleController(new Vector3D(0, 0, 0), 0, 0, 0);
         particles.addController(particleController);
 
         Effect quadEffect = new Effect();

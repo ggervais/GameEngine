@@ -7,6 +7,7 @@ import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.physics.MotionController;
 import com.ggervais.gameengine.timing.Controller;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,6 +36,7 @@ public class ParticleController extends MotionController {
         this.particleVelocities = new ArrayList<Vector3D>();
         this.initialParticlesStartIndex = 0;
         this.timesAdded = new ArrayList<Long>();
+        this.decayTimeInMs = 5000;
     }
 
     @Override
@@ -66,9 +68,11 @@ public class ParticleController extends MotionController {
         super.doUpdate(currentTime);
 
         float diffInSeconds = (currentTime - this.lastUpdateTime) / 1000f;
+        float alphaStep = diffInSeconds * 255 / (this.decayTimeInMs / 1000f);
 
         // This updates each particle with its velocity.
         ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
+        int vertexIndex = 0;
         for (int i = 0; i < particles.getNbActive(); i++) {
             // Update particle position.
             if (i < this.particleVelocities.size()) {
@@ -76,9 +80,45 @@ public class ParticleController extends MotionController {
                 if (velocity != null) {
                     Point3D position = particles.getPosition(i);
                     position.add(velocity.multiplied(diffInSeconds));
-
                     velocity.add(this.systemGravity.multiplied(diffInSeconds));
                 }
+
+                if (this.getControlledObject().getEffect() != null) {
+                    Color color1 = this.getControlledObject().getEffect().getColor(vertexIndex);
+                    Color color2 = this.getControlledObject().getEffect().getColor(vertexIndex + 1);
+                    Color color3 = this.getControlledObject().getEffect().getColor(vertexIndex + 2);
+                    Color color4 = this.getControlledObject().getEffect().getColor(vertexIndex + 3);
+
+                    int alpha1 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
+                    int alpha2 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
+                    int alpha3 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
+                    int alpha4 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
+                    if (alpha1 <= 0) {
+                        alpha1 = 255;
+                    }
+                    if (alpha2 <= 0) {
+                        alpha2 = 255;
+                    }
+                    if (alpha3 <= 0) {
+                        alpha3 = 255;
+                    }
+                    if (alpha4 <= 0) {
+                        alpha4 = 255;
+                    }
+
+                    Color newColor1 = new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), alpha1);
+                    Color newColor2 = new Color(color1.getRed(), color2.getGreen(), color2.getBlue(), alpha2);
+                    Color newColor3 = new Color(color1.getRed(), color3.getGreen(), color3.getBlue(), alpha3);
+                    Color newColor4 = new Color(color1.getRed(), color4.getGreen(), color4.getBlue(), alpha4);
+
+                    this.getControlledObject().getEffect().setColor(vertexIndex, newColor1);
+                    this.getControlledObject().getEffect().setColor(vertexIndex + 1, newColor2);
+                    this.getControlledObject().getEffect().setColor(vertexIndex + 2, newColor3);
+                    this.getControlledObject().getEffect().setColor(vertexIndex + 3, newColor4);
+
+                }
+
+                vertexIndex += 4;
             }
         }
     }
