@@ -88,6 +88,14 @@ public class Effect {
         this.colors.clear();
     }
 
+    public void addColor(Color color) {
+        this.colors.add(color);
+    }
+
+    public void removeColor(int index) {
+        this.colors.remove(index);
+    }
+
     public void initializeColors(int size) {
         for (int i = 0; i < size; i++) {
             this.colors.add(Color.WHITE);

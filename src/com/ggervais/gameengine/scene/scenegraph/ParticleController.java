@@ -20,6 +20,7 @@ public class ParticleController extends MotionController {
     private Vector3D systemGravity;
     private int initialParticlesStartIndex;
     private int decayTimeInMs;
+    private boolean isInitialized;
 
     public ParticleController(Vector3D gravity, float speed, float theta, float phi, int decayTimeInMs) {
         super(Vector3D.zero(), speed, theta, phi, false);
@@ -28,6 +29,7 @@ public class ParticleController extends MotionController {
         this.timesAdded = new ArrayList<Long>();
         this.initialParticlesStartIndex = 0;
         this.decayTimeInMs = decayTimeInMs;
+        this.isInitialized = false;
     }
 
     public ParticleController(Vector3D gravity, float speed, float theta, float phi) {
@@ -37,12 +39,14 @@ public class ParticleController extends MotionController {
         this.initialParticlesStartIndex = 0;
         this.timesAdded = new ArrayList<Long>();
         this.decayTimeInMs = 5000;
+        this.isInitialized = false;
     }
 
     @Override
     public void setControlledObject(Spatial controlledObject) {
         if (controlledObject != null) {
             if (controlledObject instanceof ParticlesGeometry) {
+                this.isInitialized = false;
                 this.controlledSpatialObject = controlledObject;
                 this.particleVelocities.clear();
                 this.timesAdded.clear();
@@ -53,7 +57,6 @@ public class ParticleController extends MotionController {
                     float theta = this.random.nextFloat() * (float) Math.toRadians(45);
                     float phi = this.random.nextFloat() * (float) Math.toRadians(360);
                     this.particleVelocities.add(Vector3D.createFromPolarCoordinates(speed, theta, phi));
-                    this.timesAdded.add(System.currentTimeMillis()); // This should do it for now. Eventually we should have a centralized time source.
                 }
 
             } else {
@@ -62,10 +65,23 @@ public class ParticleController extends MotionController {
         }
     }
 
+    public void initializeTimes(long currentTime) {
+        ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
+        this.timesAdded.clear();
+        for (int i = 0; i < particles.getNbParticles(); i++) {
+            this.timesAdded.add(currentTime);
+        }
+    }
+
     @Override
     public void doUpdate(long currentTime) {
         // This updates particle system's motion (inherited from MotionController).
         super.doUpdate(currentTime);
+
+        if (!isInitialized) {
+            initializeTimes(currentTime);
+            isInitialized = true;
+        }
 
         float diffInSeconds = (currentTime - this.lastUpdateTime) / 1000f;
         float alphaStep = diffInSeconds * 255 / (this.decayTimeInMs / 1000f);
@@ -73,6 +89,7 @@ public class ParticleController extends MotionController {
         // This updates each particle with its velocity.
         ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
         int vertexIndex = 0;
+        List<Point3D> positionsToDelete = new ArrayList<Point3D>();
         for (int i = 0; i < particles.getNbActive(); i++) {
             // Update particle position.
             if (i < this.particleVelocities.size()) {
@@ -93,17 +110,12 @@ public class ParticleController extends MotionController {
                     int alpha2 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
                     int alpha3 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
                     int alpha4 = (int) MathUtils.clamp(color1.getAlpha() - alphaStep, 0, 255);
-                    if (alpha1 <= 0) {
-                        alpha1 = 255;
-                    }
-                    if (alpha2 <= 0) {
-                        alpha2 = 255;
-                    }
-                    if (alpha3 <= 0) {
-                        alpha3 = 255;
-                    }
-                    if (alpha4 <= 0) {
-                        alpha4 = 255;
+
+                    boolean toDelete = false;
+
+
+                    if (currentTime - this.timesAdded.get(i) >= this.decayTimeInMs) {
+                        positionsToDelete.add(particles.getPosition(i));
                     }
 
                     Color newColor1 = new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), alpha1);
@@ -120,6 +132,42 @@ public class ParticleController extends MotionController {
 
                 vertexIndex += 4;
             }
+
+            for (Point3D position : positionsToDelete) {
+                int index = particles.findPosition(position);
+                if (index > -1) {
+
+                    // For each element we remove, we must add it at the end to keep the number of elements constant.
+                    Color color1 = this.getControlledObject().getEffect().getColor(index * 4);
+                    Color color2 = this.getControlledObject().getEffect().getColor(index * 4 + 1);
+                    Color color3 = this.getControlledObject().getEffect().getColor(index * 4 + 2);
+                    Color color4 = this.getControlledObject().getEffect().getColor(index * 4 + 3);
+
+                    this.getControlledObject().getEffect().removeColor(index * 4);
+                    this.getControlledObject().getEffect().removeColor(index * 4 + 1);
+                    this.getControlledObject().getEffect().removeColor(index * 4 + 2);
+                    this.getControlledObject().getEffect().removeColor(index * 4 + 3);
+
+                    this.getControlledObject().getEffect().addColor(color1);
+                    this.getControlledObject().getEffect().addColor(color2);
+                    this.getControlledObject().getEffect().addColor(color3);
+                    this.getControlledObject().getEffect().addColor(color4);
+
+                    this.timesAdded.remove(i);
+                    this.timesAdded.add(currentTime);
+
+                    particles.removePosition(i);
+                    particles.addPosition(Point3D.zero());
+
+                    particleVelocities.remove(i);
+                    particleVelocities.add(Vector3D.zero());
+
+                    particles.setNbActive(particles.getNbActive() - 1);
+
+                    System.out.println("Deleting " + position + ", nb. active: " + particles.getNbActive());
+                }
+            }
+
         }
     }
 }

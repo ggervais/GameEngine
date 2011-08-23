@@ -132,7 +132,7 @@
       <file leaf-file-name="Scene.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="245" column="63" selection-start="9768" selection-end="9768" vertical-scroll-proportion="0.0">
+            <state line="255" column="10" selection-start="10122" selection-end="10122" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -141,16 +141,7 @@
       <file leaf-file-name="ParticleController.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/ParticleController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="97" column="43" selection-start="4694" selection-end="4694" vertical-scroll-proportion="0.21602787">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Spatial.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="54" column="120" selection-start="1832" selection-end="1832" vertical-scroll-proportion="0.0">
+            <state line="116" column="112" selection-start="5213" selection-end="5213" vertical-scroll-proportion="-1.6794425">
               <folding />
             </state>
           </provider>
@@ -159,7 +150,7 @@
       <file leaf-file-name="Effect.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Effect.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="5" selection-start="1292" selection-end="1292" vertical-scroll-proportion="-8.0">
+            <state line="91" column="31" selection-start="2551" selection-end="2551" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -168,7 +159,25 @@
       <file leaf-file-name="ParticlesGeometry.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/ParticlesGeometry.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="142" column="12" selection-start="5332" selection-end="5332" vertical-scroll-proportion="0.0">
+            <state line="48" column="16" selection-start="1617" selection-end="1617" vertical-scroll-proportion="-1.68">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Geometry.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Geometry.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="114" column="57" selection-start="3271" selection-end="3271" vertical-scroll-proportion="-7.4">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VertexBuffer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/primitives/VertexBuffer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="19" column="104" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -199,7 +208,6 @@
       <list>
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Node.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/physics/boundingvolumes/BoundingBox.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Geometry.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/QuadGeometry.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/SphereGeometry.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/ArrowGeometry.java" />
@@ -207,10 +215,11 @@
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/CubeGeometry.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/renderstates/AlphaBlendingState.java" />
-        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/ParticlesGeometry.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/render/SceneRenderer.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Effect.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Geometry.java" />
+        <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/ParticlesGeometry.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java" />
         <option value="$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/ParticleController.java" />
       </list>
@@ -779,13 +788,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="26" width="1448" height="878" extended-state="6" />
+    <frame x="0" y="26" width="1448" height="878" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39709762" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39591837" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32058048" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31530344" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -841,16 +850,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Geometry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="175" column="64" selection-start="5316" selection-end="5316" vertical-scroll-proportion="-14.92" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/QuadGeometry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="5" selection-start="2720" selection-end="2720" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/SphereGeometry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="31" column="59" selection-start="914" selection-end="914" vertical-scroll-proportion="-0.18733509" />
@@ -876,37 +875,54 @@
         <state line="54" column="40" selection-start="2846" selection-end="2846" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="352" column="16" selection-start="13271" selection-end="13277" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/OpenGLUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="489" column="43" selection-start="18876" selection-end="18876" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Effect.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="5" selection-start="1292" selection-end="1292" vertical-scroll-proportion="-8.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Spatial.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="120" selection-start="1832" selection-end="1832" vertical-scroll-proportion="0.0">
+        <state line="58" column="66" selection-start="1997" selection-end="1997" vertical-scroll-proportion="0.32126698">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/primitives/VertexBuffer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="245" column="63" selection-start="9768" selection-end="9768" vertical-scroll-proportion="0.0">
+        <state line="19" column="104" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Effect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="31" selection-start="2551" selection-end="2551" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/ParticlesGeometry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="16" selection-start="1617" selection-end="1617" vertical-scroll-proportion="-1.68">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/Geometry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="114" column="57" selection-start="3271" selection-end="3271" vertical-scroll-proportion="-7.4">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/renderstates/AlphaBlendingState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="170" selection-start="182" selection-end="182" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="6" column="170" selection-start="182" selection-end="182" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/SceneRenderer.java">
@@ -914,19 +930,16 @@
         <state line="88" column="124" selection-start="2618" selection-end="2618" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/render/opengl/GLRenderer.java">
+    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/Scene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="352" column="16" selection-start="13271" selection-end="13277" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/geometry/ParticlesGeometry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="142" column="12" selection-start="5332" selection-end="5332" vertical-scroll-proportion="0.0" />
+        <state line="255" column="10" selection-start="10122" selection-end="10122" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ggervais/gameengine/scene/scenegraph/ParticleController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="43" selection-start="4694" selection-end="4694" vertical-scroll-proportion="0.21602787">
+        <state line="116" column="112" selection-start="5213" selection-end="5213" vertical-scroll-proportion="-1.6794425">
           <folding />
         </state>
       </provider>

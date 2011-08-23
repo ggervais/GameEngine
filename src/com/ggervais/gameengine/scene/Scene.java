@@ -253,7 +253,7 @@ public class Scene extends Observable {
         this.sceneGraphRoot.addChild(quadGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(particles);
-        this.sceneGraphRoot.addChild(new SphereGeometry());
+        //this.sceneGraphRoot.addChild(new SphereGeometry());
 
 	}
 	

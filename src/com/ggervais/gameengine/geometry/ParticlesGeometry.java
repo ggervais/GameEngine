@@ -48,6 +48,7 @@ public class ParticlesGeometry extends Geometry {
 
     public void setNbActive(int nbActive) {
         this.nbActive = nbActive;
+        setNbVertices(nbActive * 4);
         setNbFaces(this.nbActive * 2);
     }
 
@@ -134,7 +135,7 @@ public class ParticlesGeometry extends Geometry {
 
             float halfSize = size * 0.5f;
 
-            // This is the inverse of the book, but it works...
+            // This is the inverse of the what is written in the WildMagic book, but it works.
             Point3D p1 = Point3D.add(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
             Point3D p2 = Point3D.sub(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
             Point3D p3 = Point3D.sub(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
@@ -210,4 +211,17 @@ public class ParticlesGeometry extends Geometry {
     public Point3D getPosition(int i) {
         return this.positions.get(i);
     }
+
+    public int findPosition(Point3D position) {
+        return this.positions.indexOf(position);
+    }
+
+    public void removePosition(int index) {
+        this.positions.remove(index);
+    }
+
+    public void addPosition(Point3D position) {
+        this.positions.add(position);
+    }
+
 }

@@ -60,6 +60,14 @@ public abstract class Geometry extends Spatial {
         this.nbFaces = MathUtils.clamp(nbFaces, 0, this.faces.size());
     }
 
+    public void setNbVertices(int size) {
+        this.vertexBuffer.setNbVertices(size);
+    }
+
+    public int getNbVertices() {
+        return this.vertexBuffer.size();
+    }
+
     public Face getFace(int index) {
         if (index < 0 || index > this.faces.size() - 1) {
             return null;
