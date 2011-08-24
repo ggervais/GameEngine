@@ -20,6 +20,7 @@ public class ParticleController extends MotionController {
     private Vector3D systemGravity;
     private int initialParticlesStartIndex;
     private int decayTimeInMs;
+    private int launchDelayInMs = 100;
     private boolean isInitialized;
 
     public ParticleController(Vector3D gravity, float speed, float theta, float phi, int decayTimeInMs) {
@@ -38,7 +39,7 @@ public class ParticleController extends MotionController {
         this.particleVelocities = new ArrayList<Vector3D>();
         this.initialParticlesStartIndex = 0;
         this.timesAdded = new ArrayList<Long>();
-        this.decayTimeInMs = 5000;
+        this.decayTimeInMs = 1000;
         this.isInitialized = false;
     }
 
@@ -75,6 +76,7 @@ public class ParticleController extends MotionController {
 
     @Override
     public void doUpdate(long currentTime) {
+
         // This updates particle system's motion (inherited from MotionController).
         super.doUpdate(currentTime);
 
@@ -87,7 +89,7 @@ public class ParticleController extends MotionController {
         float alphaStep = diffInSeconds * 255 / (this.decayTimeInMs / 1000f);
 
         // This updates each particle with its velocity.
-        ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
+         ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
         int vertexIndex = 0;
         List<Point3D> positionsToDelete = new ArrayList<Point3D>();
         for (int i = 0; i < particles.getNbActive(); i++) {
@@ -114,7 +116,7 @@ public class ParticleController extends MotionController {
                     boolean toDelete = false;
 
 
-                    if (currentTime - this.timesAdded.get(i) >= this.decayTimeInMs) {
+                    if (currentTime - (this.timesAdded.get(i) + this.pauseOffset) >= this.decayTimeInMs) {
                         positionsToDelete.add(particles.getPosition(i));
                     }
 
@@ -132,42 +134,79 @@ public class ParticleController extends MotionController {
 
                 vertexIndex += 4;
             }
+        }
 
-            for (Point3D position : positionsToDelete) {
-                int index = particles.findPosition(position);
-                if (index > -1) {
+        long oldestLaunch = 0;
+        for (int i = 0; i < particles.getNbActive(); i++) {
+            oldestLaunch = Math.max(this.timesAdded.get(i), oldestLaunch);
+        }
 
-                    // For each element we remove, we must add it at the end to keep the number of elements constant.
-                    Color color1 = this.getControlledObject().getEffect().getColor(index * 4);
-                    Color color2 = this.getControlledObject().getEffect().getColor(index * 4 + 1);
-                    Color color3 = this.getControlledObject().getEffect().getColor(index * 4 + 2);
-                    Color color4 = this.getControlledObject().getEffect().getColor(index * 4 + 3);
+        for (Point3D position : positionsToDelete) {
+            int index = particles.findPosition(position);
+            if (index > -1) {
 
-                    this.getControlledObject().getEffect().removeColor(index * 4);
-                    this.getControlledObject().getEffect().removeColor(index * 4 + 1);
-                    this.getControlledObject().getEffect().removeColor(index * 4 + 2);
-                    this.getControlledObject().getEffect().removeColor(index * 4 + 3);
+                // For each element we remove, we must add it at the end to keep the number of elements constant.
+                Color color1 = this.getControlledObject().getEffect().getColor(index * 4);
+                Color color2 = this.getControlledObject().getEffect().getColor(index * 4 + 1);
+                Color color3 = this.getControlledObject().getEffect().getColor(index * 4 + 2);
+                Color color4 = this.getControlledObject().getEffect().getColor(index * 4 + 3);
 
-                    this.getControlledObject().getEffect().addColor(color1);
-                    this.getControlledObject().getEffect().addColor(color2);
-                    this.getControlledObject().getEffect().addColor(color3);
-                    this.getControlledObject().getEffect().addColor(color4);
+                // Removing colors in their current positions.
+                this.getControlledObject().getEffect().removeColor(color1);
+                this.getControlledObject().getEffect().removeColor(color2);
+                this.getControlledObject().getEffect().removeColor(color3);
+                this.getControlledObject().getEffect().removeColor(color4);
 
-                    this.timesAdded.remove(i);
-                    this.timesAdded.add(currentTime);
+                // Adding color at the end of the array.
+                this.getControlledObject().getEffect().addColor(color1);
+                this.getControlledObject().getEffect().addColor(color2);
+                this.getControlledObject().getEffect().addColor(color3);
+                this.getControlledObject().getEffect().addColor(color4);
 
-                    particles.removePosition(i);
-                    particles.addPosition(Point3D.zero());
+                // Same thing.
+                this.timesAdded.remove(index);
+                this.timesAdded.add(currentTime);
 
-                    particleVelocities.remove(i);
-                    particleVelocities.add(Vector3D.zero());
+                // Same thing.
+                particles.removePosition(index);
+                particles.addPosition(Point3D.zero());
 
-                    particles.setNbActive(particles.getNbActive() - 1);
+                // Same thing.
+                particleVelocities.remove(index);
+                particleVelocities.add(Vector3D.zero());
 
-                    System.out.println("Deleting " + position + ", nb. active: " + particles.getNbActive());
-                }
+                particles.setNbActive(particles.getNbActive() - 1);
+
+                System.out.println("Deleting " + position + ", nb. active: " + particles.getNbActive());
             }
+        }
 
+        if (currentTime - (oldestLaunch + this.pauseOffset) >= this.launchDelayInMs && particles.getNbActive() < particles.getNbParticles()) {
+            float speed = this.random.nextFloat() * 5f;
+            float theta = this.random.nextFloat() * (float) Math.toRadians(45);
+            float phi = this.random.nextFloat() * (float) Math.toRadians(360);
+            this.particleVelocities.add(0, Vector3D.createFromPolarCoordinates(speed, theta, phi));
+            this.particleVelocities.remove(this.particleVelocities.size() - 1);
+
+            particles.addPosition(0, Point3D.zero());
+            particles.removePosition(particles.getNbParticles()); // We do NOT do "- 1" because we just added a position.
+
+            timesAdded.add(0, currentTime - this.pauseOffset);
+            timesAdded.remove(timesAdded.size() - 1);
+
+            // 4 vertices = 4 colors.
+            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
+            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
+            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
+            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
+
+            this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
+            this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
+            this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
+            this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
+
+            particles.setNbActive(particles.getNbActive() + 1);
+            System.out.println("Creating new particle.");
         }
     }
 }

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -475,6 +476,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         Point3D cameraPosition = this.scene.getCamera().getPosition();
         OpenGLUtils.drawString(gl, new Point3D(5, 5, 0), "Camera position: " + String.format("(%.4f, %.4f, %.4f)", cameraPosition.x(), cameraPosition.y(), cameraPosition.z()));
+        OpenGLUtils.drawString(gl, new Point3D(5, 25, 0), "Current date: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
         gl.glPopMatrix();
 

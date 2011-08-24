@@ -47,6 +47,10 @@ public class Effect {
         return this.textures.size();
     }
 
+    public int nbColors() {
+        return this.colors.size();
+    }
+
     public Texture getTexture(int index) {
         return this.textures.get(index);
     }
@@ -90,6 +94,14 @@ public class Effect {
 
     public void addColor(Color color) {
         this.colors.add(color);
+    }
+
+    public void addColor(int index, Color color) {
+        this.colors.add(index, color);
+    }
+
+    public void removeColor(Color color) {
+        this.colors.remove(color);
     }
 
     public void removeColor(int index) {

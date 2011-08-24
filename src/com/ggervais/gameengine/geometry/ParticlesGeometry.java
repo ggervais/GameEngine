@@ -224,4 +224,8 @@ public class ParticlesGeometry extends Geometry {
         this.positions.add(position);
     }
 
+    public void addPosition(int index, Point3D position) {
+        this.positions.add(index, position);
+    }
+
 }

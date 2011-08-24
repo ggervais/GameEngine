@@ -235,6 +235,7 @@ public class Scene extends Observable {
         particlesEffect.addTexture(texGuillaume);
 
         ParticlesGeometry particles = new ParticlesGeometry(20, 0);
+        particles.setNbActive(0);
         particles.setEffect(particlesEffect);
         Transformation particleTransformation = new Transformation();
         particleTransformation.setTranslation(25, 25, 25);
