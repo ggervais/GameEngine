@@ -66,7 +66,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         drawSceneGraph(this.scene.getSceneGraphRoot());
     }
 
-	public void display3(GLAutoDrawable glDrawable) {
+	public void display2(GLAutoDrawable glDrawable) {
 
         //GL2 gl = glDrawable.getGL().getGL2();
 

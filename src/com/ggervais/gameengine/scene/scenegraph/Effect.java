@@ -80,9 +80,20 @@ public class Effect {
             this.textures.remove(index);
             this.textureCoordinates.remove(index);
         }
-
-
     }
+
+    public void removeTextureCoordinates(int textureId, TextureCoords coords) {
+        textureCoordinates.get(textureId).remove(coords);
+    }
+
+    public void removeTextureCoordinates(int textureId, int index) {
+        textureCoordinates.get(textureId).remove(index);
+    }
+
+    public int getNbTextureCoords(int textureId) {
+        return textureCoordinates.get(textureId).size();
+    }
+
 
     public void clearTextures() {
         this.textures.clear();
@@ -135,6 +146,13 @@ public class Effect {
         List<TextureCoords> array = this.textureCoordinates.get(i);
         if (array != null) {
             array.add(coords);
+        }
+    }
+
+    public void addTextureCoordinates(int textureIndex, int i, TextureCoords coords) {
+        List<TextureCoords> array = this.textureCoordinates.get(textureIndex);
+        if (array != null) {
+            array.add(i, coords);
         }
     }
 }

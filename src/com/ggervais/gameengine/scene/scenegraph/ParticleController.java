@@ -1,6 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
+import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
@@ -39,12 +40,13 @@ public class ParticleController extends MotionController {
         this.particleVelocities = new ArrayList<Vector3D>();
         this.initialParticlesStartIndex = 0;
         this.timesAdded = new ArrayList<Long>();
-        this.decayTimeInMs = 1000;
+        this.decayTimeInMs = 750;
         this.isInitialized = false;
     }
 
     @Override
     public void setControlledObject(Spatial controlledObject) {
+        super.setControlledObject(controlledObject);
         if (controlledObject != null) {
             if (controlledObject instanceof ParticlesGeometry) {
                 this.isInitialized = false;
@@ -54,9 +56,12 @@ public class ParticleController extends MotionController {
 
                 ParticlesGeometry particles = (ParticlesGeometry) controlledObject;
                 for (int i = 0; i < particles.getNbParticles(); i++) {
-                    float speed = this.random.nextFloat() * 5f;
-                    float theta = this.random.nextFloat() * (float) Math.toRadians(45);
-                    float phi = this.random.nextFloat() * (float) Math.toRadians(360);
+                    //float speed = this.random.nextFloat() * 5f;
+                    //float theta = this.random.nextFloat() * (float) Math.toRadians(45);
+                    //float phi = this.random.nextFloat() * (float) Math.toRadians(360);
+                    float speed = 0;
+                    float theta = 0;
+                    float phi = 0;
                     this.particleVelocities.add(Vector3D.createFromPolarCoordinates(speed, theta, phi));
                 }
 
@@ -89,7 +94,7 @@ public class ParticleController extends MotionController {
         float alphaStep = diffInSeconds * 255 / (this.decayTimeInMs / 1000f);
 
         // This updates each particle with its velocity.
-         ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
+        ParticlesGeometry particles = (ParticlesGeometry) this.controlledSpatialObject;
         int vertexIndex = 0;
         List<Point3D> positionsToDelete = new ArrayList<Point3D>();
         for (int i = 0; i < particles.getNbActive(); i++) {
@@ -103,6 +108,7 @@ public class ParticleController extends MotionController {
                 }
 
                 if (this.getControlledObject().getEffect() != null) {
+
                     Color color1 = this.getControlledObject().getEffect().getColor(vertexIndex);
                     Color color2 = this.getControlledObject().getEffect().getColor(vertexIndex + 1);
                     Color color3 = this.getControlledObject().getEffect().getColor(vertexIndex + 2);
@@ -163,6 +169,24 @@ public class ParticleController extends MotionController {
                 this.getControlledObject().getEffect().addColor(color3);
                 this.getControlledObject().getEffect().addColor(color4);
 
+                // Texture coordinates must be changed, too.
+                for (int textureIndex = 0; textureIndex < this.getControlledObject().getEffect().nbTextures(); textureIndex++) {
+                    TextureCoords coords1 = this.getControlledObject().getEffect().getTextureCoords(textureIndex, vertexIndex + 1);
+                    TextureCoords coords2 = this.getControlledObject().getEffect().getTextureCoords(textureIndex, vertexIndex + 1);
+                    TextureCoords coords3 = this.getControlledObject().getEffect().getTextureCoords(textureIndex, vertexIndex + 1);
+                    TextureCoords coords4 = this.getControlledObject().getEffect().getTextureCoords(textureIndex, vertexIndex + 1);
+
+                    this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, coords1);
+                    this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, coords2);
+                    this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, coords3);
+                    this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, coords4);
+
+                    this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, coords1);
+                    this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, coords2);
+                    this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, coords3);
+                    this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, coords4);
+                }
+
                 // Same thing.
                 this.timesAdded.remove(index);
                 this.timesAdded.add(currentTime);
@@ -182,28 +206,44 @@ public class ParticleController extends MotionController {
         }
 
         if (currentTime - (oldestLaunch + this.pauseOffset) >= this.launchDelayInMs && particles.getNbActive() < particles.getNbParticles()) {
-            float speed = this.random.nextFloat() * 5f;
-            float theta = this.random.nextFloat() * (float) Math.toRadians(45);
-            float phi = this.random.nextFloat() * (float) Math.toRadians(360);
+            //float speed = this.random.nextFloat() * 5f;
+            //float theta = this.random.nextFloat() * (float) Math.toRadians(45);
+            //float phi = this.random.nextFloat() * (float) Math.toRadians(360);
+            float speed = 0;
+            float theta = 0;
+            float phi = 0;
+
             this.particleVelocities.add(0, Vector3D.createFromPolarCoordinates(speed, theta, phi));
             this.particleVelocities.remove(this.particleVelocities.size() - 1);
 
-            particles.addPosition(0, Point3D.zero());
+            particles.addPosition(0, new Point3D(0, 0, 0));
             particles.removePosition(particles.getNbParticles()); // We do NOT do "- 1" because we just added a position.
 
             timesAdded.add(0, currentTime - this.pauseOffset);
             timesAdded.remove(timesAdded.size() - 1);
 
             // 4 vertices = 4 colors.
-            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
-            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
-            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
-            this.controlledSpatialObject.getEffect().addColor(0, new Color(255, 255, 255, 255));
+            this.controlledSpatialObject.getEffect().addColor(0, particles.getEffect().getColor());
+            this.controlledSpatialObject.getEffect().addColor(0, particles.getEffect().getColor());
+            this.controlledSpatialObject.getEffect().addColor(0, particles.getEffect().getColor());
+            this.controlledSpatialObject.getEffect().addColor(0, particles.getEffect().getColor());
 
             this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
             this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
             this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
             this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
+
+            for (int textureIndex = 0; textureIndex < this.controlledSpatialObject.getEffect().nbTextures(); textureIndex++) {
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(0, 0));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(0, 1));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(1, 1));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(1, 0));
+
+                this.controlledSpatialObject.getEffect().removeTextureCoordinates(0, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
+                this.controlledSpatialObject.getEffect().removeTextureCoordinates(0, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
+                this.controlledSpatialObject.getEffect().removeTextureCoordinates(0, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
+                this.controlledSpatialObject.getEffect().removeTextureCoordinates(0, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
+            }
 
             particles.setNbActive(particles.getNbActive() + 1);
             System.out.println("Creating new particle.");

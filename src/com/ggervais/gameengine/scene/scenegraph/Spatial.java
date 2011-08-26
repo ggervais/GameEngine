@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.geometry.ParticlesGeometry;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
@@ -142,6 +143,10 @@ public abstract class Spatial {
     }
 
     protected void updateWorldData(long currentTime) {
+
+        if (this instanceof ParticlesGeometry) {
+            int a = 0;
+        }
         updateControllers(currentTime);
 
         if (this.parent != null) {
@@ -150,6 +155,8 @@ public abstract class Spatial {
             // TODO make a copy
             this.worldTransform = this.localTransform;
         }
+
+
     }
 
     public GlobalState getGlobalState(GlobalStateType type) {

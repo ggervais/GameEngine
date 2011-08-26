@@ -17,6 +17,8 @@ import com.ggervais.gameengine.particle.*;
 import com.ggervais.gameengine.physics.MotionController;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.scene.scenegraph.*;
+import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
+import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
 import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
@@ -230,32 +232,38 @@ public class Scene extends Observable {
         MotionController controller = new MotionController(new Vector3D(0, -9.81f / 2, 0), 10f, fortyFiveDegrees, 0);
         firstCubeNode.addController(controller);
 
-        Effect particlesEffect = new Effect();
-        //particlesEffect.setColor(Color.PINK);
-        particlesEffect.addTexture(texGuillaume);
+        Node fireNode = new Node();
+        fireNode.addGlobalState(new AlphaBlendingState(true));
+        fireNode.addGlobalState(new ZBufferState(false));
 
-        ParticlesGeometry particles = new ParticlesGeometry(20, 0);
-        particles.setNbActive(0);
-        particles.setEffect(particlesEffect);
-        Transformation particleTransformation = new Transformation();
-        particleTransformation.setTranslation(25, 25, 25);
+        Effect fireEffect = new Effect();
+        fireEffect.setColor(new Color(255, 127, 0, 255));
+        fireEffect.addTexture(texSmoke);
+        ParticlesGeometry fireParticles = new ParticlesGeometry(20, 0);
+        fireParticles.setNbActive(0);
+        fireParticles.setEffect(fireEffect);
+        Transformation particlesTransformation = new Transformation();
+        fireParticles.setLocalTransformation(particlesTransformation);
+        ParticleController fireController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0);
+        fireParticles.addController(fireController);
 
-        //particles.setLocalTransformation(particleTransformation);
-        //particles.setNbActive(5);
+        Effect smokeEffect = new Effect();
+        smokeEffect.setColor(new Color(77, 77, 77, 127));
+        smokeEffect.addTexture(texSmoke);
+        ParticlesGeometry smokeParticles = new ParticlesGeometry(20, 0);
+        smokeParticles.setNbActive(0);
+        smokeParticles.setEffect(smokeEffect);
+        Transformation smokeTransformation = new Transformation();
+        smokeTransformation.setTranslation(0, 0.5f, 0);
+        smokeParticles.setLocalTransformation(smokeTransformation);
+        ParticleController smokeController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0);
+        smokeParticles.addController(smokeController);
 
-        ParticleController particleController = new ParticleController(new Vector3D(0, 0, 0), 0, 0, 0);
-        particles.addController(particleController);
+        fireNode.addChild(fireParticles);
+        fireNode.addChild(smokeParticles);
 
-        Effect quadEffect = new Effect();
-        quadEffect.addTexture(texGuillaume);
-        QuadGeometry quadGeometry = new QuadGeometry();
-        quadGeometry.setEffect(quadEffect);
-
-        this.sceneGraphRoot.addChild(quadGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
-        this.sceneGraphRoot.addChild(particles);
-        //this.sceneGraphRoot.addChild(new SphereGeometry());
-
+        this.sceneGraphRoot.addChild(fireNode);
 	}
 	
 	public List<Texture> getTextures() {
