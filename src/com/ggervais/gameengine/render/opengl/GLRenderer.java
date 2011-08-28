@@ -486,7 +486,46 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         drawCursor(gl);
 
+        List<Point3D> controlPoints = new ArrayList<Point3D>();
+        controlPoints.add(new Point3D(-2.5f, -2.5f, -10));
+        controlPoints.add(new Point3D(2.5f, 2.5f, -10));
+        controlPoints.add(new Point3D(4f, -8f, -15));
+        drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
+
         gl.glFlush();
+    }
+
+    public void drawBezierCurve(Point3D startPoint, Point3D endPoint, List<Point3D> controlPoints, int resolution) {
+
+        gl.glBegin(GL2.GL_LINE_STRIP);
+        for (int i = 0; i <= resolution; i++) {
+            float ratio = (i + 0f) / resolution;
+            List<Point3D> pointsToProcess = new ArrayList<Point3D>();
+            pointsToProcess.add(startPoint);
+            pointsToProcess.addAll(controlPoints);
+            pointsToProcess.add(endPoint);
+
+            while (pointsToProcess.size() > 1) {
+                List<Point3D> generatedPoints = new ArrayList<Point3D>();
+                for (int pointIndex = 0; pointIndex < pointsToProcess.size(); pointIndex++) {
+                    Point3D point = pointsToProcess.get(pointIndex);
+                    if (pointIndex < pointsToProcess.size() - 1) {
+                        Point3D next = pointsToProcess.get(pointIndex + 1);
+                        Vector3D diff = next.sub(point);
+                        Point3D newPoint = Point3D.add(point, diff.multiplied(ratio));
+                        generatedPoints.add(newPoint);
+                    }
+                }
+                pointsToProcess.clear();
+                pointsToProcess.addAll(generatedPoints);
+            }
+
+            if (pointsToProcess.size() == 1) {
+                Point3D pointToDraw = pointsToProcess.get(0);
+                gl.glVertex3f(pointToDraw.x(), pointToDraw.y(), pointToDraw.z());
+            }
+        }
+        gl.glEnd();
     }
 
     public static void main(String[] args) {

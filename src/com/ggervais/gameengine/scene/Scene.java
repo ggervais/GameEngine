@@ -53,7 +53,7 @@ public class Scene extends Observable {
 	
 	public void init() {
 
-        Texture texGuillaume = TextureLoader.loadTexture("assets/textures/gg.jpg", 2, 2);
+        Texture texGuillaume = TextureLoader.loadTexture("assets/textures/gg.jpg");
         Texture texGraffiti =  TextureLoader.loadTexture("assets/textures/textura_paralelipied.png");
         Texture texSmoke = TextureLoader.loadTexture("assets/textures/smoke.png", 2, 2);
         Texture texDebris = TextureLoader.loadTexture("assets/textures/debris.png", 3, 3);
