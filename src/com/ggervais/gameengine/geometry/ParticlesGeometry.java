@@ -198,12 +198,33 @@ public class ParticlesGeometry extends Geometry {
     @Override
     protected void generateTextureCoords(Effect effect) {
         for (int i = 0; i < effect.nbTextures(); i++) {
+            Texture texture = effect.getTexture(i);
+
             effect.clearTextureCoordinates(i);
             for (int j = 0; j < this.positions.size(); j++) {
-                effect.addTextureCoordinates(i, new TextureCoords(0, 0));
-                effect.addTextureCoordinates(i, new TextureCoords(0, 1));
-                effect.addTextureCoordinates(i, new TextureCoords(1, 1));
-                effect.addTextureCoordinates(i, new TextureCoords(1, 0));
+
+                int cell = random.nextInt(texture.getNbCellsWidth() * texture.getNbCellsHeight());
+                Vector3D min = texture.getMinBounds(cell);
+                Vector3D max = texture.getMaxBounds(cell);
+                float w = max.x() - min.x();
+                float h = max.y() - min.y();
+
+                float tu1 = 0;
+                float tv1 = 0;
+
+                float tu2 = 0;
+                float tv2 = 1;
+
+                float tu3 = 1;
+                float tv3 = 1;
+
+                float tu4 = 1;
+                float tv4 = 0;
+
+                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
+                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
+                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
+                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
             }
         }
     }

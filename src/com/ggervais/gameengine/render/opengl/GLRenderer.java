@@ -301,8 +301,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                         float tu = coords.getTextureU();
                         float tv = coords.getTextureV();
 
-                        tu = minBounds.x() + tu * w;
-                        tv = minBounds.y() + tv * h;
+                        //tu = minBounds.x() + tu * w;
+                        //tv = minBounds.y() + tv * h;
 
                         gl.glTexCoord2f(tu, tv);
                     }

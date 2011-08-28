@@ -2,6 +2,7 @@ package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
+import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
@@ -234,10 +235,31 @@ public class ParticleController extends MotionController {
             this.controlledSpatialObject.getEffect().removeColor(this.controlledSpatialObject.getEffect().nbColors() - 1);
 
             for (int textureIndex = 0; textureIndex < this.controlledSpatialObject.getEffect().nbTextures(); textureIndex++) {
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(0, 0));
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(0, 1));
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(1, 1));
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(1, 0));
+
+                Texture texture = this.controlledSpatialObject.getEffect().getTexture(textureIndex);
+
+                int cell = random.nextInt(texture.getNbCellsWidth() * texture.getNbCellsHeight());
+                Vector3D min = texture.getMinBounds(cell);
+                Vector3D max = texture.getMaxBounds(cell);
+                float w = max.x() - min.x();
+                float h = max.y() - min.y();
+
+                float tu1 = 0;
+                float tv1 = 0;
+
+                float tu2 = 0;
+                float tv2 = 1;
+
+                float tu3 = 1;
+                float tv3 = 1;
+
+                float tu4 = 1;
+                float tv4 = 0;
+
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
 
                 this.controlledSpatialObject.getEffect().removeTextureCoordinates(0, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
                 this.controlledSpatialObject.getEffect().removeTextureCoordinates(0, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
