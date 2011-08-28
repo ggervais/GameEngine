@@ -250,25 +250,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         Effect effect = geometry.getEffect();
         Texture texture = null;
         int textureIndex = -1;
-        Vector3D minBounds = new Vector3D(0, 0, 0);
-        Vector3D maxBounds = new Vector3D(1, 1, 0);
-        float w = 1;
-        float h = 1;
 
         if (effect != null && effect.nbTextures() > 0) {
             texture = effect.getTexture(0);
             if (texture != null) {
                 textureIndex = 0;
-                int tw = texture.getNbCellsWidth();
-                int th = texture.getNbCellsHeight();
-                int nb = tw * th;
-                int index = this.random.nextInt(nb);
-                if (nb > 0) {
-                    minBounds = effect.getMinBoundsForTexture(0);
-                    maxBounds = effect.getMaxBoundsForTexture(0);
-                    w = maxBounds.x() - minBounds.x();
-                    h = maxBounds.y() - minBounds.y();
-                }
             }
         }
 

@@ -26,6 +26,10 @@ public class TextureCoords {
 	public float getTextureV() {
 		return tv;
 	}
+
+    public String toString() {
+        return "{" + this.tu + ", " + this.tv + "}";
+    }
 	
 	
 }

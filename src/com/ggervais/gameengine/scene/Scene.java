@@ -53,7 +53,7 @@ public class Scene extends Observable {
 	
 	public void init() {
 
-        Texture texGuillaume = TextureLoader.loadTexture("assets/textures/gg.jpg");
+        Texture texGuillaume = TextureLoader.loadTexture("assets/textures/gg.jpg", 2, 2);
         Texture texGraffiti =  TextureLoader.loadTexture("assets/textures/textura_paralelipied.png");
         Texture texSmoke = TextureLoader.loadTexture("assets/textures/smoke.png", 2, 2);
         Texture texDebris = TextureLoader.loadTexture("assets/textures/debris.png", 3, 3);
@@ -237,26 +237,26 @@ public class Scene extends Observable {
         fireNode.addGlobalState(new ZBufferState(false));
 
         Effect fireEffect = new Effect();
-        fireEffect.setColor(new Color(255, 127, 0, 255));
+        fireEffect.setColor(new Color(255, 127, 0));
         fireEffect.addTexture(texSmoke);
-        ParticlesGeometry fireParticles = new ParticlesGeometry(20, 0);
+        ParticlesGeometry fireParticles = new ParticlesGeometry(200, 0);
         fireParticles.setNbActive(0);
         fireParticles.setEffect(fireEffect);
         Transformation particlesTransformation = new Transformation();
         fireParticles.setLocalTransformation(particlesTransformation);
-        ParticleController fireController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0);
+        ParticleController fireController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0, 850, 100, 0.75f, 0, 2, 7);
         fireParticles.addController(fireController);
 
         Effect smokeEffect = new Effect();
-        smokeEffect.setColor(new Color(77, 77, 77, 127));
+        smokeEffect.setColor(new Color(77, 77, 77));
         smokeEffect.addTexture(texSmoke);
-        ParticlesGeometry smokeParticles = new ParticlesGeometry(20, 0);
+        ParticlesGeometry smokeParticles = new ParticlesGeometry(20, 20);
         smokeParticles.setNbActive(0);
         smokeParticles.setEffect(smokeEffect);
         Transformation smokeTransformation = new Transformation();
-        smokeTransformation.setTranslation(0, 0.5f, 0);
+        smokeTransformation.setTranslation(0, 1.5f * particlesTransformation.getScale().x(), 0);
         smokeParticles.setLocalTransformation(smokeTransformation);
-        ParticleController smokeController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0);
+        ParticleController smokeController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0, 1600, 100, 0.35f, 0, 2.5f, 7);
         smokeParticles.addController(smokeController);
 
         fireNode.addChild(fireParticles);

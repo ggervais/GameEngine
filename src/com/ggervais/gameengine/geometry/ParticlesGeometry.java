@@ -22,6 +22,7 @@ import java.util.Random;
 public class ParticlesGeometry extends Geometry {
 
     private static final Logger log = Logger.getLogger(ParticlesGeometry.class);
+    private static final float DEFAULT_SIZE = 1;
     private List<Point3D> positions;
     private List<Float> sizes;
     private static Random random = new Random();
@@ -36,6 +37,22 @@ public class ParticlesGeometry extends Geometry {
         generateEmptyVertices();
         this.nbActive = nbParticles;
         this.nbParticles = nbParticles;
+    }
+
+    public void setSize(int i, float size) {
+        this.sizes.set(i, size);
+    }
+
+    public float getSize(int i) {
+        return this.sizes.get(i);
+    }
+
+    public void addSize(int index, float size) {
+        this.sizes.add(index, size);
+    }
+
+    public void removeSize(int index) {
+        this.sizes.remove(index);
     }
 
     public int getNbParticles() {
@@ -157,20 +174,20 @@ public class ParticlesGeometry extends Geometry {
             TextureCoords tc4 = this.textureBuffer.getCoords(positionCounter + 3);
 
             vertex1.setPosition(p1);
-            tc1.setTu(texture00.getTextureU());
-            tc1.setTv(texture00.getTextureV());
+            //tc1.setTu(texture00.getTextureU());
+            //tc1.setTv(texture00.getTextureV());
 
             vertex2.setPosition(p2);
-            tc2.setTu(texture01.getTextureU());
-            tc2.setTv(texture01.getTextureV());
+            //tc2.setTu(texture01.getTextureU());
+            //tc2.setTv(texture01.getTextureV());
 
             vertex3.setPosition(p3);
-            tc3.setTu(texture11.getTextureU());
-            tc3.setTv(texture11.getTextureV());
+            //tc3.setTu(texture11.getTextureU());
+            //tc3.setTv(texture11.getTextureV());
 
             vertex4.setPosition(p4);
-            tc4.setTu(texture10.getTextureU());
-            tc4.setTv(texture10.getTextureV());
+            //tc4.setTu(texture10.getTextureU());
+            //tc4.setTv(texture10.getTextureV());
 
             positionCounter += 4;
         }
@@ -185,7 +202,7 @@ public class ParticlesGeometry extends Geometry {
             float y = random.nextFloat() * radius;
             float z = random.nextFloat() * radius;
             this.positions.add(new Point3D(x, y, z));
-            this.sizes.add(1f);
+            this.sizes.add(DEFAULT_SIZE);
         }
     }
 
@@ -204,6 +221,7 @@ public class ParticlesGeometry extends Geometry {
             for (int j = 0; j < this.positions.size(); j++) {
 
                 int cell = random.nextInt(texture.getNbCellsWidth() * texture.getNbCellsHeight());
+
                 Vector3D min = texture.getMinBounds(cell);
                 Vector3D max = texture.getMaxBounds(cell);
                 float w = max.x() - min.x();
@@ -220,6 +238,7 @@ public class ParticlesGeometry extends Geometry {
 
                 float tu4 = 1;
                 float tv4 = 0;
+
 
                 effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
                 effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
