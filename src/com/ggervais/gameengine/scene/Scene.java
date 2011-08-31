@@ -9,6 +9,7 @@ import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.geometry.*;
 import com.ggervais.gameengine.input.InputSubsystem;
 import com.ggervais.gameengine.material.Material;
+import com.ggervais.gameengine.math.BezierCurve;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.material.texture.Texture;
@@ -22,6 +23,7 @@ import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
 import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
+import com.ggervais.gameengine.timing.BezierCurveController;
 import com.ggervais.gameengine.timing.FountainEmitterController;
 import net.java.games.input.Component.Identifier.Key;
 import org.apache.log4j.Logger;
@@ -262,8 +264,22 @@ public class Scene extends Observable {
         fireNode.addChild(fireParticles);
         fireNode.addChild(smokeParticles);
 
+        CubeGeometry bezierCube = new CubeGeometry();
+        Transformation bezierCubeTransformation = new Transformation();
+        //bezierCubeTransformation.setScale(0.1f, 0.1f, 0.1f);
+        bezierCube.setLocalTransformation(bezierCubeTransformation);
+        BezierCurveController bezierCurveController = new BezierCurveController(1f);
+        List<Point3D> controlPoints = new ArrayList<Point3D>();
+        controlPoints.add(new Point3D(-2.5f, -2.5f, -10));
+        controlPoints.add(new Point3D(2.5f, 2.5f, -10));
+        controlPoints.add(new Point3D(4f, -8f, -15));
+        BezierCurve bezierCurve = new BezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 500);
+        bezierCurveController.setBezierCurve(bezierCurve);
+        bezierCube.addController(bezierCurveController);
+
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(fireNode);
+        this.sceneGraphRoot.addChild(bezierCube);
 	}
 	
 	public List<Texture> getTextures() {

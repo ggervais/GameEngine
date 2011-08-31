@@ -481,9 +481,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         OpenGLUtils.drawAxisGrid(gl, 50);
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
 
-        Ray ray = DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
-        Point3D finalPoint = Point3D.add(ray.getOrigin(), ray.getDirection().multiplied(5));
-
         drawCursor(gl);
 
         List<Point3D> controlPoints = new ArrayList<Point3D>();

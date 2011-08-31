@@ -72,9 +72,8 @@ public class MotionController extends Controller {
 
                 RotationMatrix initialRotation = this.initialTransformation.getRotationMatrix();
 
-                float length = normalizedRotation.length();
-                float theta = (float) Math.asin(MathUtils.clamp(normalizedRotation.y() / length, -1, 1));
-                float phi = (float) Math.asin(MathUtils.clamp(normalizedRotation.z() / (length * (float) Math.cos(theta)), -1, 1));
+                float theta = (float) Math.asin(MathUtils.clamp(normalizedRotation.y(), -1, 1));
+                float phi = (float) Math.asin(MathUtils.clamp(normalizedRotation.z() / ((float) Math.cos(theta)), -1, 1));
 
                 RotationMatrix diffMatrix = RotationMatrix.createFromXYZ(0, -phi, theta);
 
