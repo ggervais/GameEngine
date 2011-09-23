@@ -42,7 +42,7 @@ public class BezierCurveController extends Controller {
         float phi = 0;
         Point3D finalPoint = null;
 
-        float distanceOnCurve = 0;
+        float distanceToCurrentPoint = 0;
         for (int i = 0; i < this.bezierCurvePoints.size(); i++) {
             Point3D currentPoint = this.bezierCurvePoints.get(i);
             Point3D nextPoint;
@@ -51,9 +51,8 @@ public class BezierCurveController extends Controller {
                 nextPoint = this.bezierCurvePoints.get(i + 1);
 
                 float distanceBetweenPoints = currentPoint.distance(nextPoint);
-                float distanceToCurrentPoint = distanceOnCurve;
 
-                if (this.currentLength >= distanceToCurrentPoint && this.currentLength <= (distanceOnCurve + distanceBetweenPoints)) {
+                if (this.currentLength >= distanceToCurrentPoint && this.currentLength <= (distanceToCurrentPoint + distanceBetweenPoints)) {
                     float diffLength = (this.currentLength - distanceToCurrentPoint);
                     Vector3D direction = Point3D.sub(nextPoint, currentPoint).normalized();
 
@@ -64,7 +63,7 @@ public class BezierCurveController extends Controller {
                     break;
                 }
 
-                distanceOnCurve += distanceBetweenPoints;
+                distanceToCurrentPoint += distanceBetweenPoints;
             }
         }
 
