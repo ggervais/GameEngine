@@ -64,13 +64,13 @@ public class BoundingBox {
         corners.add(transformation.getMatrix().mult(corner7));
         corners.add(transformation.getMatrix().mult(corner8));
 
-        float minX = 9999999;
-        float minY = 9999999;
-        float minZ = 9999999;
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float minZ = Float.MAX_VALUE;
 
-        float maxX = -9999999;
-        float maxY = -9999999;
-        float maxZ = -9999999;
+        float maxX = -Float.MAX_VALUE;
+        float maxY = -Float.MAX_VALUE;
+        float maxZ = -Float.MAX_VALUE;
 
         for (int i = 0; i < corners.size(); i++) {
             Point3D p = corners.get(i);

@@ -22,10 +22,10 @@ public abstract class Geometry extends Spatial {
 	protected int nbVerticesPerFace;
 	private List<Face> faces;
     protected int nbFaces;
+    protected List<Vector3D> normals;
 
     private BoundingBox modelBoundingBox;
     private boolean isBoundingBoxDirty;
-    private boolean isBoundingSphereDirty;
 
    private Map<GlobalStateType, GlobalState> globalStates;
 
@@ -38,10 +38,10 @@ public abstract class Geometry extends Spatial {
         this.vertexBuffer = new VertexBuffer();
 		this.indexBuffer = new IndexBuffer();
 		this.textureBuffer = new TextureBuffer();
+        this.normals = new ArrayList<Vector3D>();
 		this.nbVerticesPerFace = nbVerticesPerFace;
 		this.faces = new ArrayList<Face>();
         this.isBoundingBoxDirty = true;
-        this.isBoundingSphereDirty = true;
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
         this.modelBoundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
         this.nbFaces = 0;
@@ -149,21 +149,13 @@ public abstract class Geometry extends Spatial {
 
         // TODO fix precision
 
-        float minX = 999999;
-        float minY = 999999;
-        float minZ = 999999;
-
-        float maxX = -999999;
-        float maxY = -999999;
-        float maxZ = -999999;
-
-        /*float minX = Float.MAX_VALUE;
+        float minX = Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
         float minZ = Float.MAX_VALUE;
 
-        float maxX = Float.MIN_VALUE;
-        float maxY = Float.MIN_VALUE;
-        float maxZ = Float.MIN_VALUE;*/
+        float maxX = -Float.MAX_VALUE;
+        float maxY = -Float.MAX_VALUE;
+        float maxZ = -Float.MAX_VALUE;
 
         for (int i = 0; i < this.vertexBuffer.size(); i++) {
             Vertex vertex = this.vertexBuffer.getVertex(i);
