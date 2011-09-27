@@ -70,7 +70,7 @@ public class Viewport {
         normalizedCoordinates.y(2 * (point.y()  - this.y) / this.height - 1);
         normalizedCoordinates.z(2 * (point.z()) - 1);
 
-        //System.out.println(point + " -> " + normalizedCoordinates);
+        //log.info(point + " -> " + normalizedCoordinates);
 
         Matrix4x4 modelViewMultipliedByProjection = Matrix4x4.mult(projectionMatrix, modelViewMatrix);
         Matrix4x4 inverse = modelViewMultipliedByProjection.inverse();

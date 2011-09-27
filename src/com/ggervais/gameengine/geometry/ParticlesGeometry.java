@@ -6,7 +6,6 @@ import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.Camera;
@@ -14,7 +13,6 @@ import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import org.apache.log4j.Logger;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -123,7 +121,7 @@ public class ParticlesGeometry extends Geometry {
 
     private void generateParticles(Camera camera) {
 
-        this.setBoundingBoxDirty(true);
+        this.setGeometryDirty(true);
 
         // Should be RotationMatrix, but this works too.
         Matrix4x4 transposedRotation = this.worldTransform.getRotationMatrix().transposed();

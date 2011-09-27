@@ -43,4 +43,9 @@ public class VertexBuffer {
     public void setNbVertices(int size) {
         this.nbVertices = MathUtils.clamp(size, 0, this.vertices.size());
     }
+
+    public void clear() {
+        this.vertices.clear();
+        resetNbVertices();
+    }
 }

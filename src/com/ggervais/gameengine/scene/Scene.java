@@ -277,6 +277,7 @@ public class Scene extends Observable {
         bezierCurveController.setBezierCurve(bezierCurve);
         bezierCube.addController(bezierCurveController);
 
+        this.sceneGraphRoot.addChild(new SphereGeometry());
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);

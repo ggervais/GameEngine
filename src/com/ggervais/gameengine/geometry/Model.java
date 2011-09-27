@@ -84,7 +84,7 @@ public class Model {
 
         Point3D center = new Point3D(averageX, averageY, averageZ);
 
-        float radiusSquared = Float.MIN_VALUE;
+        float radiusSquared = (-Float.MAX_VALUE);
         for (Face face: this.faces) {
             for (int i = 0; i < face.nbVertices(); i++) {
                 Vertex vertex = face.getVertex(i);
@@ -113,9 +113,9 @@ public class Model {
         float minY = Float.MAX_VALUE;
         float minZ = Float.MAX_VALUE;
 
-        float maxX = Float.MIN_VALUE;
-        float maxY = Float.MIN_VALUE;
-        float maxZ = Float.MIN_VALUE;
+        float maxX = (-Float.MAX_VALUE);
+        float maxY = (-Float.MAX_VALUE);
+        float maxZ = (-Float.MAX_VALUE);
 
         for (Face face: this.faces) {
             for (int i = 0; i < face.nbVertices(); i++) {

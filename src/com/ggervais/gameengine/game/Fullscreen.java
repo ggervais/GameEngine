@@ -1,4 +1,6 @@
 package com.ggervais.gameengine.game;
+import org.apache.log4j.Logger;
+
 import java.awt.DisplayMode;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
@@ -6,6 +8,7 @@ import java.awt.GraphicsEnvironment;
 
 public class Fullscreen 
 {
+  private static final Logger log = Logger.getLogger(Fullscreen.class);
   boolean fullscreen = false;
   boolean displayChanged = false;
 
@@ -29,7 +32,7 @@ public class Fullscreen
       frame.setUndecorated( true );
       if( gd.isFullScreenSupported() )
       {
-	System.out.println("Fullscreen...");//ddd
+	log.info("Fullscreen...");//ddd
 	try {
 	      gd.setFullScreenWindow( frame );
 	      fullscreen = true; 
@@ -65,7 +68,7 @@ public class Fullscreen
 	if( gd.isFullScreenSupported() )
 	{
 	  gd.setFullScreenWindow(null);
-	  System.out.println("Exit fullscreen done.");//ddd
+	  log.info("Exit fullscreen done.");//ddd
 	  if( displayChanged ) {
 	    gd.setDisplayMode( dm_old ); 
 	  }
@@ -76,13 +79,13 @@ public class Fullscreen
 
   public int getHeight() 
     { 
-      //System.out.println("dm.getHeight:"+dm.getHeight());//ddd
+      //log.info("dm.getHeight:"+dm.getHeight());//ddd
       return dm.getHeight(); 
     }
   
   public int getWidth() 
     { 
-      //System.out.println("dm.getWidth:"+dm.getWidth());//ddd
+      //log.info("dm.getWidth:"+dm.getWidth());//ddd
       return dm.getWidth(); 
     }
 }

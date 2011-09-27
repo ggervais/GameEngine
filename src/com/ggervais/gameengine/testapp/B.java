@@ -1,5 +1,7 @@
 package com.ggervais.gameengine.testapp;
 
+import org.apache.log4j.Logger;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ggervais
@@ -9,12 +11,14 @@ package com.ggervais.gameengine.testapp;
  */
 public class B extends A {
 
+    private static final Logger log = Logger.getLogger(B.class);
+
     public void process(B b) {
-        System.out.println("b");
+        log.info("b");
     }
 
     public void process(A a) {
-        System.out.println("a");
+        log.info("a");
     }
 
     public static void main(String[] args) {

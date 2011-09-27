@@ -268,7 +268,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
                     Vertex vertex = vertexBuffer.getVertex(index);
                     Point3D vertexPosition = vertex.getPosition();
-
+                    Vector3D normal = geometry.getNormal(index);
 
                     if (effect != null) {
                         Color color = effect.getColor(index);
@@ -293,11 +293,27 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                         gl.glTexCoord2f(tu, tv);
                     }
 
-                    gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
+                    if (normal != null) {
+                        gl.glNormal3f(normal.x(), normal.y(), normal.z());
+                    }
 
+                    gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
                 }
 			}
 		gl.glEnd();
+
+        gl.glBegin(GL.GL_LINES);
+        gl.glColor4f(1f, 1f, 1f, 1f);
+        for (int i = 0; i < vertexBuffer.size(); i++) {
+            Vector3D normal = geometry.getNormal(i);
+            if (normal != null) {
+                Point3D beginningOfNormal = vertexBuffer.getVertex(i).getPosition();
+                Point3D endOfNormal = Point3D.add(beginningOfNormal, normal.multiplied(0.5f));
+                gl.glVertex3f(beginningOfNormal.x(), beginningOfNormal.y(), beginningOfNormal.z());
+                gl.glVertex3f(endOfNormal.x(), endOfNormal.y(), endOfNormal.z());
+            }
+        }
+        gl.glEnd();
     }
 
 
@@ -425,10 +441,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         int[] viewport = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
 
-        /*System.out.println("Projected near: (" + projectedNear[0] + ", " + projectedNear[1] + ", " + projectedNear[2] + ").");
-        System.out.println("Projected far: (" + projectedFar[0] + ", " + projectedFar[1] + ", " + projectedFar[2] + ").");
-        System.out.println("Difference: ("  + (projectedFar[0] - projectedNear[0]) + ", " + (projectedFar[1] - projectedNear[1]) + ", " + (projectedFar[2] - projectedNear[2]) + ").");
-        System.out.println("=====");     */
+        /*log.info("Projected near: (" + projectedNear[0] + ", " + projectedNear[1] + ", " + projectedNear[2] + ").");
+        log.info("Projected far: (" + projectedFar[0] + ", " + projectedFar[1] + ", " + projectedFar[2] + ").");
+        log.info("Difference: ("  + (projectedFar[0] - projectedNear[0]) + ", " + (projectedFar[1] - projectedNear[1]) + ", " + (projectedFar[2] - projectedNear[2]) + ").");
+        log.info("=====");     */
     }
 
     private void drawCursor(GL2 gl) {
@@ -563,7 +579,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         glu.gluUnProject(50, 50, 0, modelView.toColumnMajorArray(), 0, projection.toColumnMajorArray(), 0, vpv, 0, result, 0);
 
-        System.out.println("(" + result[0] + ", " + result[1] + ", " + result[2] + ")");
-        System.out.println(vp.unproject(new Point3D(50, 50, 0, 1), modelView, projection));
+        log.info("(" + result[0] + ", " + result[1] + ", " + result[2] + ")");
+        log.info(vp.unproject(new Point3D(50, 50, 0, 1), modelView, projection));
     }
 }

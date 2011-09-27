@@ -105,9 +105,9 @@ public class DisplaySubsystem implements Subsystem {
         Point3D transformedNearPoint = this.viewport.unproject(nearPoint, this.modelViewMatrix, this.projectionMatrix);
         Point3D transformedFarPoint = this.viewport.unproject(farPoint, this.modelViewMatrix, this.projectionMatrix);
 
-        //System.out.println(transformedNearPoint + " " + transformedFarPoint);
-        //System.out.println(transformedFarPoint.sub(transformedNearPoint).normalized());
-        //System.out.println("=====");
+        //log.info(transformedNearPoint + " " + transformedFarPoint);
+        //log.info(transformedFarPoint.sub(transformedNearPoint).normalized());
+        //log.info("=====");
 
         Point3D rayOrigin = transformedNearPoint.copy();
         Vector3D rayDirection = Point3D.sub(transformedFarPoint, transformedNearPoint).normalized();

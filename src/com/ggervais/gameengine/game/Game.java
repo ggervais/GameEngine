@@ -118,7 +118,7 @@ public class Game {
                     //box.transform(child.getWorldTransformation());
                     Point3D intersect = box.intersects(ray);
                     if (intersect != null) {
-                        //System.out.println(child + " intersects with ray at " + intersect);
+                        //log.info(child + " intersects with ray at " + intersect);
                         child.setPickedInCurrentUpdate(true);
                     } else {
                         child.setPickedInCurrentUpdate(false);

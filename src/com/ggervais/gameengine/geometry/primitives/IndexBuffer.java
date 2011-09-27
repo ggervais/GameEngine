@@ -26,4 +26,8 @@ public class IndexBuffer {
 	public void removeIndex(Integer index) {
 		this.indices.remove(index);
 	}
+
+    public void clear() {
+        this.indices.clear();
+    }
 }

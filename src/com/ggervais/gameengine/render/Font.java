@@ -59,10 +59,10 @@ public class Font implements Resource {
 
     public void createAsciiBitmap() {
 
-        double minWidth = 999999;
-        double maxWidth = -999999;
-        double minHeight = 999999;
-        double maxHeight = -999999;
+        double minWidth = Double.MAX_VALUE;
+        double maxWidth = (-Double.MAX_VALUE);
+        double minHeight = Double.MAX_VALUE;
+        double maxHeight = (-Double.MAX_VALUE);
 
         for (int i = 0; i < 256; i++) {
             char character = (char) i;

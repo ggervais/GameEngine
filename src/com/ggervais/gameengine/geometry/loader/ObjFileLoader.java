@@ -236,7 +236,7 @@ public class ObjFileLoader extends GeometryLoader {
 			// Throw an exception.
 		}
 		
-		System.out.println("done!");
+		log.info("done!");
 		
 		DisplayableEntity entity = new DisplayableEntity(model);
 		if (texture != null) {
