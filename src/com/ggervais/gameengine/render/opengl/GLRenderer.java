@@ -213,6 +213,20 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 }
             }
         }
+
+        float[] mat_specular = { 1.0f, 1.0f, 1.0f, 1.0f };
+        float[] mat_shininess = { 50.0f };
+        float[] light_position = { 1.0f, 1.0f, 1.0f, 0.0f };
+        gl.glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glShadeModel (GL2.GL_SMOOTH);
+
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
+
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glEnable(GL2.GL_DEPTH_TEST);
 	}
 
     @Override
@@ -302,7 +316,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 			}
 		gl.glEnd();
 
-        gl.glBegin(GL.GL_LINES);
+        /*gl.glBegin(GL.GL_LINES);
         gl.glColor4f(1f, 1f, 1f, 1f);
         for (int i = 0; i < vertexBuffer.size(); i++) {
             Vector3D normal = geometry.getNormal(i);
@@ -313,7 +327,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 gl.glVertex3f(endOfNormal.x(), endOfNormal.y(), endOfNormal.z());
             }
         }
-        gl.glEnd();
+        gl.glEnd();*/
     }
 
 
