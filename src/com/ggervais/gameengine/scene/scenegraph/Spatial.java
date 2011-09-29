@@ -84,10 +84,12 @@ public abstract class Spatial {
         if (isInitiator) {
             stateMap = new HashMap<GlobalStateType, Stack<GlobalState>>();
             stateMap.put(GlobalStateType.ALPHA_BLENDING, new Stack<GlobalState>());
+            stateMap.put(GlobalStateType.LIGHTING, new Stack<GlobalState>());
             stateMap.put(GlobalStateType.WIREFRAME, new Stack<GlobalState>());
             stateMap.put(GlobalStateType.ZBUFFER, new Stack<GlobalState>());
 
             stateMap.get(GlobalStateType.ALPHA_BLENDING).push(new AlphaBlendingState());
+            stateMap.get(GlobalStateType.LIGHTING).push(new LightingState());
             stateMap.get(GlobalStateType.WIREFRAME).push(new WireframeState());
             stateMap.get(GlobalStateType.ZBUFFER).push(new ZBufferState());
 

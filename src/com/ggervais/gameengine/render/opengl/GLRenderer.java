@@ -41,6 +41,7 @@ import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
+import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
 import org.apache.log4j.Logger;
@@ -214,19 +215,21 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
 
-        float[] mat_specular = { 1.0f, 1.0f, 1.0f, 1.0f };
-        float[] mat_shininess = { 50.0f };
-        float[] light_position = { 1.0f, 1.0f, 1.0f, 0.0f };
+        float[] specularLight = { 1.0f, 1.0f, 1.0f, 1.0f };
+        float[] lightShininess = { 50.0f };
+        float[] lightPosition = { 1.0f, 100.0f, 1.0f, 0.0f };
         gl.glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
         gl.glShadeModel (GL2.GL_SMOOTH);
 
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, specularLight, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, lightShininess, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPosition, 0);
 
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
         gl.glEnable(GL2.GL_DEPTH_TEST);
+
+        gl.glEnable(GL2.GL_NORMALIZE);
 	}
 
     @Override
@@ -328,6 +331,15 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
         gl.glEnd();*/
+    }
+
+    @Override
+    public void setLightingState(LightingState state) {
+        if (state.isEnabled()) {
+            gl.glEnable(GL2.GL_LIGHTING);
+        } else {
+            gl.glDisable(GL2.GL_LIGHTING);
+        }
     }
 
 
@@ -508,6 +520,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     public void endRendering() {
 
 
+        gl.glDisable(GL2.GL_LIGHTING);
         OpenGLUtils.drawAxisGrid(gl, 50);
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
 
@@ -518,6 +531,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         controlPoints.add(new Point3D(2.5f, 2.5f, -10));
         controlPoints.add(new Point3D(4f, -8f, -15));
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
+        gl.glEnable(GL2.GL_LIGHTING);
+
 
         gl.glFlush();
     }

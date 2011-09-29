@@ -59,6 +59,10 @@ public abstract class SceneRenderer implements Observer {
             setAlphaBlendingState((AlphaBlendingState) states.get(GlobalStateType.ALPHA_BLENDING));
         }
 
+        if (states.get(GlobalStateType.LIGHTING) != null) {
+            setLightingState((LightingState) states.get(GlobalStateType.LIGHTING));
+        }
+
         if (states.get(GlobalStateType.WIREFRAME) != null) {
             setWireframeState((WireframeState) states.get(GlobalStateType.WIREFRAME));
         }
@@ -113,6 +117,7 @@ public abstract class SceneRenderer implements Observer {
     public abstract void setWorldTransformations(Transformation worldTransformation);
     public abstract void restoreWorldTransformations();
     public abstract void drawElements(Geometry geometry);
+    public abstract void setLightingState(LightingState state);
     public abstract void setAlphaBlendingState(AlphaBlendingState state);
     public abstract void setWireframeState(WireframeState state);
     public abstract void setZBufferState(ZBufferState state);

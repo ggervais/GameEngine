@@ -18,10 +18,7 @@ import com.ggervais.gameengine.particle.*;
 import com.ggervais.gameengine.physics.MotionController;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.scene.scenegraph.*;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
+import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
 import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
 import com.ggervais.gameengine.timing.BezierCurveController;
 import com.ggervais.gameengine.timing.FountainEmitterController;
@@ -279,12 +276,17 @@ public class Scene extends Observable {
 
         Transformation sphereTransformation = new Transformation();
         sphereTransformation.setTranslation(10, 0, 0);
-        SphereGeometry sphereGeometry = new SphereGeometry();
+        SphereGeometry sphereGeometry = new SphereGeometry(16, 16);
         sphereGeometry.setLocalTransformation(sphereTransformation);
 
+        GlobalState lightingOn = new LightingState(true);
+        GlobalState lightingOff = new LightingState(false);
+
+        fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
         this.sceneGraphRoot.addChild(fireNode);
+        bezierCube.addGlobalState(lightingOn);
         this.sceneGraphRoot.addChild(bezierCube);
 	}
 	
