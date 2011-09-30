@@ -276,11 +276,18 @@ public class Scene extends Observable {
 
         Transformation sphereTransformation = new Transformation();
         sphereTransformation.setTranslation(10, 0, 0);
+        Effect blueEffect = new Effect();
+        blueEffect.setColor(new Color(0, 0, 255));
         SphereGeometry sphereGeometry = new SphereGeometry(16, 16);
+        sphereGeometry.setEffect(blueEffect);
         sphereGeometry.setLocalTransformation(sphereTransformation);
 
         GlobalState lightingOn = new LightingState(true);
         GlobalState lightingOff = new LightingState(false);
+
+        Effect colorEffect = new Effect();
+        colorEffect.setColor(new Color(0, 255, 0));
+        bezierCube.setEffect(colorEffect);
 
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(sphereGeometry);

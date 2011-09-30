@@ -215,20 +215,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
 
-        float[] specularLight = { 1.0f, 1.0f, 1.0f, 1.0f };
-        float[] lightShininess = { 50.0f };
-        float[] lightPosition = { 1.0f, 100.0f, 1.0f, 0.0f };
-        gl.glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
-        gl.glShadeModel (GL2.GL_SMOOTH);
-
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, specularLight, 0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, lightShininess, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPosition, 0);
-
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glEnable(GL2.GL_LIGHT0);
         gl.glEnable(GL2.GL_DEPTH_TEST);
-
         gl.glEnable(GL2.GL_NORMALIZE);
 	}
 
@@ -466,6 +453,22 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         int[] viewport = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
+
+        // Init lighting.
+        float[] specularLight = { 1.0f, 1.0f, 1.0f, 1.0f };
+        float[] lightShininess = { 50.0f };
+        float[] lightPosition = { 1.0f, 100.0f, 1.0f, 0.0f };
+        gl.glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glShadeModel (GL2.GL_SMOOTH);
+
+        gl.glColorMaterial(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, specularLight, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, lightShininess, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPosition, 0);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
+
 
         /*log.info("Projected near: (" + projectedNear[0] + ", " + projectedNear[1] + ", " + projectedNear[2] + ").");
         log.info("Projected far: (" + projectedFar[0] + ", " + projectedFar[1] + ", " + projectedFar[2] + ").");
