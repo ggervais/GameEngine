@@ -274,6 +274,11 @@ public abstract class Geometry extends Spatial {
 
     @Override
     public void draw(SceneRenderer renderer) {
+        for (Light light : this.lights) {
+            if (light.isOn()) {
+                renderer.enableLight(light);
+            }
+        }
         renderer.drawGeometry(this);
     }
 
