@@ -39,6 +39,7 @@ import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
+import com.ggervais.gameengine.scene.scenegraph.Light;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
@@ -52,15 +53,18 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
 	private GLU glu;
     private GL2 gl;
+    private int nbLights;
+    private static final int MAX_LIGHTS = 8;
 
     private static final Random random = new Random();
 
     private static float particleLife = 1.0f;
 
-	public GLRenderer(Scene scene, GLCanvas canvas) {
+    public GLRenderer(Scene scene, GLCanvas canvas) {
 		super(scene, canvas);
 		canvas.addGLEventListener(this);
 		this.glu = new GLU();
+        this.nbLights = 0;
 	}
 
     public void display(GLAutoDrawable glDrawable) {
@@ -421,8 +425,22 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		this.canvas.repaint();
 	}
 
+    private void resetLights() {
+        this.nbLights = 0;
+        gl.glDisable(GL2.GL_LIGHT0);
+        gl.glDisable(GL2.GL_LIGHT1);
+        gl.glDisable(GL2.GL_LIGHT2);
+        gl.glDisable(GL2.GL_LIGHT3);
+        gl.glDisable(GL2.GL_LIGHT4);
+        gl.glDisable(GL2.GL_LIGHT5);
+        gl.glDisable(GL2.GL_LIGHT6);
+        gl.glDisable(GL2.GL_LIGHT7);
+    }
+
     @Override
     public void beginRendering() {
+
+        resetLights();
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
@@ -572,6 +590,47 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         }
         gl.glEnd();
     }
+
+    @Override
+    public void enableLight(Light light) {
+
+        if (this.nbLights > 0 && this.nbLights < MAX_LIGHTS) {
+            int lightId = -1;
+            switch (this.nbLights) {
+                case 1:
+                    lightId = GL2.GL_LIGHT0;
+                    break;
+                case 2:
+                    lightId = GL2.GL_LIGHT1;
+                    break;
+                case 3:
+                    lightId = GL2.GL_LIGHT2;
+                    break;
+                case 4:
+                    lightId = GL2.GL_LIGHT3;
+                    break;
+                case 5:
+                    lightId = GL2.GL_LIGHT4;
+                    break;
+                case 6:
+                    lightId = GL2.GL_LIGHT5;
+                    break;
+                case 7:
+                    lightId = GL2.GL_LIGHT6;
+                    break;
+                case 8:
+                    lightId = GL2.GL_LIGHT7;
+                    break;
+            }
+            if (lightId != -1) {
+                gl.glEnable(lightId);
+                // Set light properties here.
+            }
+        }
+
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
     public static void main(String[] args) {
         //ProjectFloat glu = new ProjectFloat();

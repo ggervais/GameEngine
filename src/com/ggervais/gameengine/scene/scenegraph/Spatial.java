@@ -22,6 +22,7 @@ public abstract class Spatial {
     protected BoundingBox boundingBox;
     protected BoundingSphere boundingSphere;
     private boolean pickedInCurrentUpdate; // TODO temporary code.
+    protected List<Light> lights;
 
     public Spatial() {
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
@@ -32,6 +33,7 @@ public abstract class Spatial {
         this.boundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
         this.boundingSphere = new BoundingSphere(Point3D.zero(), 0);
         this.pickedInCurrentUpdate = false;
+        this.lights = new ArrayList<Light>();
     }
 
     public BoundingBox getBoundingBox() {
@@ -146,9 +148,6 @@ public abstract class Spatial {
 
     protected void updateWorldData(long currentTime) {
 
-        if (this instanceof ParticlesGeometry) {
-            int a = 0;
-        }
         updateControllers(currentTime);
 
         if (this.parent != null) {
@@ -228,5 +227,33 @@ public abstract class Spatial {
 
     public void visit(SpatialVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public void addLight(Light light) {
+        if (light != null && this.lights.indexOf(light) == -1) {
+            this.lights.add(light);
+        }
+    }
+
+    public void removeLight(Light light) {
+        if (light != null) {
+            this.lights.remove(light);
+        }
+    }
+
+    public void clearLights() {
+        this.lights.clear();
+    }
+
+    public int getNbLights() {
+        return this.lights.size();
+    }
+
+    public Light getLight(int i) {
+        Light light = null;
+        if (i >= 0 && i < this.lights.size()) {
+            light = this.lights.get(i);
+        }
+        return light;
     }
 }

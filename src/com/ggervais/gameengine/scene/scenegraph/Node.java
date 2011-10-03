@@ -61,6 +61,12 @@ public class Node extends Spatial {
     @Override
     public void draw(SceneRenderer renderer) {
 
+        for (Light light : this.lights) {
+            if (light.isOn()) {
+                renderer.enableLight(light);
+            }
+        }
+
         synchronized (getChildrenLock()) {
             for (Spatial child : this.children) {
                 child.onDraw(renderer);

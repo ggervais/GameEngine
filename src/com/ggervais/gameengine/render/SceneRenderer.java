@@ -8,10 +8,7 @@ import java.util.Observer;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.scene.Scene;
-import com.ggervais.gameengine.scene.scenegraph.Effect;
-import com.ggervais.gameengine.scene.scenegraph.Geometry;
-import com.ggervais.gameengine.scene.scenegraph.Node;
-import com.ggervais.gameengine.scene.scenegraph.Transformation;
+import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
 
 // Render the scene onto a "canvas" (in our case, a Component).
@@ -126,5 +123,6 @@ public abstract class SceneRenderer implements Observer {
     public abstract void bindTexture(Texture texture);
     public abstract void unbindTexture(Texture texture);
     public abstract void drawBoundingBox(BoundingBox box, boolean isPicked); // TODO temporary code
+    public abstract void enableLight(Light light);
 
 }
