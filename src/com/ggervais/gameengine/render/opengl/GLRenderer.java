@@ -475,16 +475,13 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         // Init lighting.
         float[] specularLight = { 1.0f, 1.0f, 1.0f, 1.0f };
         float[] lightShininess = { 50.0f };
-        float[] lightPosition = { 1.0f, 100.0f, 1.0f, 0.0f };
         gl.glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
         gl.glShadeModel (GL2.GL_SMOOTH);
 
         gl.glColorMaterial(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, specularLight, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, lightShininess, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPosition, 0);
         gl.glEnable(GL2.GL_LIGHTING);
-        gl.glEnable(GL2.GL_LIGHT0);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
 
 
@@ -594,41 +591,26 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void enableLight(Light light) {
 
-        if (this.nbLights > 0 && this.nbLights < MAX_LIGHTS) {
-            int lightId = -1;
-            switch (this.nbLights) {
-                case 1:
-                    lightId = GL2.GL_LIGHT0;
-                    break;
-                case 2:
-                    lightId = GL2.GL_LIGHT1;
-                    break;
-                case 3:
-                    lightId = GL2.GL_LIGHT2;
-                    break;
-                case 4:
-                    lightId = GL2.GL_LIGHT3;
-                    break;
-                case 5:
-                    lightId = GL2.GL_LIGHT4;
-                    break;
-                case 6:
-                    lightId = GL2.GL_LIGHT5;
-                    break;
-                case 7:
-                    lightId = GL2.GL_LIGHT6;
-                    break;
-                case 8:
-                    lightId = GL2.GL_LIGHT7;
-                    break;
-            }
-            if (lightId != -1) {
-                gl.glEnable(lightId);
-                // Set light properties here.
-            }
-        }
+        // At this stage, current matrix is in object space (not world space).
+        if (this.nbLights >= 0 && this.nbLights < MAX_LIGHTS) {
 
-        //To change body of implemented methods use File | Settings | File Templates.
+            nbLights++;
+
+            int lightId = GL2.GL_LIGHT0 + (this.nbLights - 1);
+
+            Vector3D translation = light.getLocalTransformation().getTranslation();
+
+            float[] position = {translation.x(), translation.y(), translation.z(), 0};
+            float[] ambient = {light.getAmbient().getRed() / 255f, light.getAmbient().getGreen() / 255f, light.getAmbient().getBlue() / 255f, 1};
+            float[] diffuse = {light.getDiffuse().getRed() / 255f, light.getDiffuse().getGreen() / 255f, light.getDiffuse().getBlue() / 255f, 1};
+            float[] specular = {light.getSpecular().getRed() / 255f, light.getSpecular().getGreen() / 255f, light.getSpecular().getBlue() / 255f, 1};
+
+            gl.glEnable(lightId);
+            /*gl.glLightfv(lightId, GL2.GL_SPECULAR, specular, 0);
+            gl.glLightfv(lightId, GL2.GL_DIFFUSE, diffuse, 0);
+            gl.glLightfv(lightId, GL2.GL_AMBIENT, ambient, 0);*/
+            gl.glLightfv(lightId, GL2.GL_POSITION, position, 0);
+        }
     }
 
 

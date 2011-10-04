@@ -278,7 +278,7 @@ public class Scene extends Observable {
         sphereTransformation.setTranslation(10, 0, 0);
         Effect blueEffect = new Effect();
         blueEffect.setColor(new Color(0, 0, 255));
-        SphereGeometry sphereGeometry = new SphereGeometry(16, 16);
+        SphereGeometry sphereGeometry = new SphereGeometry(32, 32);
         sphereGeometry.setEffect(blueEffect);
         sphereGeometry.setLocalTransformation(sphereTransformation);
 
@@ -289,11 +289,16 @@ public class Scene extends Observable {
         colorEffect.setColor(new Color(0, 255, 0));
         bezierCube.setEffect(colorEffect);
 
-        fireNode.addGlobalState(lightingOff);
+        Light light = new Light();
+        Transformation lightTransformation = new Transformation();
+        lightTransformation.setTranslation(0, 10, 0);
+        light.setLocalTransformation(lightTransformation);
+
+        this.sceneGraphRoot.addLight(light);
         this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
+        fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
-        bezierCube.addGlobalState(lightingOn);
         this.sceneGraphRoot.addChild(bezierCube);
 	}
 	

@@ -36,7 +36,7 @@ public abstract class SceneRenderer implements Observer {
 	public Scene getScene() {
 		return scene;
 	}
-	
+
 	public void setCanvas(Component canvas) {
 		this.canvas = canvas;
 	}
@@ -105,7 +105,6 @@ public abstract class SceneRenderer implements Observer {
         if (effect.nbTextures() > 0) {
             Texture texture = effect.getTexture(0);
             unbindTexture(texture);
-
         }
     }
 
