@@ -157,6 +157,9 @@ public abstract class Spatial {
             this.worldTransform = this.localTransform;
         }
 
+        for (Light light : this.lights) {
+            light.updateWorldData(currentTime);
+        }
 
     }
 
@@ -232,6 +235,7 @@ public abstract class Spatial {
     public void addLight(Light light) {
         if (light != null && this.lights.indexOf(light) == -1) {
             this.lights.add(light);
+            light.setParent(this);
         }
     }
 

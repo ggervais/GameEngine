@@ -598,7 +598,12 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
             int lightId = GL2.GL_LIGHT0 + (this.nbLights - 1);
 
-            Vector3D translation = light.getLocalTransformation().getTranslation();
+            Matrix4x4 world = light.getWorldTransformation().getMatrix();
+            Vector3D translation = new Vector3D();
+            translation.x(world.getElement(1, 4));
+            translation.y(world.getElement(2, 4));
+            translation.z(world.getElement(3, 4));
+            translation.w(world.getElement(4, 4));
 
             float[] position = {translation.x(), translation.y(), translation.z(), 0};
             float[] ambient = {light.getAmbient().getRed() / 255f, light.getAmbient().getGreen() / 255f, light.getAmbient().getBlue() / 255f, 1};
