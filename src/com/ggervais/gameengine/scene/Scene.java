@@ -275,10 +275,11 @@ public class Scene extends Observable {
         bezierCube.addController(bezierCurveController);
 
         Transformation sphereTransformation = new Transformation();
-        sphereTransformation.setTranslation(10, 0, 0);
+        sphereTransformation.setTranslation(0, 0, 0);
+        sphereTransformation.setRotation(0, fortyFiveDegrees, fortyFiveDegrees);
         Effect blueEffect = new Effect();
         blueEffect.setColor(new Color(0, 0, 255));
-        SphereGeometry sphereGeometry = new SphereGeometry(32, 32);
+        SphereGeometry sphereGeometry = new SphereGeometry(50, 50);
         sphereGeometry.setEffect(blueEffect);
         sphereGeometry.setLocalTransformation(sphereTransformation);
 
@@ -291,14 +292,23 @@ public class Scene extends Observable {
 
         Light light = new Light();
         Transformation lightTransformation = new Transformation();
-        lightTransformation.setTranslation(0, 10, 0);
+        lightTransformation.setTranslation(-2, 0, 0);
         light.setLocalTransformation(lightTransformation);
+        light.setSpecular(new Color(255, 0, 0));
 
-        this.sceneGraphRoot.addLight(light);
+
+        sphereGeometry.addLight(light);
+
+        Light light2 = new Light();
+        light2.setSpecular(new Color(0, 255, 0));
+
+        MotionController sphereController = new MotionController(Vector3D.zero(), 1, 0, 0);
+        sphereGeometry.addController(sphereController);
+        this.sceneGraphRoot.addLight(light2);
         this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
         fireNode.addGlobalState(lightingOff);
-        this.sceneGraphRoot.addChild(fireNode);
+        //this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
 	}
 	

@@ -23,9 +23,9 @@ public class Light extends Spatial {
 
     public Light() {
         this.type = LightType.AMBIENT;
-        this.ambient = new Color(0, 0, 0, 255);
-        this.diffuse = new Color(0, 0, 0, 255);
-        this.specular = new Color(0, 0, 0, 255);
+        this.ambient = new Color(50, 50, 50, 255);
+        this.diffuse = new Color(204, 204, 204, 255);
+        this.specular = new Color(255, 255, 255, 255);
         this.intensity = 1;
         this.constant = 1;
         this.linear = 0;

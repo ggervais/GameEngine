@@ -599,6 +599,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             int lightId = GL2.GL_LIGHT0 + (this.nbLights - 1);
 
             Matrix4x4 world = light.getWorldTransformation().getMatrix();
+
             gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glPushMatrix();
             gl.glMultMatrixf(world.toColumnMajorArray(), 0);
@@ -611,9 +612,13 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             float[] specular = {light.getSpecular().getRed() / 255f, light.getSpecular().getGreen() / 255f, light.getSpecular().getBlue() / 255f, 1};
 
             gl.glEnable(lightId);
-            /*gl.glLightfv(lightId, GL2.GL_SPECULAR, specular, 0);
+            gl.glLightfv(lightId, GL2.GL_SPECULAR, specular, 0);
             gl.glLightfv(lightId, GL2.GL_DIFFUSE, diffuse, 0);
-            gl.glLightfv(lightId, GL2.GL_AMBIENT, ambient, 0);*/
+            gl.glLightfv(lightId, GL2.GL_AMBIENT, ambient, 0);
+
+            float[] spotDirection = {1, 0, 0};
+            gl.glLightfv(lightId, GL2.GL_SPOT_DIRECTION, spotDirection, 0);
+            gl.glLightf(lightId, GL2.GL_SPOT_CUTOFF, 45);
             gl.glLightfv(lightId, GL2.GL_POSITION, position, 0);
 
             gl.glPopMatrix();
