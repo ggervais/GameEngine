@@ -599,13 +599,13 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             int lightId = GL2.GL_LIGHT0 + (this.nbLights - 1);
 
             Matrix4x4 world = light.getWorldTransformation().getMatrix();
-            Vector3D translation = new Vector3D();
-            translation.x(world.getElement(1, 4));
-            translation.y(world.getElement(2, 4));
-            translation.z(world.getElement(3, 4));
-            translation.w(world.getElement(4, 4));
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
+            gl.glPushMatrix();
+            gl.glMultMatrixf(world.toColumnMajorArray(), 0);
 
-            float[] position = {translation.x(), translation.y(), translation.z(), 0};
+            Vector3D translation = Vector3D.zero();
+
+            float[] position = {translation.x(), translation.y(), translation.z(), 1};
             float[] ambient = {light.getAmbient().getRed() / 255f, light.getAmbient().getGreen() / 255f, light.getAmbient().getBlue() / 255f, 1};
             float[] diffuse = {light.getDiffuse().getRed() / 255f, light.getDiffuse().getGreen() / 255f, light.getDiffuse().getBlue() / 255f, 1};
             float[] specular = {light.getSpecular().getRed() / 255f, light.getSpecular().getGreen() / 255f, light.getSpecular().getBlue() / 255f, 1};
@@ -615,6 +615,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glLightfv(lightId, GL2.GL_DIFFUSE, diffuse, 0);
             gl.glLightfv(lightId, GL2.GL_AMBIENT, ambient, 0);*/
             gl.glLightfv(lightId, GL2.GL_POSITION, position, 0);
+
+            gl.glPopMatrix();
         }
     }
 
