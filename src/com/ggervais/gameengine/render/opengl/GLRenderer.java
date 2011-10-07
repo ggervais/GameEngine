@@ -1,10 +1,6 @@
 package com.ggervais.gameengine.render.opengl;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.PixelGrabber;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -37,10 +33,7 @@ import com.ggervais.gameengine.scene.Camera;
 import com.ggervais.gameengine.scene.DisplayableEntity;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
-import com.ggervais.gameengine.scene.scenegraph.Effect;
-import com.ggervais.gameengine.scene.scenegraph.Geometry;
-import com.ggervais.gameengine.scene.scenegraph.Light;
-import com.ggervais.gameengine.scene.scenegraph.Transformation;
+import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
@@ -616,9 +609,12 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glLightfv(lightId, GL2.GL_DIFFUSE, diffuse, 0);
             gl.glLightfv(lightId, GL2.GL_AMBIENT, ambient, 0);
 
-            float[] spotDirection = {1, 0, 0};
-            gl.glLightfv(lightId, GL2.GL_SPOT_DIRECTION, spotDirection, 0);
-            gl.glLightf(lightId, GL2.GL_SPOT_CUTOFF, 45);
+            float[] spotDirection = {light.getDirection().x(), light.getDirection().y(), light.getDirection().z()};
+            if (light.getType() == LightType.SPOT) {
+                gl.glLightfv(lightId, GL2.GL_SPOT_DIRECTION, spotDirection, 0);
+                gl.glLightf(lightId, GL2.GL_SPOT_CUTOFF, light.getSpotCutoff());
+                gl.glLightf(lightId, GL2.GL_SPOT_EXPONENT, light.getSpotExponent());
+            }
             gl.glLightfv(lightId, GL2.GL_POSITION, position, 0);
 
             gl.glPopMatrix();

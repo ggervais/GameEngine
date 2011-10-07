@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.render.SceneRenderer;
 
 import java.awt.*;
@@ -15,14 +16,15 @@ public class Light extends Spatial {
     private float linear;
     private float quadratic;
     private boolean attenuate;
+    private Vector3D direction;
     private boolean on;
 
     // For spot lights only
-    private float exponent;
-    private float angle;
+    private float spotExponent;
+    private float spotCutoff;
 
     public Light() {
-        this.type = LightType.AMBIENT;
+        this.type = LightType.POINT;
         this.ambient = new Color(50, 50, 50, 255);
         this.diffuse = new Color(204, 204, 204, 255);
         this.specular = new Color(255, 255, 255, 255);
@@ -32,6 +34,8 @@ public class Light extends Spatial {
         this.quadratic = 0;
         this.attenuate = false;
         this.on = true;
+        // Relative to world space.
+        this.direction = new Vector3D(1, 0, 0);
     }
 
     @Override
@@ -119,19 +123,27 @@ public class Light extends Spatial {
         this.on = on;
     }
 
-    public float getExponent() {
-        return exponent;
+    public float getSpotExponent() {
+        return spotExponent;
     }
 
-    public void setExponent(float exponent) {
-        this.exponent = exponent;
+    public void setSpotExponent(float spotExponent) {
+        this.spotExponent = spotExponent;
     }
 
-    public float getAngle() {
-        return angle;
+    public float getSpotCutoff() {
+        return spotCutoff;
     }
 
-    public void setAngle(float angle) {
-        this.angle = angle;
+    public void setSpotCutoff(float spotCutoff) {
+        this.spotCutoff = spotCutoff;
+    }
+
+    public Vector3D getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector3D direction) {
+        this.direction = direction;
     }
 }

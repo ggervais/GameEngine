@@ -294,6 +294,8 @@ public class Scene extends Observable {
         Transformation lightTransformation = new Transformation();
         lightTransformation.setTranslation(-2, 0, 0);
         light.setLocalTransformation(lightTransformation);
+        light.setType(LightType.SPOT);
+        light.setSpotCutoff(10);
         light.setSpecular(new Color(255, 0, 0));
 
 
