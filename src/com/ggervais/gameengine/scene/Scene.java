@@ -189,6 +189,7 @@ public class Scene extends Observable {
 
 
         Effect cubeEffect = new Effect();
+        cubeEffect.addTexture(texAscii);
         cubeEffect.addTexture(texGraffiti);
         cubeEffect.addTexture(texGuillaume);
         gCube1.setEffect(cubeEffect);
