@@ -189,6 +189,7 @@ public class Scene extends Observable {
 
 
         Effect cubeEffect = new Effect();
+        cubeEffect.addTexture(texGraffiti);
         cubeEffect.addTexture(texGuillaume);
         gCube1.setEffect(cubeEffect);
 
@@ -310,7 +311,7 @@ public class Scene extends Observable {
         this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
         fireNode.addGlobalState(lightingOff);
-        //this.sceneGraphRoot.addChild(fireNode);
+        this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
 	}
 	

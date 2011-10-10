@@ -48,6 +48,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private GL2 gl;
     private int nbLights;
     private static final int MAX_LIGHTS = 8;
+    private static final int MAX_TEXTURES = 32;
 
     private static final Random random = new Random();
 
@@ -250,14 +251,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		}
         Effect effect = geometry.getEffect();
         Texture texture = null;
-        int textureIndex = -1;
-
-        if (effect != null && effect.nbTextures() > 0) {
-            texture = effect.getTexture(0);
-            if (texture != null) {
-                textureIndex = 0;
-            }
-        }
 
 		gl.glBegin(glPrimitiveType);
             VertexBuffer vertexBuffer = geometry.getVertexBuffer();
@@ -276,22 +269,24 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                         gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                     }
 
-                    TextureCoords coords = null;
-                    try {
-                        coords = effect.getTextureCoords(textureIndex, index);
-                        //coords = textureBuffer.getCoords(index);
-                    } catch (Exception e) {
+                    for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
+                        TextureCoords coords = null;
+                        try {
+                            coords = effect.getTextureCoords(textureIndex, index);
+                            //coords = textureBuffer.getCoords(index);
+                        } catch (Exception e) {
 
-                    }
+                        }
 
-                    if (coords != null) {
-                        float tu = coords.getTextureU();
-                        float tv = coords.getTextureV();
+                        if (coords != null) {
+                            float tu = coords.getTextureU();
+                            float tv = coords.getTextureV();
 
-                        //tu = minBounds.x() + tu * w;
-                        //tv = minBounds.y() + tv * h;
-
-                        gl.glTexCoord2f(tu, tv);
+                            //tu = minBounds.x() + tu * w;
+                            //tv = minBounds.y() + tv * h;
+                            gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
+                            //gl.glTexCoord2f(tu, tv);
+                        }
                     }
 
                     if (normal != null) {
@@ -373,6 +368,22 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             OpenGLUtils.uploadTexture(gl, texture);
         }
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+    }
+
+    @Override
+    public void bindTexture(int index, Texture texture) {
+
+        if (index < MAX_TEXTURES) {
+            if (texture.getId() == -1) {
+                OpenGLUtils.uploadTexture(gl, texture);
+            }
+
+            int textureIndex = GL.GL_TEXTURE0 + index;
+
+            gl.glActiveTexture(textureIndex);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+            gl.glEnable(GL.GL_TEXTURE_2D);
+        }
     }
 
     @Override
