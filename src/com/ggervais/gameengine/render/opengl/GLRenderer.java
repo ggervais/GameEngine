@@ -392,6 +392,15 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     }
 
     @Override
+    public void unbindTexture(int index, Texture texture) {
+        if (index < MAX_TEXTURES) {
+            int textureIndex = GL.GL_TEXTURE0 + index;
+            gl.glActiveTexture(textureIndex);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
+        }
+    }
+
+    @Override
     public void drawBoundingBox(BoundingBox box, boolean isPicked) {
         OpenGLUtils.drawBoundingBox(gl, box, isPicked);
     }
@@ -479,7 +488,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         // Init lighting.
         float[] specularLight = { 1.0f, 1.0f, 1.0f, 1.0f };
         float[] lightShininess = { 50.0f };
-        gl.glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
         gl.glShadeModel (GL2.GL_SMOOTH);
 
         gl.glColorMaterial(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);

@@ -101,9 +101,9 @@ public abstract class SceneRenderer implements Observer {
     }
 
     public void disableTextures(Effect effect) {
-        if (effect.nbTextures() > 0) {
-            Texture texture = effect.getTexture(0);
-            unbindTexture(texture);
+        for (int i = 0; i < effect.nbTextures(); i++) {
+            Texture texture = effect.getTexture(i);
+            unbindTexture(i, texture);
         }
     }
 
@@ -121,6 +121,7 @@ public abstract class SceneRenderer implements Observer {
     public abstract void bindTexture(Texture texture);
     public abstract void bindTexture(int index, Texture texture);
     public abstract void unbindTexture(Texture texture);
+    public abstract void unbindTexture(int index, Texture texture);
     public abstract void drawBoundingBox(BoundingBox box, boolean isPicked); // TODO temporary code
     public abstract void enableLight(Light light);
 
