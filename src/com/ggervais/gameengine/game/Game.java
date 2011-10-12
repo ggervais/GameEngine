@@ -110,6 +110,9 @@ public class Game {
 
     public void pickCheck(Node nodeToCheck, Ray ray) {
         if (nodeToCheck.getBoundingBox().intersects(ray) != null) {
+
+            nodeToCheck.setPickedInCurrentUpdate(true);
+
             Iterator<Spatial> children = nodeToCheck.getChildrenIterator();
             while(children.hasNext()) {
                 Spatial child = children.next();

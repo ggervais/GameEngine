@@ -2,22 +2,32 @@ package com.ggervais.gameengine.scene.scenegraph.renderstates;
 
 public class ZBufferState extends GlobalState {
 
-    private boolean enabled;
+    private boolean isDepthTestEnabled;
+    private boolean isZBufferWritingEnabled;
 
     public ZBufferState() {
-        this(true);
+        this(true, true);
     }
 
-    public ZBufferState(boolean enabled) {
+    public ZBufferState(boolean isDepthTestEnabled, boolean isZBufferWritingEnabled) {
         super(GlobalStateType.ZBUFFER);
-        this.enabled = enabled;
+        this.isDepthTestEnabled = isDepthTestEnabled;
+        this.isZBufferWritingEnabled = isZBufferWritingEnabled;
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
+    public boolean isDepthTestEnabled() {
+        return this.isDepthTestEnabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isZBufferWritingEnabled() {
+        return this.isZBufferWritingEnabled;
+    }
+
+    public void setDepthTestEnabled(boolean enabled) {
+        this.isDepthTestEnabled = enabled;
+    }
+
+    public void setZBufferWritingEnabled(boolean enabled) {
+        this.isZBufferWritingEnabled = enabled;
     }
 }

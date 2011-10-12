@@ -64,7 +64,7 @@ public class FountainEmitterController extends ParticleEmitterController {
                 effect.setColor(new Color(255, 127, 0, 127));
                 particleQuad.setEffect(effect);
                 particleQuad.addGlobalState(new AlphaBlendingState(true));
-                particleQuad.addGlobalState(new ZBufferState(false));
+                particleQuad.addGlobalState(new ZBufferState(false, true));
 
                 particleQuad.setLocalTransformation(baseParticleTransformation);
                 particleQuad.addController(new LifeController(currentTime, this.configuration.particleLifeTimeInMs));

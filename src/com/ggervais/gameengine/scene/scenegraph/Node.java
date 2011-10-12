@@ -72,6 +72,8 @@ public class Node extends Spatial {
                 child.onDraw(renderer);
             }
         }
+
+        renderer.drawBoundingBox(this.boundingBox, isPickedInCurrentUpdate());
     }
 
     public Object getChildrenLock() {

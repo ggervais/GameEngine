@@ -182,7 +182,7 @@ public class Scene extends Observable {
 
         WireframeState wireframeStateOn = new WireframeState(true);
         WireframeState wireframeStateOff = new WireframeState(false);
-        ZBufferState zBufferState = new ZBufferState(true);
+        ZBufferState zBufferState = new ZBufferState(true, true);
         CubeGeometry gCube1 = new CubeGeometry();
         CubeGeometry gCube2 = new CubeGeometry();
         CubeGeometry gCube3 = new CubeGeometry();
@@ -235,7 +235,7 @@ public class Scene extends Observable {
 
         Node fireNode = new Node();
         fireNode.addGlobalState(new AlphaBlendingState(true));
-        fireNode.addGlobalState(new ZBufferState(false));
+        fireNode.addGlobalState(new ZBufferState(true, false));
 
         Effect fireEffect = new Effect();
         fireEffect.setColor(new Color(255, 127, 0));

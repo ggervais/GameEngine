@@ -345,11 +345,18 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void setZBufferState(ZBufferState state) {
-        if (state.isEnabled()) {
+
+        if (state.isDepthTestEnabled()) {
             gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthFunc(GL.GL_LEQUAL);
         } else {
             gl.glDisable(GL.GL_DEPTH_TEST);
+        }
+
+        if (state.isZBufferWritingEnabled()) {
+            gl.glDepthMask(true);
+        } else {
+            gl.glDepthMask(false);
         }
     }
     @Override
