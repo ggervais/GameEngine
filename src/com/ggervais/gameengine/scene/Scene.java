@@ -7,6 +7,7 @@ import java.util.Observable;
 
 import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.geometry.*;
+import com.ggervais.gameengine.geometry.loader.ObjFileLoader;
 import com.ggervais.gameengine.input.InputSubsystem;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.BezierCurve;
@@ -308,12 +309,19 @@ public class Scene extends Observable {
 
         MotionController sphereController = new MotionController(Vector3D.zero(), 1, 0, 0);
         sphereGeometry.addController(sphereController);
+
+        Geometry pumpkin = ObjFileLoader.loadFile("assets/models/pumpkin.obj", this);
+        Transformation pumpkinTransformation = new Transformation();
+        pumpkinTransformation.setScale(0.01f, 0.01f, 0.01f);
+        pumpkin.setLocalTransformation(pumpkinTransformation);
+
         this.sceneGraphRoot.addLight(light2);
         this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(firstCubeNode);
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
+        this.sceneGraphRoot.addChild(pumpkin);
 	}
 	
 	public List<Texture> getTextures() {

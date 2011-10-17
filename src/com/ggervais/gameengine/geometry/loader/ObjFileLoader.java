@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
@@ -23,6 +24,8 @@ import com.ggervais.gameengine.scene.DisplayableEntity;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
+import com.ggervais.gameengine.scene.scenegraph.Effect;
+import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import org.apache.log4j.Logger;
 
 public class ObjFileLoader extends GeometryLoader {
@@ -120,12 +123,13 @@ public class ObjFileLoader extends GeometryLoader {
 		return texture;
 	}
 	
-	public static DisplayableEntity loadFile(String filename, Scene scene) {
+	public static Geometry loadFile(String filename, Scene scene) {
 		File file = new File(filename);
 		
 		System.out.print("Loading " + filename + "... ");
 		
 		Model model = new Model();
+        MeshGeometry geometry = new MeshGeometry();
 		Texture texture = null;
 
         Material material = null;
@@ -163,6 +167,9 @@ public class ObjFileLoader extends GeometryLoader {
 					Vertex vertex = new Vertex(position, Color.WHITE, 0, 0);
 					vertices.add(vertex);
 					model.getVertexBuffer().addVertex(vertex);
+
+                    geometry.getVertexBuffer().addVertex(vertex);
+
 				} else if (elementType.equals("f") && nbTokens == 4) {
 					String strV1 = tokenizer.nextToken();
 					String strV2 = tokenizer.nextToken();
@@ -200,6 +207,11 @@ public class ObjFileLoader extends GeometryLoader {
 					model.getIndexBuffer().addIndex(v3 - 1);
 					
 					model.getFaces().add(face);
+
+                    geometry.getIndexBuffer().addIndex(v1 - 1);
+                    geometry.getIndexBuffer().addIndex(v2 - 1);
+                    geometry.getIndexBuffer().addIndex(v3 - 1);
+
 				} else if (elementType.equals("vt") && (nbTokens == 3 || nbTokens == 4)) {
 					String strU = tokenizer.nextToken();
 					String strV = tokenizer.nextToken();
@@ -222,12 +234,13 @@ public class ObjFileLoader extends GeometryLoader {
 				
 				line = reader.readLine();
 			}
-			
+            Effect effect = new Effect();
 			for (Integer i : textureCoordsIndices) {
 				TextureCoords coords = coordsList.get(i - 1);
+                effect.addTextureCoordinates(0, coords);
 				model.getTextureBuffer().addCoords(coords);
 			}
-			
+			geometry.setEffect(effect);
 			reader.close();
 			in.close();
 		} catch (FileNotFoundException fnfe) {
@@ -244,9 +257,9 @@ public class ObjFileLoader extends GeometryLoader {
 		}
         if (material != null) {
             entity.setMaterial(material);
+            geometry.getEffect().addTexture(material.getTexture(0));
         }
 
-		return entity;
+		return geometry;
 	}
-
 }
