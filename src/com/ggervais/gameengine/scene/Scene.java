@@ -10,13 +10,13 @@ import com.ggervais.gameengine.geometry.*;
 import com.ggervais.gameengine.geometry.loader.ObjFileLoader;
 import com.ggervais.gameengine.input.InputSubsystem;
 import com.ggervais.gameengine.material.Material;
-import com.ggervais.gameengine.math.BezierCurve;
-import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.particle.*;
 import com.ggervais.gameengine.physics.MotionController;
+import com.ggervais.gameengine.render.Frustum;
+import com.ggervais.gameengine.render.Viewport;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
@@ -36,11 +36,16 @@ public class Scene extends Observable {
 	private List<Texture> textures;
     private Node sceneGraphRoot;
     private boolean isPreviousSpaceDown = false;
+    private Viewport viewport;
+    private Frustum frustum;
+    private Matrix4x4 modelViewMatrix;
+    private Matrix4x4 projectionMatrix;
 	
 	public Scene() {
 		this.entities = new ArrayList<DisplayableEntity>();
 		this.particles = new ArrayList<DisplayableEntity>();
         this.textures = new ArrayList<Texture>();
+        this.frustum = new Frustum(0.001f, 1000f);
 	}
 
     public Node getSceneGraphRoot() {
@@ -352,6 +357,30 @@ public class Scene extends Observable {
 		notifyObservers();
 	}
 
+    public Ray getPickingRay(Camera camera) {
+        Ray pickingRay = new Ray();
+
+        Point3D nearPoint = Point3D.copy(this.viewport.getCenter());
+        Point3D farPoint = Point3D.copy(this.viewport.getCenter());
+        nearPoint.z(0);
+        farPoint.z(1);
+
+        Point3D transformedNearPoint = this.viewport.unproject(nearPoint, this.modelViewMatrix, this.projectionMatrix);
+        Point3D transformedFarPoint = this.viewport.unproject(farPoint, this.modelViewMatrix, this.projectionMatrix);
+
+        //log.info(transformedNearPoint + " " + transformedFarPoint);
+        //log.info(transformedFarPoint.sub(transformedNearPoint).normalized());
+        //log.info("=====");
+
+        Point3D rayOrigin = transformedNearPoint.copy();
+        Vector3D rayDirection = Point3D.sub(transformedFarPoint, transformedNearPoint).normalized();
+
+        pickingRay.setOrigin(rayOrigin);
+        pickingRay.setDirection(rayDirection);
+
+        return pickingRay;
+    }
+
 	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
@@ -359,4 +388,36 @@ public class Scene extends Observable {
 	public Camera getCamera() {
 		return camera;
 	}
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
+
+    public Frustum getFrustum() {
+        return frustum;
+    }
+
+    public void setFrustum(Frustum frustum) {
+        this.frustum = frustum;
+    }
+
+    public Matrix4x4 getModelViewMatrix() {
+        return modelViewMatrix;
+    }
+
+    public void setModelViewMatrix(Matrix4x4 modelViewMatrix) {
+        this.modelViewMatrix = modelViewMatrix;
+    }
+
+    public Matrix4x4 getProjectionMatrix() {
+        return projectionMatrix;
+    }
+
+    public void setProjectionMatrix(Matrix4x4 projectionMatrix) {
+        this.projectionMatrix = projectionMatrix;
+    }
 }

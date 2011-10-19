@@ -147,7 +147,7 @@ public class Game {
             }
 
 		}
-        DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
+        //DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
         //log.info(DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera()));
 
         try {
@@ -165,7 +165,7 @@ public class Game {
         root.updateGeometryState(currentTime, true);
         root.updateRenderState();
 
-        pickCheck(root, DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera()));
+        pickCheck(root, this.scene.getPickingRay(this.scene.getCamera()));
 	}
 	
 	private void mainLoop() {

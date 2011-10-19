@@ -10,8 +10,8 @@ public class TerrainFollowingFreeFlyCamera extends FreeFlyCamera {
 
 	private Terrain terrain;
 	
-	public TerrainFollowingFreeFlyCamera(Point3D position, Vector3D direction, Vector3D up, Terrain terrain) {
-		super(position, direction, up);
+	public TerrainFollowingFreeFlyCamera(Point3D position, Vector3D direction, Vector3D up, float fieldOfView, Terrain terrain) {
+		super(position, direction, up, fieldOfView);
 		this.terrain = terrain;
 	}
 	

@@ -84,6 +84,10 @@ public class Viewport {
         return result;
     }
 
+    public float getAspectRatio() {
+        return this.width / this.height;
+    }
+
     public String toString() {
         return new Point3D(this.x, this.y, 0) + " -> " + new Vector3D(this.width, this.height, 0);
     }

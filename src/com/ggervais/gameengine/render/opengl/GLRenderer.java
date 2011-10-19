@@ -427,7 +427,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 		
-		this.glu.gluPerspective(45f, aspectRatio, DisplaySubsystem.getInstance().getNear(), DisplaySubsystem.getInstance().getFar());
+		this.glu.gluPerspective(this.scene.getCamera().getFieldOfView(), aspectRatio, this.scene.getFrustum().getNear(), this.scene.getFrustum().getFar());
 		
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -436,9 +436,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
 
         // TODO bad code, refactor!
+        this.scene.setViewport(new Viewport(x, y, width, height));
         Matrix4x4 projectionMatrix = Matrix4x4.createFromFloatArray(projection, true);
-        DisplaySubsystem.getInstance().setProjectionMatrix(projectionMatrix);
-        DisplaySubsystem.getInstance().setViewport(new Viewport(x, y, width, height));
+        this.scene.setProjectionMatrix(projectionMatrix);
+        //DisplaySubsystem.getInstance().setViewport(new Viewport(x, y, width, height));
 	}
 
 	public void update(Observable o, Object arg) {
@@ -469,10 +470,18 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         gl.glColor4f(1, 1, 1, 1);
 
+
+        Camera camera = this.scene.getCamera();
+
+        float[] projection = new float[16];
+        gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
+        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+		gl.glLoadIdentity();
+		this.glu.gluPerspective(camera.getFieldOfView(), this.scene.getViewport().getAspectRatio(), this.scene.getFrustum().getNear(), this.scene.getFrustum().getFar());
+
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        Camera camera = this.scene.getCamera();
         Point3D cameraPosition = camera.getPosition();
         Point3D cameraLookAt = camera.getLookAt();
         Vector3D cameraUp = camera.getUp();
@@ -481,13 +490,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         				   cameraLookAt.x(), cameraLookAt.y(), cameraLookAt.z(),
         				   cameraUp.x(), cameraUp.y(), cameraUp.z());
 
-        float[] projection = new float[16];
-        gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
-
         float[] modelView = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
         Matrix4x4 modelViewMatrix = Matrix4x4.createFromFloatArray(modelView, true);
-        DisplaySubsystem.getInstance().setModelViewMatrix(modelViewMatrix);
+        this.scene.setModelViewMatrix(modelViewMatrix);
 
         int[] viewport = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
@@ -511,8 +517,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     }
 
     private void drawCursor(GL2 gl) {
-        int w = (int) DisplaySubsystem.getInstance().getViewport().getWidth();
-        int h = (int) DisplaySubsystem.getInstance().getViewport().getHeight();
+        int w = (int) this.scene.getViewport().getWidth();
+        int h = (int) this.scene.getViewport().getHeight();
 
         int cursorWidth = 20;
         int cursorHeight = 20;
