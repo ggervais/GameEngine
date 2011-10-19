@@ -53,8 +53,12 @@ public class Frustum {
         Point3D cameraPosition = camera.getPosition();
         Vector3D cameraDirection = camera.getDirection().normalized();
 
-        Point3D nearPoint = Point3D.add(cameraPosition, cameraDirection.multiplied(this.near));
-        Point3D farPoint = Point3D.add(cameraPosition, cameraDirection.multiplied(this.far));
+        Point3D nearCenter = Point3D.add(cameraPosition, cameraDirection.multiplied(this.near));
+        Point3D farCenter = Point3D.add(cameraPosition, cameraDirection.multiplied(this.far));
+
+        Vector3D up = camera.getUp();
+        Vector3D right = Vector3D.crossProduct(up, cameraDirection);
+        up = Vector3D.crossProduct(cameraDirection, right);
 
         Ray viewRay = new Ray(camera.getPosition(), cameraDirection);
 
@@ -64,13 +68,25 @@ public class Frustum {
         float farPlaneHeight = 2f * (float) Math.tan(fieldOfView / 2f) * this.far;
         float farPlaneWidth = farPlaneHeight * viewport.getAspectRatio();
 
-        log.info("Near plane width, height: " + nearPlaneWidth + " " + nearPlaneHeight);
-        log.info("Far plane width, height: " + farPlaneWidth + " " + farPlaneHeight);
+        Point3D nearTopLeft = Point3D.sub(Point3D.add(nearCenter, Vector3D.multiply(up, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+        Point3D nearTopRight = Point3D.add(Point3D.add(nearCenter, Vector3D.multiply(up, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+        Point3D nearBottomLeft = Point3D.sub(Point3D.sub(nearCenter, Vector3D.multiply(up, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+        Point3D nearBottomRight = Point3D.add(Point3D.sub(nearCenter, Vector3D.multiply(up, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+
+        Point3D farTopLeft = Point3D.sub(Point3D.add(farCenter, Vector3D.multiply(up, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));
+        Point3D farTopRight = Point3D.add(Point3D.add(farCenter, Vector3D.multiply(up, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));
+        Point3D farBottomLeft = Point3D.sub(Point3D.sub(farCenter, Vector3D.multiply(up, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));;
+        Point3D farBottomRight = Point3D.add(Point3D.sub(farCenter, Vector3D.multiply(up, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));;
+
+        log.info(cameraDirection + " " + up + " " + right);
+        log.info("Near plane width, height: " + nearPlaneWidth + " " + nearPlaneHeight + " " + nearTopLeft + " " + nearTopRight);
+        log.info("Far plane width, height: " + farPlaneWidth + " " + farPlaneHeight + " " + farTopLeft + " " + farTopRight + " " + farBottomLeft + " " + farBottomRight);
     }
 
     public static void main(String[] args) {
         Frustum frustum = new Frustum();
         Camera camera = new FreeFlyCamera();
+        camera.setDirection(new Vector3D(0, 1, -1));
         Viewport viewport = new Viewport(0, 0, 1024, 768);
         frustum.getPlanes(camera, viewport);
     }
