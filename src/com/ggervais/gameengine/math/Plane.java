@@ -5,10 +5,12 @@ public class Plane {
 	private Vector3D normal;
 	
 	public float getDistanceFromPlane(Point3D p) {
-		Vector3D v = p.sub(this.point);
-		float distance = Math.abs(this.normal.dotProduct(v));
-		return distance;
+		return Math.abs(this.normal.dotProduct(p.sub(this.point)));
 	}
+
+    public float getSignedDistanceFromPlane(Point3D p) {
+        return this.normal.dotProduct(p.sub(this.point));
+    }
 	
 	public boolean isPointOnPlane(Point3D p) {
 		return getDistanceFromPlane(p) == 0;
