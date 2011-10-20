@@ -577,6 +577,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glEnable(GL2.GL_LIGHTING);
 
 
+
         gl.glFlush();
     }
 

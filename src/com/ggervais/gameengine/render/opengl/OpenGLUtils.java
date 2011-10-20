@@ -2,6 +2,7 @@ package com.ggervais.gameengine.render.opengl;
 
 import java.awt.Color;
 import java.nio.Buffer;
+import java.util.List;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -15,6 +16,7 @@ import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
+import com.ggervais.gameengine.render.Frustum;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
 import org.apache.log4j.Logger;
@@ -521,5 +523,48 @@ public class OpenGLUtils {
         gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
         gl.glPopMatrix();
 
+    }
+
+    public static void drawViewFustrumPoints(GL2 gl, List<Point3D> points) {
+        gl.glBegin(GL2.GL_LINES);
+
+        gl.glVertex3f(points.get(0).x(), points.get(0).y(), points.get(0).z());
+        gl.glVertex3f(points.get(1).x(), points.get(1).y(), points.get(1).z());
+
+        gl.glVertex3f(points.get(0).x(), points.get(0).y(), points.get(0).z());
+        gl.glVertex3f(points.get(4).x(), points.get(4).y(), points.get(4).z());
+
+        gl.glVertex3f(points.get(1).x(), points.get(1).y(), points.get(1).z());
+        gl.glVertex3f(points.get(3).x(), points.get(3).y(), points.get(3).z());
+
+        gl.glVertex3f(points.get(1).x(), points.get(1).y(), points.get(1).z());
+        gl.glVertex3f(points.get(5).x(), points.get(5).y(), points.get(5).z());
+
+        gl.glVertex3f(points.get(3).x(), points.get(3).y(), points.get(3).z());
+        gl.glVertex3f(points.get(2).x(), points.get(2).y(), points.get(2).z());
+
+        gl.glVertex3f(points.get(3).x(), points.get(3).y(), points.get(3).z());
+        gl.glVertex3f(points.get(7).x(), points.get(7).y(), points.get(7).z());
+
+        gl.glVertex3f(points.get(2).x(), points.get(2).y(), points.get(2).z());
+        gl.glVertex3f(points.get(0).x(), points.get(0).y(), points.get(0).z());
+
+        gl.glVertex3f(points.get(2).x(), points.get(2).y(), points.get(2).z());
+        gl.glVertex3f(points.get(6).x(), points.get(6).y(), points.get(6).z());
+
+
+        gl.glVertex3f(points.get(4).x(), points.get(4).y(), points.get(4).z());
+        gl.glVertex3f(points.get(5).x(), points.get(5).y(), points.get(5).z());
+
+        gl.glVertex3f(points.get(5).x(), points.get(5).y(), points.get(5).z());
+        gl.glVertex3f(points.get(7).x(), points.get(7).y(), points.get(7).z());
+
+        gl.glVertex3f(points.get(7).x(), points.get(7).y(), points.get(7).z());
+        gl.glVertex3f(points.get(6).x(), points.get(6).y(), points.get(6).z());
+
+        gl.glVertex3f(points.get(6).x(), points.get(6).y(), points.get(6).z());
+        gl.glVertex3f(points.get(4).x(), points.get(4).y(), points.get(4).z());
+
+        gl.glEnd();
     }
 }
