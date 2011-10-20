@@ -1,9 +1,6 @@
 package com.ggervais.gameengine.physics.boundingvolumes;
 
-import com.ggervais.gameengine.math.Matrix4x4;
-import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.Ray;
-import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 
 import java.util.ArrayList;
@@ -214,6 +211,49 @@ public class BoundingBox {
         }
 
         return null;
+    }
+
+    public boolean intersectsOrIsInside(Plane plane) {
+
+        boolean result = true;
+
+        List<Point3D> points = new ArrayList<Point3D>();
+        float width = getWidth();
+        float height = getHeight();
+        float depth = getDepth();
+
+        points.add(this.minCorner);
+        points.add(Point3D.add(this.minCorner, new Vector3D(width, 0, 0)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(width, 0, depth)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(0, 0, depth)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(0, height, 0)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(0, height, depth)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(width, 0, depth)));
+        points.add(this.maxCorner);
+
+        int nbIn = 0;
+        int nbOut = 0;
+        for (int i = 0; i < points.size(); i++) {
+            if (plane.getSignedDistanceFromPlane(points.get(i)) < 0) {
+                nbOut++;
+            } else {
+                nbIn++;
+            }
+
+            // TODO do we really need another check to exit the loop prematurely?
+            if (nbOut > 0 && nbIn > 0) {
+                break;
+            }
+        }
+
+
+        if (nbIn == 0) {
+            result = false;
+        } else if (nbOut > 0) {
+            result = true;
+        }
+
+        return result;
     }
 
     public BoundingBox copy() {
