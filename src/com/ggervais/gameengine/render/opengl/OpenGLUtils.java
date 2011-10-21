@@ -477,7 +477,8 @@ public class OpenGLUtils {
         Texture texture = matAscii.getTexture(0);
 
         if (texture != null) {
-			gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+            gl.glActiveTexture(GL.GL_TEXTURE0);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
 		}
 
         //Vertex vertex1 = new Vertex(new Point3D(-0.5f, 0.5f, 0), Color.WHITE, 0, 0);
@@ -506,16 +507,16 @@ public class OpenGLUtils {
                 //tv = 0;
                 //tv = step * 4;
 
-                gl.glTexCoord2f(tu + step, tv + step);
+                gl.glMultiTexCoord2f(GL2.GL_TEXTURE0, tu + step, tv + step);
                 gl.glVertex3f(i + 1, 1, 0);
 
-                gl.glTexCoord2f(tu + step, tv);
+                gl.glMultiTexCoord2f(GL2.GL_TEXTURE0, tu + step, tv);
                 gl.glVertex3f(i + 1, 0, 0);
 
-                gl.glTexCoord2f(tu, tv);
+                gl.glMultiTexCoord2f(GL2.GL_TEXTURE0, tu, tv);
                 gl.glVertex3f(i, 0, 0);
 
-                gl.glTexCoord2f(tu, tv + step);
+                gl.glMultiTexCoord2f(GL2.GL_TEXTURE0, tu, tv + step);
                 gl.glVertex3f(i, 1, 0);
             }
         gl.glEnd();
