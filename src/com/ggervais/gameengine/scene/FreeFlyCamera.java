@@ -23,8 +23,8 @@ public class FreeFlyCamera extends Camera {
 	Vector3D up;
 	Vector3D right;
 	
-	public FreeFlyCamera(Point3D position, Vector3D direction, Vector3D up, float fieldOfView) {
-		super(position, direction, up, fieldOfView);
+	public FreeFlyCamera(Point3D position, Vector3D direction, Vector3D up, float fieldOfView, float near, float far) {
+		super(position, direction, up, fieldOfView, near, far);
 		this.phi = (float) Math.toRadians(-90);
 		this.theta = 0;
 		this.up = new Vector3D(0, 1, 0);

@@ -427,7 +427,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 		
-		this.glu.gluPerspective((float) Math.toDegrees(this.scene.getCamera().getFieldOfView()), aspectRatio, this.scene.getFrustum().getNear(), this.scene.getFrustum().getFar());
+		this.glu.gluPerspective((float) Math.toDegrees(this.scene.getCamera().getFieldOfView()), aspectRatio, this.scene.getCamera().getNear(), this.scene.getCamera().getFar());
 		
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -477,7 +477,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
         gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
-		this.glu.gluPerspective((float) Math.toDegrees(camera.getFieldOfView()), this.scene.getViewport().getAspectRatio(), this.scene.getFrustum().getNear(), this.scene.getFrustum().getFar());
+		this.glu.gluPerspective((float) Math.toDegrees(camera.getFieldOfView()), this.scene.getViewport().getAspectRatio(), this.scene.getCamera().getNear(), this.scene.getCamera().getFar());
 
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
         gl.glLoadIdentity();

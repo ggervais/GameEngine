@@ -57,8 +57,8 @@ public class Frustum {
         Point3D farCenter = Point3D.add(cameraPosition, cameraDirection.multiplied(this.far));
 
         Vector3D up = camera.getUp();
-        Vector3D right = Vector3D.crossProduct(up, cameraDirection);
-        up = Vector3D.crossProduct(cameraDirection, right);
+        Vector3D right = Vector3D.crossProduct(cameraDirection, up).normalized();
+        up = Vector3D.crossProduct(right, cameraDirection);
 
         Ray viewRay = new Ray(camera.getPosition(), cameraDirection);
 
@@ -78,6 +78,7 @@ public class Frustum {
         Point3D farBottomLeft = Point3D.sub(Point3D.sub(farCenter, Vector3D.multiply(up, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));;
         Point3D farBottomRight = Point3D.add(Point3D.sub(farCenter, Vector3D.multiply(up, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));;
 
+        log.info("Far top left: " + farTopLeft + " far top right: " + farTopRight);
         log.info(cameraDirection + " " + up + " " + right);
         log.info("Near plane width, height: " + nearPlaneWidth + " " + nearPlaneHeight + " " + nearTopLeft + " " + nearTopRight);
         log.info("Far plane width, height: " + farPlaneWidth + " " + farPlaneHeight + " " + farTopLeft + " " + farTopRight + " " + farBottomLeft + " " + farBottomRight);

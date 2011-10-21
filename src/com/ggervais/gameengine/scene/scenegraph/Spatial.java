@@ -1,6 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
+import com.ggervais.gameengine.math.Plane;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
@@ -10,9 +11,11 @@ import com.ggervais.gameengine.scene.scenegraph.visitor.SpatialVisitor;
 import com.ggervais.gameengine.timing.Controller;
 
 import java.util.*;
+import org.apache.log4j.Logger;
 
 public abstract class Spatial {
 
+    private static final Logger log = Logger.getLogger(Spatial.class);
     protected Spatial parent;
     protected Transformation worldTransform;
     protected Transformation localTransform;
@@ -182,9 +185,22 @@ public abstract class Spatial {
     public abstract void draw(SceneRenderer renderer);
 
     public void onDraw(SceneRenderer renderer) {
+
         boolean culled = false;
+
+        List<Plane> planes = renderer.getScene().getFrustumPlanes();
+        for (Plane plane : planes) {
+            if (!getBoundingBox().intersectsOrIsInside(plane)) {
+                culled = true;
+                break;
+            } else {
+            }
+        }
+
         if (!culled) {
             draw(renderer);
+        } else {
+            log.info("Culled object=[" + this + "]");
         }
     }
 

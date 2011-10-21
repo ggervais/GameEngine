@@ -26,6 +26,8 @@ import com.ggervais.gameengine.timing.FountainEmitterController;
 import net.java.games.input.Component.Identifier.Key;
 import org.apache.log4j.Logger;
 
+import javax.swing.text.View;
+
 public class Scene extends Observable {
 
     private static final Logger log = Logger.getLogger(Scene.class);
@@ -37,7 +39,6 @@ public class Scene extends Observable {
     private Node sceneGraphRoot;
     private boolean isPreviousSpaceDown = false;
     private Viewport viewport;
-    private Frustum frustum;
     private Matrix4x4 modelViewMatrix;
     private Matrix4x4 projectionMatrix;
 	
@@ -45,7 +46,9 @@ public class Scene extends Observable {
 		this.entities = new ArrayList<DisplayableEntity>();
 		this.particles = new ArrayList<DisplayableEntity>();
         this.textures = new ArrayList<Texture>();
-        this.frustum = new Frustum(0.001f, 1000f);
+        this.viewport = new Viewport(0, 0, 1024, 768);
+        this.modelViewMatrix = Matrix4x4.createIdentity();
+        this.projectionMatrix = Matrix4x4.createIdentity();
 	}
 
     public Node getSceneGraphRoot() {
@@ -306,7 +309,6 @@ public class Scene extends Observable {
         light.setSpotCutoff(10);
         light.setSpecular(new Color(255, 0, 0));
 
-
         sphereGeometry.addLight(light);
 
         Light light2 = new Light();
@@ -397,14 +399,6 @@ public class Scene extends Observable {
         this.viewport = viewport;
     }
 
-    public Frustum getFrustum() {
-        return frustum;
-    }
-
-    public void setFrustum(Frustum frustum) {
-        this.frustum = frustum;
-    }
-
     public Matrix4x4 getModelViewMatrix() {
         return modelViewMatrix;
     }
@@ -419,5 +413,9 @@ public class Scene extends Observable {
 
     public void setProjectionMatrix(Matrix4x4 projectionMatrix) {
         this.projectionMatrix = projectionMatrix;
+    }
+
+    public List<Plane> getFrustumPlanes() {
+        return this.camera.getPlanes(this.viewport);
     }
 }
