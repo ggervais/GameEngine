@@ -6,6 +6,8 @@ import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import java.util.ArrayList;
 import java.util.List;
 
+// Right now, this class actually represents an AxisAlignedBoundingBox.
+// TODO: make this class abstract and subclass it as AxisAlignedBoundingBox (AABB) and OrientedBoudingBox (OBB).
 public class BoundingBox {
 	private Point3D minCorner;
 	private Point3D maxCorner;
@@ -262,6 +264,20 @@ public class BoundingBox {
 
     public static BoundingBox copy(BoundingBox box) {
         return box.copy();
+    }
+
+    public boolean intersects(BoundingBox box) {
+
+        boolean intersects = true;
+
+        if (this.maxCorner.x() < box.getMinCorner().x() || this.minCorner.x() > box.getMaxCorner().x() ||
+            this.maxCorner.y() < box.getMinCorner().y() || this.minCorner.y() > box.getMaxCorner().y() ||
+            this.maxCorner.z() < box.getMinCorner().z() || this.minCorner.z() > box.getMaxCorner().z()) {
+
+            intersects = false;
+        }
+
+        return intersects;
     }
 
     public String toString() {
