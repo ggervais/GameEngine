@@ -139,5 +139,9 @@ public class Vector3D {
         return new Vector3D(x, y, z);
     }
 
+    public boolean equals(Vector3D vector) {
+        return this.x == vector.x() && this.y == vector.y() && this.z()  == vector.z();
+    }
+
     public String toString() { return "[" + x() + ", " + y() + ", " + z() + "]"; }
 }

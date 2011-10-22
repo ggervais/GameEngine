@@ -29,6 +29,9 @@ public abstract class Camera implements InputSensitive {
     protected float fieldOfView;
     protected float near;
     protected float far;
+
+    private List<Plane> frustumPlanes;
+    private boolean isFrustumDirty;
 	
 	public Camera(Point3D position, Vector3D direction, Vector3D up, float fieldOfView, float near, float far) {
 		this.position = position;
@@ -37,22 +40,24 @@ public abstract class Camera implements InputSensitive {
         this.fieldOfView = fieldOfView;
         this.near = near;
         this.far = far;
+        this.frustumPlanes = new ArrayList<Plane>();
+        this.isFrustumDirty = true;
 	}
 	
 	public Camera() {
 		this(DEFAULT_POSITION, DEFAULT_DIRECTION, DEFAULT_UP, DEFAULT_FIELD_OF_VIEW, DEFAULT_NEAR, DEFAULT_FAR);
 	}
 
-    public List<Plane> getPlanes(Viewport viewport) {
+    private void computeFrustumPlanes(Viewport viewport) {
 
-        List<Plane> planes = new ArrayList<Plane>();
+        this.frustumPlanes.clear();
 
         Point3D nearCenter = Point3D.add(this.position, this.direction.multiplied(this.near));
         Point3D farCenter = Point3D.add(this.position, this.direction.multiplied(this.far));
 
         Vector3D realUp = this.up.copy();
         Vector3D right;
-        if (realUp.x() == direction.x() && realUp.y() == direction.y() && realUp.z() == direction.z()) {
+        if (realUp.equals(direction)) {
             right = DEFAULT_RIGHT;
         } else {
             right = Vector3D.crossProduct(this.direction, realUp).normalized();
@@ -82,14 +87,21 @@ public abstract class Camera implements InputSensitive {
         Plane nearPlane = new Plane(nearTopLeft, direction.normalized());
         Plane farPlane = new Plane(farTopLeft, direction.normalized().multiplied(-1));
 
-        planes.add(topPlane);
-        planes.add(bottomPlane);
-        planes.add(leftPlane);
-        planes.add(rightPlane);
-        planes.add(nearPlane);
-        planes.add(farPlane);
+        frustumPlanes.add(topPlane);
+        frustumPlanes.add(bottomPlane);
+        frustumPlanes.add(leftPlane);
+        frustumPlanes.add(rightPlane);
+        frustumPlanes.add(nearPlane);
+        frustumPlanes.add(farPlane);
+    }
 
-        return planes;
+    public List<Plane> getPlanes(Viewport viewport) {
+
+        if (this.isFrustumDirty) {
+            computeFrustumPlanes(viewport);
+            this.isFrustumDirty = false;
+        }
+        return this.frustumPlanes;
     }
 
 
@@ -102,7 +114,12 @@ public abstract class Camera implements InputSensitive {
 	}
 	
 	public void setPosition(Point3D position) {
-		this.position = position;
+		Point3D oldValue = this.position;
+        this.position = position;
+
+        if (!oldValue.equals(position)) {
+            this.isFrustumDirty = true;
+        }
 	}
 
 	public Point3D getPosition() {
@@ -110,7 +127,12 @@ public abstract class Camera implements InputSensitive {
 	}
 
 	public void setDirection(Vector3D direction) {
-		this.direction = direction;
+		Vector3D oldValue = this.direction;
+        this.direction = direction;
+
+        if (!oldValue.equals(direction)) {
+            this.isFrustumDirty = true;
+        }
 	}
 
 	public Vector3D getDirection() {
@@ -122,7 +144,12 @@ public abstract class Camera implements InputSensitive {
     }
 
     public void setFieldOfView(float fieldOfView) {
+        float oldValue = this.fieldOfView;
         this.fieldOfView = fieldOfView;
+
+        if (oldValue != fieldOfView) {
+            this.isFrustumDirty = true;
+        }
     }
 
     public float getNear() {
@@ -130,7 +157,12 @@ public abstract class Camera implements InputSensitive {
     }
 
     public void setNear(float near) {
+        float oldValue = this.near;
         this.near = near;
+
+        if (oldValue != near) {
+            this.isFrustumDirty = true;
+        }
     }
 
     public float getFar() {
@@ -138,7 +170,12 @@ public abstract class Camera implements InputSensitive {
     }
 
     public void setFar(float far) {
+        float oldValue = this.far;
         this.far = far;
+
+        if (oldValue != far) {
+            this.isFrustumDirty = true;
+        }
     }
 
     public abstract void update(InputController inputController);

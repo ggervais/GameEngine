@@ -68,39 +68,28 @@ public class FreeFlyCamera extends Camera {
         diffY = inputController.getMouseMovementY();
 
 		if (isForwardKeyDown) {
-			this.position.x(this.position.x() + this.direction.x() * SPEED);
-			this.position.y(this.position.y() + this.direction.y() * SPEED);
-			this.position.z(this.position.z() + this.direction.z() * SPEED);
-		}
+            setPosition(new Point3D(this.position.x() + this.direction.x() * SPEED, this.position.y() + this.direction.y() * SPEED, this.position.z() + this.direction.z() * SPEED));
+	    }
 		if (isLeftKeyDown) {
-			this.position.x(this.position.x() - this.right.x() * SPEED);
-			this.position.z(this.position.z() - this.right.z() * SPEED);
+            setPosition(new Point3D(this.position.x() - this.right.x() * SPEED, this.position.y(), this.position.z() - this.right.z() * SPEED));
 		}
 		if (isBackwardKeyDown) {
-			this.position.x(this.position.x() - this.direction.x() * SPEED);
-			this.position.y(this.position.y() - this.direction.y() * SPEED);
-			this.position.z(this.position.z() - this.direction.z() * SPEED);
-		}
+            setPosition(new Point3D(this.position.x() - this.direction.x() * SPEED, this.position.y() - this.direction.y() * SPEED, this.position.z() - this.direction.z() * SPEED));
+	    }
 		if (isRightKeyDown) {
-			this.position.x(this.position.x() + this.right.x() * SPEED);
-			this.position.z(this.position.z() + this.right.z() * SPEED);
+            setPosition(new Point3D(this.position.x() + this.right.x() * SPEED, this.position.y(), this.position.z() + this.right.z() * SPEED));
 		}
-		
 
-		
 		// Damp the movement.
 		this.phi += diffX * 0.005;
 		this.theta -= diffY * 0.005;
 		
 		clampPhi();
-		
-		this.direction.x((float) Math.cos(this.phi) * (float) Math.cos(this.theta));
-		this.direction.y((float) Math.sin(this.theta));
-		this.direction.z((float) Math.sin(this.phi) * (float) Math.cos(this.theta));
-		this.direction.normalize();
-		
+
+        setDirection(new Vector3D((float) Math.cos(this.phi) * (float) Math.cos(this.theta), (float) Math.sin(this.theta), (float) Math.sin(this.phi) * (float) Math.cos(this.theta)).normalized());
+
 		Vector3D cross = Vector3D.crossProduct(this.direction, this.up).normalized();
-		this.right.x(cross.x());
+        this.right.x(cross.x());
 		this.right.y(cross.y());
 		this.right.z(cross.z());
 

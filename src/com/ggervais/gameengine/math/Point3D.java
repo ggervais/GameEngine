@@ -75,6 +75,10 @@ public class Point3D {
 	public String toString() { return "(" + x() + ", " + y() + ", " + z() + ")"; }
 
 
+    public boolean equals(Point3D point) {
+        return this.x == point.x() && this.y == point.y() && this.z()  == point.z();
+    }
+
     public Point3D copy() {
         return new Point3D(this.x, this.y, this.z);
     }
