@@ -1,9 +1,9 @@
 package com.ggervais.gameengine.scene;
 
 import com.ggervais.gameengine.UninitializedSubsystemException;
+import com.ggervais.gameengine.input.InputController;
 import net.java.games.input.Component.Identifier.Key;
 
-import com.ggervais.gameengine.input.InputSubsystem;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
 import org.apache.log4j.Logger;
@@ -50,11 +50,9 @@ public class FreeFlyCamera extends Camera {
 	}
 	
 	@Override
-	public void update() {
+	public void update(InputController inputController) {
 		
-		InputSubsystem inputSubsystem = InputSubsystem.getInstance();
-
-        boolean isForwardKeyDown = false;
+		boolean isForwardKeyDown = false;
         boolean isBackwardKeyDown = false;
         boolean isLeftKeyDown = false;
         boolean isRightKeyDown = false;
@@ -62,17 +60,12 @@ public class FreeFlyCamera extends Camera {
         float diffX = 0;
         float diffY = 0;
 
-        try {
-            isForwardKeyDown = inputSubsystem.isKeyDown(Key.W);
-            isBackwardKeyDown = inputSubsystem.isKeyDown(Key.S);
-            isLeftKeyDown = inputSubsystem.isKeyDown(Key.A);
-            isRightKeyDown = inputSubsystem.isKeyDown(Key.D);
-            diffX = inputSubsystem.getMouseMovementX();
-		    diffY = inputSubsystem.getMouseMovementY();
-        } catch (UninitializedSubsystemException use) {
-            log.fatal("InputSubsystem is not initialized, cannot update camera!");
-            System.exit(-1);
-        }
+        isForwardKeyDown = inputController.isKeyDown(Key.W);
+        isBackwardKeyDown = inputController.isKeyDown(Key.S);
+        isLeftKeyDown = inputController.isKeyDown(Key.A);
+        isRightKeyDown = inputController.isKeyDown(Key.D);
+        diffX = inputController.getMouseMovementX();
+        diffY = inputController.getMouseMovementY();
 
 		if (isForwardKeyDown) {
 			this.position.x(this.position.x() + this.direction.x() * SPEED);

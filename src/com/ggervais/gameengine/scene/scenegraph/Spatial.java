@@ -193,14 +193,11 @@ public abstract class Spatial {
             if (!getBoundingBox().intersectsOrIsInside(plane)) {
                 culled = true;
                 break;
-            } else {
             }
         }
 
         if (!culled) {
             draw(renderer);
-        } else {
-            log.info("Culled object=[" + this + "]");
         }
     }
 

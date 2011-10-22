@@ -1,7 +1,5 @@
 package com.ggervais.gameengine.input;
 
-import com.ggervais.gameengine.Subsystem;
-import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.math.Point3D;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -11,42 +9,17 @@ import net.java.games.input.Mouse;
 import net.java.games.input.Component.Identifier.Key;
 
 import java.awt.*;
-import java.rmi.UnexpectedException;
 
-public class InputSubsystem implements Subsystem {
+public class InputController {
 
-
-    private boolean initialized;
 	private Mouse mouse;
 	private Keyboard keyboard;
-	private static InputSubsystem instance;
 	
-	private InputSubsystem() {
-        this.initialized = false;
-	}
-	
-	public static InputSubsystem getInstance() {
-		if (instance == null) {
-			instance = new InputSubsystem();
-		}
-		return instance;
-	}
-
-	public void destroy() throws UninitializedSubsystemException {
-        if (!this.initialized) {
-            throw new UninitializedSubsystemException();
-        }
-
-		// These objects will probably be garbage-collected, so this in just placeholder code.
-		this.mouse = null;
-		this.keyboard = null;
-	}
-
-    public boolean isInitialized() {
-        return this.initialized;
+	public InputController() {
+	    init();
     }
 
-    public void init() {
+    private void init() {
 		ControllerEnvironment environment =	ControllerEnvironment.getDefaultEnvironment();
 		for (Controller controller : environment.getControllers()) {
 			if (controller.getType() == Controller.Type.MOUSE) {
@@ -60,13 +33,10 @@ public class InputSubsystem implements Subsystem {
 			if (mouse != null && keyboard != null) {
 				break;
 			}
-			
-			// TODO: implement support for game controllers.
 		}
-		this.initialized = true;
 	}
 
-    private void centerMouse() {
+    public void centerMouse() {
         Point3D position = getWindowPosition();
         Dimension dimension = getWindowDimensions();
 
@@ -78,24 +48,14 @@ public class InputSubsystem implements Subsystem {
         } catch(Exception e) {}
     }
 
-	public void update(long currentTime) throws UninitializedSubsystemException {
-
-        if (!this.initialized) {
-            throw new UninitializedSubsystemException();
-        }
+	public void update(long currentTime) {
 
         // Poll the controllers.
         this.mouse.poll();
 		this.keyboard.poll();
-
-        centerMouse();
 	}
 	
-	public float getMouseMovementX() throws UninitializedSubsystemException {
-
-        if (!this.initialized) {
-            throw new UninitializedSubsystemException();
-        }
+	public float getMouseMovementX() {
 
 		// TODO: support absolute movement.
 		float movement = 0;
@@ -106,11 +66,7 @@ public class InputSubsystem implements Subsystem {
 		return movement;
 	}
 	
-	public float getMouseMovementY() throws UninitializedSubsystemException {
-
-        if (!this.initialized) {
-            throw new UninitializedSubsystemException();
-        }
+	public float getMouseMovementY() {
 
 		// TODO: support absolute movement.
 		float movement = 0;
@@ -121,13 +77,8 @@ public class InputSubsystem implements Subsystem {
 		return movement;
 	}
 	
-	public boolean isKeyDown(Key key) throws UninitializedSubsystemException {
-
-        if (!this.initialized) {
-            throw new UninitializedSubsystemException();
-        }
-
-		return this.keyboard.isKeyDown(key);
+	public boolean isKeyDown(Key key) {
+        return this.keyboard.isKeyDown(key);
 	}
 
     public Point3D getMousePosition() {

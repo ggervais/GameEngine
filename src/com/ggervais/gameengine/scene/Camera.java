@@ -1,5 +1,7 @@
 package com.ggervais.gameengine.scene;
 
+import com.ggervais.gameengine.input.InputController;
+import com.ggervais.gameengine.input.InputSensitive;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.render.Viewport;
 
@@ -9,7 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public abstract class Camera {
+public abstract class Camera implements InputSensitive {
 
 
     private static final Logger log = Logger.getLogger(Camera.class);
@@ -139,6 +141,6 @@ public abstract class Camera {
         this.far = far;
     }
 
-    public abstract void update();
+    public abstract void update(InputController inputController);
 	
 }

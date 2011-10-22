@@ -1,9 +1,8 @@
 package com.ggervais.gameengine.game;
 
-import com.ggervais.gameengine.math.Matrix4x4;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Ray;
-import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.particle.ParticleSubsystem;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.render.DisplaySubsystem;
@@ -11,13 +10,11 @@ import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import com.ggervais.gameengine.scene.scenegraph.Node;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
-import net.java.games.input.*;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
-import java.awt.image.MemoryImageSource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +25,6 @@ import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 
 import com.ggervais.gameengine.Subsystem;
-import com.ggervais.gameengine.input.InputSubsystem;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.render.opengl.GLRendererFactory;
 import com.ggervais.gameengine.scene.Scene;
@@ -44,6 +40,10 @@ public class Game {
 	private static int WIDTH = 1024;
 	private static int HEIGHT = 768;
     private boolean isPreviousSpaceDown;
+    private boolean isPreviousEscapeDown;
+    private boolean isControlled;
+    private InputController inputController;
+    Cursor blankCursor;
 	
 	private List<Subsystem> subsystems;
 
@@ -67,23 +67,33 @@ public class Game {
 		this.frame.setUndecorated(false);
 		this.frame.setFocusable(true);
 
-        BufferedImage cursorImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "blank cursor");
-        this.frame.getContentPane().setCursor(blankCursor);
+
+        setDefaultCursor();
 
 		Component canvas = this.renderer.getCanvas();
 		
 		this.frame.add(canvas);
 		
 	}
-	
+
+    private void setBlankCursor() {
+        if (this.blankCursor == null) {
+            BufferedImage cursorImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+            this.blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "blank cursor");
+        }
+        this.frame.getContentPane().setCursor(this.blankCursor);
+    }
+
+    private void setDefaultCursor() {
+        this.frame.getContentPane().setCursor(Cursor.getDefaultCursor());
+    }
+
 	private void initSubsystems() {
 		this.subsystems = new ArrayList<Subsystem>();
 		
 		// This should be injected using DI, by Spring or some other DI framework.
 
         this.subsystems.add(ResourceSubsystem.getInstance());
-		this.subsystems.add(InputSubsystem.getInstance());
         this.subsystems.add(ParticleSubsystem.getInstance());
         this.subsystems.add(DisplaySubsystem.getInstance());
 		
@@ -93,10 +103,15 @@ public class Game {
 	}
 	
 	public void init() {
+
 		this.scene = new Scene();
         this.renderer = new GLRendererFactory().buildRenderer(this.scene);
         this.scene.init();
         this.isPreviousSpaceDown = false;
+        this.isPreviousEscapeDown = false;
+        this.isControlled = true;
+
+        this.inputController = new InputController();
 
         initSubsystems();
         initGUI();
@@ -147,17 +162,30 @@ public class Game {
             }
 
 		}
-        //DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera());
-        //log.info(DisplaySubsystem.getInstance().getPickingRay(this.scene.getCamera()));
 
-        try {
-            boolean isSpaceDown = InputSubsystem.getInstance().isKeyDown(net.java.games.input.Component.Identifier.Key.SPACE);
-            if (this.isPreviousSpaceDown && !isSpaceDown) {
-                this.scene.getSceneGraphRoot().visit(new PauseVisitor(currentTime));
-            }
-            this.isPreviousSpaceDown = isSpaceDown;
-        } catch(UninitializedSubsystemException use) {
-            log.fatal("InputSubsystem is uninitialized!");
+        this.inputController.update(currentTime);
+
+        boolean isSpaceDown = this.inputController.isKeyDown(net.java.games.input.Component.Identifier.Key.SPACE);
+        boolean isEscapeDown = this.inputController.isKeyDown(net.java.games.input.Component.Identifier.Key.ESCAPE);
+
+        if (this.isPreviousSpaceDown && !isSpaceDown) {
+            this.scene.getSceneGraphRoot().visit(new PauseVisitor(currentTime));
+        }
+
+        if (this.isPreviousEscapeDown && !isEscapeDown) {
+            this.isControlled = !this.isControlled;
+        }
+
+        this.isPreviousSpaceDown = isSpaceDown;
+        this.isPreviousEscapeDown = isEscapeDown;
+
+
+        if (this.isControlled) {
+            this.inputController.centerMouse();
+            this.scene.getCamera().update(inputController);
+            setBlankCursor();
+        } else {
+            setDefaultCursor();
         }
 
         this.scene.update(currentTime);

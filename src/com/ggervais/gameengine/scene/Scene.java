@@ -5,28 +5,21 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.geometry.*;
 import com.ggervais.gameengine.geometry.loader.ObjFileLoader;
-import com.ggervais.gameengine.input.InputSubsystem;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.particle.*;
 import com.ggervais.gameengine.physics.MotionController;
-import com.ggervais.gameengine.render.Frustum;
 import com.ggervais.gameengine.render.Viewport;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
-import com.ggervais.gameengine.scene.scenegraph.visitor.PauseVisitor;
 import com.ggervais.gameengine.timing.BezierCurveController;
-import com.ggervais.gameengine.timing.FountainEmitterController;
-import net.java.games.input.Component.Identifier.Key;
 import org.apache.log4j.Logger;
-
-import javax.swing.text.View;
 
 public class Scene extends Observable {
 
@@ -347,11 +340,7 @@ public class Scene extends Observable {
 
         for (DisplayableEntity e : this.entities) {
             Vector3D rot = e.getRotation();
-            //rot.x(rot.x() + (float) Math.toRadians(1.0f));
-            //rot.y(rot.y() + (float) Math.toRadians(1.0f));
-            //rot.z(rot.z() + (float) Math.toRadians(1.0f));
         }
-        this.camera.update();
 	}
 	
 	public void render() {
