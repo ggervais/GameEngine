@@ -191,7 +191,7 @@ public class Scene extends Observable {
 
 
         Effect cubeEffect = new Effect();
-        cubeEffect.addTexture(texAscii);
+        //cubeEffect.addTexture(texAscii);
         cubeEffect.addTexture(texGraffiti);
         cubeEffect.addTexture(texGuillaume);
         gCube1.setEffect(cubeEffect);
@@ -253,7 +253,7 @@ public class Scene extends Observable {
         Effect smokeEffect = new Effect();
         smokeEffect.setColor(new Color(77, 77, 77));
         smokeEffect.addTexture(texSmoke);
-        ParticlesGeometry smokeParticles = new ParticlesGeometry(20, 20);
+        ParticlesGeometry smokeParticles = new ParticlesGeometry(200, 0);
         smokeParticles.setNbActive(0);
         smokeParticles.setEffect(smokeEffect);
         Transformation smokeTransformation = new Transformation();
@@ -322,7 +322,7 @@ public class Scene extends Observable {
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
         this.sceneGraphRoot.addChild(pumpkin);
-	}
+    }
 	
 	public List<Texture> getTextures() {
 		return this.textures;
