@@ -118,11 +118,14 @@ public class BoundingBoxTests extends TestCase {
     public void testBoundingBoxIntersection() {
         BoundingBox firstBox = new BoundingBox(new Point3D(-1, -1, -1), new Point3D(1, 1, 1));
         BoundingBox secondBox = new BoundingBox(new Point3D(0, 0, 0), new Point3D(2, 2, 2));
+        BoundingBox thirdBox = new BoundingBox(new Point3D(2.1f, 2.1f, 2.1f), new Point3D(4, 4, 4));
 
         assertTrue(firstBox.intersects(secondBox));
         assertTrue(secondBox.intersects(firstBox));
         assertTrue(firstBox.intersects(firstBox));
         assertTrue(secondBox.intersects(secondBox));
+        assertFalse(firstBox.intersects(thirdBox));
+        assertFalse(secondBox.intersects(thirdBox));
     }
 
     public static Test suite() {
