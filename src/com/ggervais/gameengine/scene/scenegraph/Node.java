@@ -103,4 +103,24 @@ public class Node extends Spatial {
             child.visit(visitor);
         }
     }
+
+    @Override
+    public boolean doIntersectsWithUnderlyingGeometry(Spatial spatial) {
+
+        // First check if the current node intersects the given spatial object.
+        boolean intersects = super.doIntersectsWithUnderlyingGeometry(spatial);
+
+        // If it does, reset the result (intersects = false), and check the children.
+        if (intersects) {
+            intersects = false;
+            for (Spatial child : this.children) {
+                if (child.intersectsWithUnderlyingGeometry(spatial)) {
+                    intersects = true;
+                    break;
+                }
+            }
+        }
+
+        return intersects;
+    }
 }

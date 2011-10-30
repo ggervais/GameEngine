@@ -273,4 +273,12 @@ public abstract class Spatial {
         }
         return light;
     }
+
+    protected boolean doIntersectsWithUnderlyingGeometry(Spatial spatial) {
+        return getBoundingBox().intersects(spatial.getBoundingBox());
+    }
+
+    public boolean intersectsWithUnderlyingGeometry(Spatial spatial) {
+        return spatial.doIntersectsWithUnderlyingGeometry(this);
+    }
 }
