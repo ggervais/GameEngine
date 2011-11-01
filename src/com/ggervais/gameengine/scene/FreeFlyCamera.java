@@ -2,7 +2,6 @@ package com.ggervais.gameengine.scene;
 
 import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.input.InputController;
-import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import net.java.games.input.Component.Identifier.Key;
@@ -11,7 +10,7 @@ import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
 import org.apache.log4j.Logger;
 
-import java.awt.*;
+import java.awt.datatransfer.Transferable;
 
 public class FreeFlyCamera extends Camera {
 
@@ -72,19 +71,20 @@ public class FreeFlyCamera extends Camera {
         diffX = inputController.getMouseMovementX();
         diffY = inputController.getMouseMovementY();
 
-        Point3D candidatePosition = this.position.copy();
+        Point3D oldPosition = getPosition().copy();
+
 		if (isForwardKeyDown) {
-            candidatePosition = new Point3D(candidatePosition.x() + this.direction.x() * SPEED, candidatePosition.y() + candidatePosition.y() * SPEED, candidatePosition.z() + this.direction.z() * SPEED);
+            setPosition(new Point3D(this.position.x() + this.direction.x() * SPEED, this.position.y() + this.direction.y() * SPEED, this.position.z() + this.direction.z() * SPEED));
 	    }
 		if (isLeftKeyDown) {
-            candidatePosition = new Point3D(candidatePosition.x() - this.right.x() * SPEED, candidatePosition.y(), candidatePosition.z() - this.right.z() * SPEED);
+            setPosition(new Point3D(this.position.x() - this.right.x() * SPEED, this.position.y(), this.position.z() - this.right.z() * SPEED));
 		}
 		if (isBackwardKeyDown) {
-            candidatePosition = new Point3D(candidatePosition.x() - this.direction.x() * SPEED, candidatePosition.y() - this.direction.y() * SPEED, candidatePosition.z() - this.direction.z() * SPEED);
-        }
+            setPosition(new Point3D(this.position.x() - this.direction.x() * SPEED, this.position.y() - this.direction.y() * SPEED, this.position.z() - this.direction.z() * SPEED));
+	    }
 		if (isRightKeyDown) {
-            candidatePosition = new Point3D(candidatePosition.x() + this.right.x() * SPEED, candidatePosition.y(), candidatePosition.z() + this.right.z() * SPEED);
-        }
+            setPosition(new Point3D(this.position.x() + this.right.x() * SPEED, this.position.y(), this.position.z() + this.right.z() * SPEED));
+		}
 
 		// Damp the movement.
 		this.phi += diffX * 0.005;
@@ -99,14 +99,19 @@ public class FreeFlyCamera extends Camera {
 		this.right.y(cross.y());
 		this.right.z(cross.z());
 
-		//log.warn("Position -> " + this.position + ", Direction -> " + this.direction + ", Right -> " + this.right + ", LookAt -> " + getLookAt());
-		Transformation cameraTransformation = new Transformation();
-        cameraTransformation.setTranslation(candidatePosition.x(), candidatePosition.y(), candidatePosition.z());
-        cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
-        this.cameraGeometry.setLocalTransformation(cameraTransformation);
 
-        // Do checks.
-        setPosition(candidatePosition);
+        Transformation cameraTransformation = new Transformation();
+        cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
+        cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
+
+        this.cameraGeometry.setLocalTransformation(cameraTransformation);
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+
+        if (this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot)) {
+            setPosition(oldPosition);
+        }
+		//log.warn("Position -> " + this.position + ", Direction -> " + this.direction + ", Right -> " + this.right + ", LookAt -> " + getLookAt());
+		
 	}
 
 }

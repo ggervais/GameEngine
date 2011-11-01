@@ -30,7 +30,7 @@ public class InputController {
 			}
 			// The "Power Button" is a hack caused by my Microsoft keyboard which, apparently, generates two keyboard controllers.
 			// TODO: fix the hack.
-			if (controller.getType() == Controller.Type.KEYBOARD && controller.getName().toLowerCase().endsWith("keyboard")) {
+			if (controller.getType() == Controller.Type.KEYBOARD && controller.getName().toLowerCase().contains("keyboard")) {
 				this.keyboard = (Keyboard) controller;
 			    log.info("Found keyboard: " + this.keyboard);
             }
