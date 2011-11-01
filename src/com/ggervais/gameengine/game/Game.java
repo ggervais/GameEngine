@@ -182,7 +182,7 @@ public class Game {
 
         if (this.isControlled) {
             this.inputController.centerMouse();
-            this.scene.getCamera().update(inputController);
+            this.scene.getCamera().update(inputController, this.scene.getSceneGraphRoot());
             setBlankCursor();
         } else {
             setDefaultCursor();
@@ -190,6 +190,7 @@ public class Game {
 
         this.scene.update(currentTime);
         Node root = this.scene.getSceneGraphRoot();
+        
         root.updateGeometryState(currentTime, true);
         root.updateRenderState();
 
