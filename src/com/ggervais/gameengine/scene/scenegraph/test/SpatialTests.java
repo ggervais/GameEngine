@@ -38,7 +38,7 @@ public class SpatialTests extends TestCase {
 
         cubes.updateBoundState();
 
-        assertFalse(cube3.intersectsWithUnderlyingGeometry(cubes));
+        assertTrue(cube3.intersectsWithUnderlyingGeometry(cubes).size() == 0);
 
     }
 

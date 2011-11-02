@@ -3,8 +3,10 @@ package com.ggervais.gameengine.scene.scenegraph;
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
 import com.ggervais.gameengine.math.Plane;
 import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
+import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
 import com.ggervais.gameengine.scene.scenegraph.visitor.SpatialVisitor;
@@ -274,11 +276,18 @@ public abstract class Spatial {
         return light;
     }
 
-    protected boolean doIntersectsWithUnderlyingGeometry(Spatial spatial) {
-        return getBoundingBox().intersects(spatial.getBoundingBox());
+    protected List<Collision> doIntersectsWithUnderlyingGeometry(Spatial spatial) {
+        Vector3D penetrationVector = getBoundingBox().intersects(spatial.getBoundingBox());
+        List<Collision> collisions = new ArrayList<Collision>();
+
+        if (penetrationVector != null) {
+            collisions.add(new Collision(this, spatial, penetrationVector));
+        }
+
+        return collisions;
     }
 
-    public boolean intersectsWithUnderlyingGeometry(Spatial spatial) {
+    public List<Collision> intersectsWithUnderlyingGeometry(Spatial spatial) {
         return spatial.doIntersectsWithUnderlyingGeometry(this);
     }
 }

@@ -266,18 +266,39 @@ public class BoundingBox {
         return box.copy();
     }
 
-    public boolean intersects(BoundingBox box) {
+    public Vector3D intersects(BoundingBox box) {
 
-        boolean intersects = true;
+        boolean intersects = false;
 
-        if (this.maxCorner.x() < box.getMinCorner().x() || this.minCorner.x() > box.getMaxCorner().x() ||
-            this.maxCorner.y() < box.getMinCorner().y() || this.minCorner.y() > box.getMaxCorner().y() ||
-            this.maxCorner.z() < box.getMinCorner().z() || this.minCorner.z() > box.getMaxCorner().z()) {
+        Vector3D penetrationVector = null;
 
-            intersects = false;
+        if (this.maxCorner.x() >= box.getMinCorner().x() && this.minCorner.x() <= box.getMaxCorner().x() &&
+            this.maxCorner.y() >= box.getMinCorner().y() && this.minCorner.y() <= box.getMaxCorner().y() &&
+            this.maxCorner.z() >= box.getMinCorner().z() && this.minCorner.z() <= box.getMaxCorner().z()) {
+
+            intersects = true;
         }
 
-        return intersects;
+
+        if (intersects) {
+            penetrationVector = Vector3D.zero();
+
+            for (int i = 0; i < 3; i++) {
+                if (this.maxCorner.get(i) >= box.getMinCorner().get(i) && this.maxCorner.get(i) <= box.getMaxCorner().get(i)) {
+                    penetrationVector.set(i, this.maxCorner.get(i) - box.getMinCorner().get(i));
+                } else if (this.minCorner.get(i) <= box.getMaxCorner().get(i) && this.minCorner.get(i) >= box.getMinCorner().get(i)) {
+                    penetrationVector.set(i, this.minCorner.get(i) - box.getMaxCorner().get(i));
+                } else {
+                    if (Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i)) < Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i))) {
+                        penetrationVector.set(i, this.maxCorner.get(i) - box.getMinCorner().get(i));
+                    } else {
+                        penetrationVector.set(i, this.minCorner.get(i) - box.getMaxCorner().get(i));
+                    }
+                }
+            }
+        }
+
+        return penetrationVector;
     }
 
     public String toString() {

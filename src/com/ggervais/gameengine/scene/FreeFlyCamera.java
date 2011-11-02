@@ -2,6 +2,7 @@ package com.ggervais.gameengine.scene;
 
 import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.input.InputController;
+import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import net.java.games.input.Component.Identifier.Key;
@@ -11,6 +12,7 @@ import com.ggervais.gameengine.math.Vector3D;
 import org.apache.log4j.Logger;
 
 import java.awt.datatransfer.Transferable;
+import java.util.List;
 
 public class FreeFlyCamera extends Camera {
 
@@ -73,18 +75,23 @@ public class FreeFlyCamera extends Camera {
 
         Point3D oldPosition = getPosition().copy();
 
+        boolean newPosition = false;
 		if (isForwardKeyDown) {
             setPosition(new Point3D(this.position.x() + this.direction.x() * SPEED, this.position.y() + this.direction.y() * SPEED, this.position.z() + this.direction.z() * SPEED));
-	    }
+	        newPosition = true;
+        }
 		if (isLeftKeyDown) {
             setPosition(new Point3D(this.position.x() - this.right.x() * SPEED, this.position.y(), this.position.z() - this.right.z() * SPEED));
-		}
+		    newPosition = true;
+        }
 		if (isBackwardKeyDown) {
             setPosition(new Point3D(this.position.x() - this.direction.x() * SPEED, this.position.y() - this.direction.y() * SPEED, this.position.z() - this.direction.z() * SPEED));
-	    }
+	        newPosition = true;
+        }
 		if (isRightKeyDown) {
             setPosition(new Point3D(this.position.x() + this.right.x() * SPEED, this.position.y(), this.position.z() + this.right.z() * SPEED));
-		}
+		    newPosition = true;
+        }
 
 		// Damp the movement.
 		this.phi += diffX * 0.005;
@@ -98,18 +105,44 @@ public class FreeFlyCamera extends Camera {
         this.right.x(cross.x());
 		this.right.y(cross.y());
 		this.right.z(cross.z());
+        this.right.normalize();
 
 
-        Transformation cameraTransformation = new Transformation();
-        cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
-        cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
+        if (newPosition) {
+            Transformation cameraTransformation = new Transformation();
+            cameraTransformation.setScale(0.1f, 0.1f, 0.1f);
+            this.cameraGeometry.setLocalTransformation(cameraTransformation);
+            cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
 
-        this.cameraGeometry.setLocalTransformation(cameraTransformation);
-        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+            Vector3D velocity = Point3D.sub(this.position, oldPosition);
 
-        if (this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot)) {
-            setPosition(oldPosition);
+            // For each axis.
+            for (int i = 0; i < 3; i++) {
+                Point3D basePosition = oldPosition.copy();
+                Vector3D axisVelocity = Vector3D.zero();
+                axisVelocity.set(i, velocity.get(i));
+
+                basePosition.add(axisVelocity);
+
+                // Update bounding box.
+                cameraTransformation.setTranslation(Point3D.sub(basePosition, Point3D.zero()));
+                this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+
+                List<Collision> collisions = this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot);
+                for (Collision collision : collisions) {
+                    if (collision.getFirst() == this.cameraGeometry) {
+                        log.info(i + " " + collision.getFirst().getBoundingBox() + " and the other is " + collision.getSecond().getBoundingBox() + ", pen. vec. " + collision.getPenetrationVector());
+                        oldPosition.set(i, oldPosition.get(i) - collision.getPenetrationVector().get(i));
+                        velocity.set(i, 0);
+                    }
+                }
+            }
+
+            setPosition(Point3D.add(oldPosition, velocity));
+            cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
+            this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
         }
+
 		//log.warn("Position -> " + this.position + ", Direction -> " + this.direction + ", Right -> " + this.right + ", LookAt -> " + getLookAt());
 		
 	}

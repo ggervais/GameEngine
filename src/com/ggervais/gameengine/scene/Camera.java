@@ -185,6 +185,10 @@ public abstract class Camera implements InputSensitive {
         }
     }
 
+    public Spatial getCameraGeometry() {
+        return this.cameraGeometry;
+    }
+
     public abstract void update(InputController inputController, Spatial sceneGraphRoot);
 	
 }
