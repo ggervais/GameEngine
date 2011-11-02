@@ -110,13 +110,14 @@ public class FreeFlyCamera extends Camera {
 
         if (newPosition) {
             Transformation cameraTransformation = new Transformation();
-            cameraTransformation.setScale(0.1f, 0.1f, 0.1f);
+            cameraTransformation.setScale(0.0f, 0.0f, 0.0f);
             this.cameraGeometry.setLocalTransformation(cameraTransformation);
             cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
 
             Vector3D velocity = Point3D.sub(this.position, oldPosition);
 
             // For each axis.
+            log.info("Start processing.");
             for (int i = 0; i < 3; i++) {
                 Point3D basePosition = oldPosition.copy();
                 Vector3D axisVelocity = Vector3D.zero();
@@ -131,12 +132,13 @@ public class FreeFlyCamera extends Camera {
                 List<Collision> collisions = this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot);
                 for (Collision collision : collisions) {
                     if (collision.getFirst() == this.cameraGeometry) {
-                        log.info(i + " " + collision.getFirst().getBoundingBox() + " and the other is " + collision.getSecond().getBoundingBox() + ", pen. vec. " + collision.getPenetrationVector());
+                        log.info(i + " " + collision.getPenetrationVector().get(i));
                         oldPosition.set(i, oldPosition.get(i) - collision.getPenetrationVector().get(i));
                         velocity.set(i, 0);
                     }
                 }
             }
+            log.info("End processing");
 
             setPosition(Point3D.add(oldPosition, velocity));
             cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));

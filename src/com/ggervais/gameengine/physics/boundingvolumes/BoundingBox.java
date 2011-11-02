@@ -284,17 +284,35 @@ public class BoundingBox {
             penetrationVector = Vector3D.zero();
 
             for (int i = 0; i < 3; i++) {
+                float minValue = Float.MAX_VALUE;
+                float realValue = Float.MAX_VALUE;
+
                 if (this.maxCorner.get(i) >= box.getMinCorner().get(i) && this.maxCorner.get(i) <= box.getMaxCorner().get(i)) {
-                    penetrationVector.set(i, this.maxCorner.get(i) - box.getMinCorner().get(i));
-                } else if (this.minCorner.get(i) <= box.getMaxCorner().get(i) && this.minCorner.get(i) >= box.getMinCorner().get(i)) {
-                    penetrationVector.set(i, this.minCorner.get(i) - box.getMaxCorner().get(i));
-                } else {
-                    if (Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i)) < Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i))) {
-                        penetrationVector.set(i, this.maxCorner.get(i) - box.getMinCorner().get(i));
-                    } else {
-                        penetrationVector.set(i, this.minCorner.get(i) - box.getMaxCorner().get(i));
+                    if (Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i)) < minValue) {
+                        minValue = Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i));
+                        realValue = this.maxCorner.get(i) - box.getMinCorner().get(i);
                     }
                 }
+
+                if (this.minCorner.get(i) <= box.getMaxCorner().get(i) && this.minCorner.get(i) >= box.getMinCorner().get(i)) {
+
+                    if (Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i)) < minValue) {
+                        minValue = Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i));
+                        realValue = this.minCorner.get(i) - box.getMaxCorner().get(i);
+                    }
+                }
+
+                penetrationVector.set(i, realValue);
+                /* else {
+                    System.out.println("Inside?");
+                    if (Math.abs(this.minCorner.get(i) - box.getMinCorner().get(i)) < Math.abs(this.maxCorner.get(i) - box.getMaxCorner().get(i))) {
+                        penetrationVector.set(i, this.minCorner.get(i) - box.getMinCorner().get(i) + Math.abs(this.maxCorner.get(i) - this.minCorner.get(i)));
+                        penetrationVector.multiply(-1);
+                    } else {
+                        penetrationVector.set(i, this.maxCorner.get(i) - box.getMaxCorner().get(i) + Math.abs(this.maxCorner.get(i) - this.minCorner.get(i)));
+                        penetrationVector.multiply(-1);
+                    }
+                }*/
             }
         }
 
