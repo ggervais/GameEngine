@@ -268,15 +268,17 @@ public class BoundingBox {
 
     public Vector3D intersects(BoundingBox box) {
 
-        boolean intersects = false;
+        boolean intersects = true;
 
         Vector3D penetrationVector = null;
 
-        if (this.maxCorner.x() >= box.getMinCorner().x() && this.minCorner.x() <= box.getMaxCorner().x() &&
-            this.maxCorner.y() >= box.getMinCorner().y() && this.minCorner.y() <= box.getMaxCorner().y() &&
-            this.maxCorner.z() >= box.getMinCorner().z() && this.minCorner.z() <= box.getMaxCorner().z()) {
+        // Using the Separating Axis Theorem, or SAT, we can quickly figure out if the bouding boxes are NOT
+        // intersecting, so we assume they are intersecting by default and short-circuit as soon a we can, if needed.
+        if (this.maxCorner.x() < box.getMinCorner().x() || this.minCorner.x() > box.getMaxCorner().x() |
+            this.maxCorner.y() < box.getMinCorner().y() || this.minCorner.y() > box.getMaxCorner().y() ||
+            this.maxCorner.z() < box.getMinCorner().z() || this.minCorner.z() > box.getMaxCorner().z()) {
 
-            intersects = true;
+            intersects = false;
         }
 
 
@@ -285,34 +287,21 @@ public class BoundingBox {
 
             for (int i = 0; i < 3; i++) {
                 float minValue = Float.MAX_VALUE;
-                float realValue = Float.MAX_VALUE;
 
                 if (this.maxCorner.get(i) >= box.getMinCorner().get(i) && this.maxCorner.get(i) <= box.getMaxCorner().get(i)) {
-                    if (Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i)) < minValue) {
-                        minValue = Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i));
-                        realValue = this.maxCorner.get(i) - box.getMinCorner().get(i);
+                    if (Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i)) < Math.abs(minValue)) {
+                        minValue = this.maxCorner.get(i) - box.getMinCorner().get(i);
                     }
                 }
 
                 if (this.minCorner.get(i) <= box.getMaxCorner().get(i) && this.minCorner.get(i) >= box.getMinCorner().get(i)) {
 
-                    if (Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i)) < minValue) {
-                        minValue = Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i));
-                        realValue = this.minCorner.get(i) - box.getMaxCorner().get(i);
+                    if (Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i)) < Math.abs(minValue)) {
+                        minValue = this.minCorner.get(i) - box.getMaxCorner().get(i);
                     }
                 }
 
-                penetrationVector.set(i, realValue);
-                /* else {
-                    System.out.println("Inside?");
-                    if (Math.abs(this.minCorner.get(i) - box.getMinCorner().get(i)) < Math.abs(this.maxCorner.get(i) - box.getMaxCorner().get(i))) {
-                        penetrationVector.set(i, this.minCorner.get(i) - box.getMinCorner().get(i) + Math.abs(this.maxCorner.get(i) - this.minCorner.get(i)));
-                        penetrationVector.multiply(-1);
-                    } else {
-                        penetrationVector.set(i, this.maxCorner.get(i) - box.getMaxCorner().get(i) + Math.abs(this.maxCorner.get(i) - this.minCorner.get(i)));
-                        penetrationVector.multiply(-1);
-                    }
-                }*/
+                penetrationVector.set(i, minValue);
             }
         }
 

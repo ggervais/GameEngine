@@ -331,8 +331,7 @@ public class Scene extends Observable {
         temp.setScale(10, 10, 10);
         cube.setLocalTransformation(temp);
         cube.setEffect(ef);
-
-        this.sceneGraphRoot.addChild(cube);  */
+        this.sceneGraphRoot.addChild(cube);*/
     }
 	
 	public List<Texture> getTextures() {
