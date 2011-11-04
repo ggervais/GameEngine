@@ -61,6 +61,10 @@ public abstract class Spatial {
         this.parent = parent;
     }
 
+    public Spatial getParent() {
+        return this.parent;
+    }
+
     public void updateControllers(long currentTime) {
         for (Controller controller : this.controllers) {
             controller.update(currentTime);

@@ -109,69 +109,40 @@ public class FreeFlyCamera extends Camera {
         this.right.normalize();
 
 
-        if (newPosition) {
-            Transformation cameraTransformation = new Transformation();
-            this.cameraGeometry.setLocalTransformation(cameraTransformation);
-            cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
+        Transformation cameraTransformation = new Transformation();
+        //cameraTransformation.setScale(0, 0, 0);
+        this.cameraGeometry.setLocalTransformation(cameraTransformation);
+        cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
 
-            Vector3D velocity = Point3D.sub(this.position, oldPosition);
+        Vector3D velocity = Point3D.sub(this.position, oldPosition);
 
-            /*List<Map<String, Float>> sortedAxis = new ArrayList<Map<String, Float>>();
-            for (int i = 0; i < 3; i++) {
-                sortedAxis.add(new HashMap<String, Float>());
-                sortedAxis.get(i).put("index", (float) i);
-                sortedAxis.get(i).put("velocity", velocity.get(i));
-            }
-            Collections.sort(sortedAxis, new Comparator<Map<String, Float>>() {
-                public int compare(Map<String, Float> integerFloatMap, Map<String, Float> integerFloatMap1) {
-                    Float velocity1 = Math.abs(integerFloatMap.get("velocity"));
-                    Float velocity2 = Math.abs(integerFloatMap1.get("velocity"));
-                    return velocity2.compareTo(velocity1);
-                }
-            });
-            int[] indices = new int[3];
-            for (int i = 0; i < 3; i++) {
-                indices[i] = sortedAxis.get(i).get("index").intValue();
-            }*/
+        Point3D candidatePosition = oldPosition.copy();
+        candidatePosition.add(velocity);
+        cameraTransformation.setTranslation(Point3D.sub(candidatePosition, Point3D.zero()));
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
 
-            int[] indices = new int[3];
-            indices[0] = 0;
-            indices[1] = 1;
-            indices[2] = 2;
+        List<Collision> collisions = this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot);
+        for (Collision collision : collisions) {
+            if (collision.getFirst() == this.cameraGeometry && collision.getSecond() != this.cameraGeometry) {
 
+                float minComponent = Float.MAX_VALUE;
+                int minAxis = 0;
 
-            // For each axis.
-            boolean collisionOccurred = false;
-
-            Point3D candidatePosition = oldPosition.copy();
-            candidatePosition.add(velocity);
-            cameraTransformation.setTranslation(Point3D.sub(candidatePosition, Point3D.zero()));
-            this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
-
-            List<Collision> collisions = this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot);
-            for (Collision collision : collisions) {
-                if (collision.getFirst() == this.cameraGeometry) {
-
-                    float minComponent = Float.MAX_VALUE;
-                    int minAxis = 0;
-
-                    for (int i = 0; i < 3; i++) {
-                        if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
-                            minComponent = collision.getPenetrationVector().get(i);
-                            minAxis = i;
-                        }
+                for (int i = 0; i < 3; i++) {
+                    if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
+                        minComponent = collision.getPenetrationVector().get(i);
+                        minAxis = i;
                     }
-
-                    velocity.set(minAxis, velocity.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                    collisionOccurred = true;
-                    break;
                 }
-            }
-            setPosition(Point3D.add(oldPosition, velocity));
 
-            cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
-            this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+                candidatePosition.set(minAxis, candidatePosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                break;
+            }
         }
+        setPosition(candidatePosition);
+
+        cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
 
 		//log.warn("Position -> " + this.position + ", Direction -> " + this.direction + ", Right -> " + this.right + ", LookAt -> " + getLookAt());
 		
