@@ -120,7 +120,7 @@ public class Scene extends Observable {
 		//this.entities.add(sphere1);
 		
 		DisplayableEntity cube1 = new DisplayableEntity(new Cube());
-		cube1.setPosition(new Point3D(0, 0, -1));
+		cube1.setPosition(new Point3D(0, 0, 0));
 		cube1.setScale(new Vector3D(1, 1, 1));
 		cube1.setRotation(new Vector3D(0, 0, 0));
 		cube1.setMaterial(matGuillaume);
@@ -218,9 +218,9 @@ public class Scene extends Observable {
         secondCubeNode.addGlobalState(wireframeStateOn);
         secondCubeNode.setLocalTransformation(second);
 
-        firstCubeNode.addChild(gCube1);
+        //firstCubeNode.addChild(gCube1);
         //firstCubeNode.addChild(secondCubeNode);
-        firstCubeNode.setLocalTransformation(rootTransform);
+        //firstCubeNode.setLocalTransformation(rootTransform);
 
         Effect effect = new Effect();
         //effect.setColor(new Color(255, 0, 255, 255));
@@ -232,8 +232,9 @@ public class Scene extends Observable {
         gCube3.addGlobalState(zBufferState);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
 
-        MotionController controller = new MotionController(new Vector3D(0, -9.81f / 2, 0), 10f, fortyFiveDegrees, 0);
-        firstCubeNode.addController(controller);
+        MotionController controller = new MotionController(new Vector3D(0, 0, 0), 5f, 0, 0, false);
+        //firstCubeNode.addController(controller);
+        gCube1.addController(controller);
 
         Node fireNode = new Node();
         fireNode.addGlobalState(new AlphaBlendingState(true));
@@ -287,6 +288,12 @@ public class Scene extends Observable {
         sphereGeometry.setEffect(blueEffect);
         sphereGeometry.setLocalTransformation(sphereTransformation);
 
+        Transformation immobileCubeTransformation = new Transformation();
+        immobileCubeTransformation.setTranslation(20, 0, 0);
+        CubeGeometry immobileCube = new CubeGeometry();
+        immobileCube.setLocalTransformation(immobileCubeTransformation);
+
+
         GlobalState lightingOn = new LightingState(true);
         GlobalState lightingOff = new LightingState(false);
 
@@ -316,12 +323,13 @@ public class Scene extends Observable {
         pumpkin.setLocalTransformation(pumpkinTransformation);
 
         this.sceneGraphRoot.addLight(light2);
-        this.sceneGraphRoot.addChild(sphereGeometry);
-        this.sceneGraphRoot.addChild(firstCubeNode);
+        //this.sceneGraphRoot.addChild(sphereGeometry);
+        this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
-        this.sceneGraphRoot.addChild(fireNode);
+        //this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
-        this.sceneGraphRoot.addChild(pumpkin);
+        //this.sceneGraphRoot.addChild(pumpkin);
+        this.sceneGraphRoot.addChild(immobileCube);
 
         /*
         Effect ef = new Effect();

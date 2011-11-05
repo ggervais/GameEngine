@@ -3,10 +3,13 @@ package com.ggervais.gameengine.physics;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import com.ggervais.gameengine.timing.Controller;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 public class MotionController extends Controller {
     private Logger log = Logger.getLogger(MotionController.class);
@@ -34,6 +37,19 @@ public class MotionController extends Controller {
         this.rotateWhileMoving = rotateWhileMoving;
     }
 
+    private Spatial getTopParent() {
+
+        Spatial current = this.controlledSpatialObject;
+        Spatial parent = current.getParent();
+
+        while (parent != null) {
+            current = parent;
+            parent = current.getParent();
+        }
+
+        return current;
+    }
+
     @Override
     public void setControlledObject(Spatial object) {
         super.setControlledObject(object);
@@ -57,18 +73,51 @@ public class MotionController extends Controller {
 
     @Override
     public void doUpdate(long currentTime) {
-        long dt = currentTime - this.startTime - this.pauseOffset;
+        long dtTotal = currentTime - this.startTime - this.pauseOffset;
+        float dtTotalSeconds = dtTotal / 1000f;
+
+        long dt = currentTime - this.lastUpdateTime;
         float dtSeconds = dt / 1000f;
 
         // Newton's laws of motion.
-        Vector3D currentVelocity = Vector3D.add(this.initialVelocity, this.gravity.copy().multiplied(dtSeconds));
-        Vector3D currentTranslation = Vector3D.add(this.initialTransformation.getTranslation(), Vector3D.add(this.initialVelocity, currentVelocity).multiplied(0.5f * dtSeconds));
+        Vector3D currentVelocity = Vector3D.add(this.initialVelocity, this.gravity.copy().multiplied(dtTotalSeconds));
+        currentVelocity.multiply(dtSeconds);
+
+        //Vector3D currentTranslation = Vector3D.add(this.initialTransformation.getTranslation(), Vector3D.add(this.initialVelocity, currentVelocity).multiplied(0.5f * dtSeconds));
+        Vector3D baseTranslation = this.controlledSpatialObject.getLocalTransformation().getTranslation();
+        Vector3D candidateTranslation = Vector3D.add(baseTranslation, currentVelocity);
+
+        Spatial root = getTopParent();
+        List<Collision> collisions = this.controlledSpatialObject.intersectsWithUnderlyingGeometry(root);
+        if (collisions.size() > 0) {
+            for (Collision collision : collisions) {
+                if (collision.getFirst() == this.controlledSpatialObject && collision.getSecond() != this.controlledSpatialObject) {
+
+                    float minComponent = Float.MAX_VALUE;
+                    int minAxis = 0;
+
+                    for (int i = 0; i < 3; i++) {
+                        if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
+                            minComponent = collision.getPenetrationVector().get(i);
+                            minAxis = i;
+                        }
+                    }
+
+                    candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                    //currentVelocity.set(minAxis, 0);
+                    //oldPosition.set(minAxis, oldPosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                    //velocity.set(minAxis, 0);
+                    break;
+                }
+            }
+        }
+
         Vector3D normalizedRotation = currentVelocity.normalized();
 
         if (this.controlledSpatialObject != null) {
             Transformation transformation = this.controlledSpatialObject.getLocalTransformation();
             if (transformation != null) {
-                transformation.setTranslation(currentTranslation);
+                transformation.setTranslation(candidateTranslation);
 
                 RotationMatrix initialRotation = this.initialTransformation.getRotationMatrix();
 

@@ -216,7 +216,7 @@ public class OpenGLUtils {
 
     public static void drawBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {
 
-        drawAugmentedBoundingBox(gl, box, isPicked);
+        //drawAugmentedBoundingBox(gl, box, isPicked);
 
         /*gl.glPushMatrix();
 
