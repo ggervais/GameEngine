@@ -2,11 +2,18 @@ package com.ggervais.gameengine.scene;
 
 import com.ggervais.gameengine.UninitializedSubsystemException;
 import com.ggervais.gameengine.input.InputController;
+import com.ggervais.gameengine.physics.collision.Collision;
+import com.ggervais.gameengine.scene.scenegraph.Geometry;
+import com.ggervais.gameengine.scene.scenegraph.Spatial;
+import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import net.java.games.input.Component.Identifier.Key;
 
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
 import org.apache.log4j.Logger;
+
+import java.awt.datatransfer.Transferable;
+import java.util.*;
 
 public class FreeFlyCamera extends Camera {
 
@@ -50,7 +57,7 @@ public class FreeFlyCamera extends Camera {
 	}
 	
 	@Override
-	public void update(InputController inputController) {
+	public void update(InputController inputController, Spatial sceneGraphRoot) {
 		
 		boolean isForwardKeyDown = false;
         boolean isBackwardKeyDown = false;
@@ -67,18 +74,25 @@ public class FreeFlyCamera extends Camera {
         diffX = inputController.getMouseMovementX();
         diffY = inputController.getMouseMovementY();
 
+        Point3D oldPosition = getPosition().copy();
+
+        boolean newPosition = false;
 		if (isForwardKeyDown) {
             setPosition(new Point3D(this.position.x() + this.direction.x() * SPEED, this.position.y() + this.direction.y() * SPEED, this.position.z() + this.direction.z() * SPEED));
-	    }
+	        newPosition = true;
+        }
 		if (isLeftKeyDown) {
             setPosition(new Point3D(this.position.x() - this.right.x() * SPEED, this.position.y(), this.position.z() - this.right.z() * SPEED));
-		}
+		    newPosition = true;
+        }
 		if (isBackwardKeyDown) {
             setPosition(new Point3D(this.position.x() - this.direction.x() * SPEED, this.position.y() - this.direction.y() * SPEED, this.position.z() - this.direction.z() * SPEED));
-	    }
+	        newPosition = true;
+        }
 		if (isRightKeyDown) {
             setPosition(new Point3D(this.position.x() + this.right.x() * SPEED, this.position.y(), this.position.z() + this.right.z() * SPEED));
-		}
+		    newPosition = true;
+        }
 
 		// Damp the movement.
 		this.phi += diffX * 0.005;
@@ -92,6 +106,43 @@ public class FreeFlyCamera extends Camera {
         this.right.x(cross.x());
 		this.right.y(cross.y());
 		this.right.z(cross.z());
+        this.right.normalize();
+
+
+        Transformation cameraTransformation = new Transformation();
+        //cameraTransformation.setScale(0, 0, 0);
+        this.cameraGeometry.setLocalTransformation(cameraTransformation);
+        cameraTransformation.setRotation(this.direction.x(), this.direction.y(), this.direction.z());
+
+        Vector3D velocity = Point3D.sub(this.position, oldPosition);
+
+        Point3D candidatePosition = oldPosition.copy();
+        candidatePosition.add(velocity);
+        cameraTransformation.setTranslation(Point3D.sub(candidatePosition, Point3D.zero()));
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+
+        List<Collision> collisions = this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot);
+        for (Collision collision : collisions) {
+            if (collision.getFirst() == this.cameraGeometry && collision.getSecond() != this.cameraGeometry) {
+
+                float minComponent = Float.MAX_VALUE;
+                int minAxis = 0;
+
+                for (int i = 0; i < 3; i++) {
+                    if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
+                        minComponent = collision.getPenetrationVector().get(i);
+                        minAxis = i;
+                    }
+                }
+
+                candidatePosition.set(minAxis, candidatePosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                break;
+            }
+        }
+        setPosition(candidatePosition);
+
+        cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
 
 		//log.warn("Position -> " + this.position + ", Direction -> " + this.direction + ", Right -> " + this.right + ", LookAt -> " + getLookAt());
 		

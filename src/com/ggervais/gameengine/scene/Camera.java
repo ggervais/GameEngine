@@ -1,14 +1,18 @@
 package com.ggervais.gameengine.scene;
 
+import com.ggervais.gameengine.geometry.CubeGeometry;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.input.InputSensitive;
 import com.ggervais.gameengine.math.*;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.render.Viewport;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import com.ggervais.gameengine.scene.scenegraph.Geometry;
+import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import org.apache.log4j.Logger;
 
 public abstract class Camera implements InputSensitive {
@@ -30,6 +34,8 @@ public abstract class Camera implements InputSensitive {
     protected float near;
     protected float far;
 
+    protected Geometry cameraGeometry;
+
     private List<Plane> frustumPlanes;
     private boolean isFrustumDirty;
 	
@@ -42,6 +48,7 @@ public abstract class Camera implements InputSensitive {
         this.far = far;
         this.frustumPlanes = new ArrayList<Plane>();
         this.isFrustumDirty = true;
+        this.cameraGeometry = new CubeGeometry();
 	}
 	
 	public Camera() {
@@ -178,6 +185,10 @@ public abstract class Camera implements InputSensitive {
         }
     }
 
-    public abstract void update(InputController inputController);
+    public Spatial getCameraGeometry() {
+        return this.cameraGeometry;
+    }
+
+    public abstract void update(InputController inputController, Spatial sceneGraphRoot);
 	
 }

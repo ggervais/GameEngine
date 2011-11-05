@@ -144,4 +144,22 @@ public class Vector3D {
     }
 
     public String toString() { return "[" + x() + ", " + y() + ", " + z() + "]"; }
+
+    public float get(int index) {
+        switch(index) {
+            case 0: return x();
+            case 1: return y();
+            case 2: return z();
+        }
+
+        return 0;
+    }
+
+    public void set(int index, float value) {
+        switch (index) {
+            case 0: x(value); break;
+            case 1: y(value); break;
+            case 2: z(value); break;
+        }
+    }
 }

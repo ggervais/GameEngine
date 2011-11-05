@@ -1,5 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalStateType;
@@ -102,5 +104,25 @@ public class Node extends Spatial {
         for (Spatial child : this.children) {
             child.visit(visitor);
         }
+    }
+
+    @Override
+    public List<Collision> doIntersectsWithUnderlyingGeometry(Spatial spatial) {
+
+        // First check if the current node intersects the given spatial object.
+        List<Collision> collisions = super.doIntersectsWithUnderlyingGeometry(spatial);
+
+        // If it does, reset the result (collisions.clear()), and check the children.
+        if (collisions.size() > 0) {
+            collisions.clear();
+            for (Spatial child : this.children) {
+                collisions = child.intersectsWithUnderlyingGeometry(spatial);
+                if (collisions.size() > 0) {
+                    break;
+                }
+            }
+        }
+
+        return collisions;
     }
 }

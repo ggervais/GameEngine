@@ -3,6 +3,7 @@ package com.ggervais.gameengine.scene;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import org.apache.log4j.Logger;
 
 public class TerrainFollowingFreeFlyCamera extends FreeFlyCamera {
@@ -26,9 +27,9 @@ public class TerrainFollowingFreeFlyCamera extends FreeFlyCamera {
 	}
 	
 	@Override
-	public void update(InputController inputController) {
+	public void update(InputController inputController, Spatial sceneGraphRoot) {
 
-        super.update(inputController);
+        super.update(inputController, sceneGraphRoot);
 
         Point3D currentPosition = this.position.copy();
 

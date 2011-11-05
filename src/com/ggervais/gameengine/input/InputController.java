@@ -7,11 +7,13 @@ import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Keyboard;
 import net.java.games.input.Mouse;
 import net.java.games.input.Component.Identifier.Key;
+import org.apache.log4j.Logger;
 
 import java.awt.*;
 
 public class InputController {
 
+    private static final Logger log = Logger.getLogger(InputController.class);
 	private Mouse mouse;
 	private Keyboard keyboard;
 	
@@ -24,12 +26,14 @@ public class InputController {
 		for (Controller controller : environment.getControllers()) {
 			if (controller.getType() == Controller.Type.MOUSE) {
 				this.mouse = (Mouse) controller;
+                log.info("Found mouse: " + this.mouse);
 			}
 			// The "Power Button" is a hack caused by my Microsoft keyboard which, apparently, generates two keyboard controllers.
 			// TODO: fix the hack.
-			if (controller.getType() == Controller.Type.KEYBOARD && !controller.getName().equals("Power Button")) {
+			if (controller.getType() == Controller.Type.KEYBOARD && controller.getName().toLowerCase().contains("keyboard")) {
 				this.keyboard = (Keyboard) controller;
-			}
+			    log.info("Found keyboard: " + this.keyboard);
+            }
 			if (mouse != null && keyboard != null) {
 				break;
 			}

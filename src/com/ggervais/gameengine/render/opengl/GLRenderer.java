@@ -269,23 +269,25 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                         gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                     }
 
-                    for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
-                        TextureCoords coords = null;
-                        try {
-                            coords = effect.getTextureCoords(textureIndex, index);
-                            //coords = textureBuffer.getCoords(index);
-                        } catch (Exception e) {
+                    if (effect != null) {
+                        for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
+                            TextureCoords coords = null;
+                            try {
+                                coords = effect.getTextureCoords(textureIndex, index);
+                                //coords = textureBuffer.getCoords(index);
+                            } catch (Exception e) {
 
-                        }
+                            }
 
-                        if (coords != null) {
-                            float tu = coords.getTextureU();
-                            float tv = coords.getTextureV();
+                            if (coords != null) {
+                                float tu = coords.getTextureU();
+                                float tv = coords.getTextureV();
 
-                            //tu = minBounds.x() + tu * w;
-                            //tv = minBounds.y() + tv * h;
-                            gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
-                            //gl.glTexCoord2f(tu, tv);
+                                //tu = minBounds.x() + tu * w;
+                                //tv = minBounds.y() + tv * h;
+                                gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
+                                //gl.glTexCoord2f(tu, tv);
+                            }
                         }
                     }
 
@@ -576,7 +578,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
         gl.glEnable(GL2.GL_LIGHTING);
 
-
+        OpenGLUtils.drawBoundingBox(gl, this.scene.getCamera().getCameraGeometry().getBoundingBox(),  false);
 
         gl.glFlush();
     }

@@ -266,18 +266,46 @@ public class BoundingBox {
         return box.copy();
     }
 
-    public boolean intersects(BoundingBox box) {
+    public Vector3D intersects(BoundingBox box) {
 
         boolean intersects = true;
 
-        if (this.maxCorner.x() < box.getMinCorner().x() || this.minCorner.x() > box.getMaxCorner().x() ||
+        Vector3D penetrationVector = null;
+
+        // Using the Separating Axis Theorem, or SAT, we can quickly figure out if the bouding boxes are NOT
+        // intersecting, so we assume they are intersecting by default and short-circuit as soon a we can, if needed.
+        if (this.maxCorner.x() < box.getMinCorner().x() || this.minCorner.x() > box.getMaxCorner().x() |
             this.maxCorner.y() < box.getMinCorner().y() || this.minCorner.y() > box.getMaxCorner().y() ||
             this.maxCorner.z() < box.getMinCorner().z() || this.minCorner.z() > box.getMaxCorner().z()) {
 
             intersects = false;
         }
 
-        return intersects;
+
+        if (intersects) {
+            penetrationVector = Vector3D.zero();
+
+            for (int i = 0; i < 3; i++) {
+                float minValue = Float.MAX_VALUE;
+
+                if (this.maxCorner.get(i) >= box.getMinCorner().get(i) && this.maxCorner.get(i) <= box.getMaxCorner().get(i)) {
+                    if (Math.abs(this.maxCorner.get(i) - box.getMinCorner().get(i)) < Math.abs(minValue)) {
+                        minValue = this.maxCorner.get(i) - box.getMinCorner().get(i);
+                    }
+                }
+
+                if (this.minCorner.get(i) <= box.getMaxCorner().get(i) && this.minCorner.get(i) >= box.getMinCorner().get(i)) {
+
+                    if (Math.abs(this.minCorner.get(i) - box.getMaxCorner().get(i)) < Math.abs(minValue)) {
+                        minValue = this.minCorner.get(i) - box.getMaxCorner().get(i);
+                    }
+                }
+
+                penetrationVector.set(i, minValue);
+            }
+        }
+
+        return penetrationVector;
     }
 
     public String toString() {

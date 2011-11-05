@@ -86,4 +86,22 @@ public class Point3D {
     public static Point3D copy(Point3D point) {
         return point.copy();
     }
+
+    public float get(int index) {
+        switch(index) {
+            case 0: return x();
+            case 1: return y();
+            case 2: return z();
+        }
+
+        return 0;
+    }
+
+    public void set(int index, float value) {
+        switch (index) {
+            case 0: x(value); break;
+            case 1: y(value); break;
+            case 2: z(value); break;
+        }
+    }
 }

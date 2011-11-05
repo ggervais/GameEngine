@@ -322,6 +322,16 @@ public class Scene extends Observable {
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
         this.sceneGraphRoot.addChild(pumpkin);
+
+        /*
+        Effect ef = new Effect();
+        ef.addTexture(texGuillaume);
+        Spatial cube = new CubeGeometry();
+        Transformation temp = new Transformation();
+        temp.setScale(10, 10, 10);
+        cube.setLocalTransformation(temp);
+        cube.setEffect(ef);
+        this.sceneGraphRoot.addChild(cube);*/
     }
 	
 	public List<Texture> getTextures() {
