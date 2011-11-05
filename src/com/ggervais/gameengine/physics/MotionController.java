@@ -104,7 +104,6 @@ public class MotionController extends Controller {
 
                     candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
                     this.initialVelocity = Vector3D.zero();
-                    break;
                 }
             }
         }
