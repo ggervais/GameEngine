@@ -230,11 +230,9 @@ public class Scene extends Observable {
 
         //gCube3.setEffect(effect);
         gCube3.addGlobalState(zBufferState);
-        gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
 
-        MotionController controller = new MotionController(new Vector3D(0, 0, 0), 5f, 0, 0, false);
+        MotionController controller = new MotionController(new Vector3D(0, -9.81f/2f, 0), 10f, fortyFiveDegrees, 0, true);
         //firstCubeNode.addController(controller);
-        gCube1.addController(controller);
 
         Node fireNode = new Node();
         fireNode.addGlobalState(new AlphaBlendingState(true));
@@ -249,7 +247,7 @@ public class Scene extends Observable {
         Transformation particlesTransformation = new Transformation();
         fireParticles.setLocalTransformation(particlesTransformation);
         ParticleController fireController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0, 850, 100, 0.75f, 0, 2, 7);
-        fireParticles.addController(fireController);
+
 
         Effect smokeEffect = new Effect();
         smokeEffect.setColor(new Color(77, 77, 77));
@@ -261,13 +259,17 @@ public class Scene extends Observable {
         smokeTransformation.setTranslation(0, 1.5f * particlesTransformation.getScale().x(), 0);
         smokeParticles.setLocalTransformation(smokeTransformation);
         ParticleController smokeController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0, 1600, 100, 0.35f, 0, 2.5f, 7);
-        smokeParticles.addController(smokeController);
+
 
         fireNode.addChild(fireParticles);
         fireNode.addChild(smokeParticles);
+        Transformation fireNodeTransformation = new Transformation();
+        fireNodeTransformation.setTranslation(20, 20, 20);
+        fireNode.setLocalTransformation(fireNodeTransformation);
 
         CubeGeometry bezierCube = new CubeGeometry();
         Transformation bezierCubeTransformation = new Transformation();
+        bezierCubeTransformation.setTranslation(0, 0, -10f);
         //bezierCubeTransformation.setScale(0.1f, 0.1f, 0.1f);
         bezierCube.setLocalTransformation(bezierCubeTransformation);
         BezierCurveController bezierCurveController = new BezierCurveController(1f);
@@ -277,7 +279,7 @@ public class Scene extends Observable {
         controlPoints.add(new Point3D(4f, -8f, -15));
         BezierCurve bezierCurve = new BezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 500);
         bezierCurveController.setBezierCurve(bezierCurve);
-        bezierCube.addController(bezierCurveController);
+
 
         Transformation sphereTransformation = new Transformation();
         sphereTransformation.setTranslation(0, 0, 0);
@@ -315,12 +317,17 @@ public class Scene extends Observable {
         light2.setSpecular(new Color(0, 255, 0));
 
         MotionController sphereController = new MotionController(Vector3D.zero(), 1, 0, 0);
-        sphereGeometry.addController(sphereController);
+
 
         Geometry pumpkin = ObjFileLoader.loadFile("assets/models/pumpkin.obj", this);
         Transformation pumpkinTransformation = new Transformation();
         pumpkinTransformation.setScale(0.01f, 0.01f, 0.01f);
         pumpkin.setLocalTransformation(pumpkinTransformation);
+
+
+        log.info(gCube1);
+        log.info(bezierCube);
+        log.info(immobileCube);
 
         this.sceneGraphRoot.addLight(light2);
         //this.sceneGraphRoot.addChild(sphereGeometry);
@@ -340,6 +347,16 @@ public class Scene extends Observable {
         cube.setLocalTransformation(temp);
         cube.setEffect(ef);
         this.sceneGraphRoot.addChild(cube);*/
+
+        this.sceneGraphRoot.updateGeometryState(System.currentTimeMillis(), true);
+        this.sceneGraphRoot.updateRenderState();
+
+        gCube1.addController(controller);
+        gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
+        fireParticles.addController(fireController);
+        smokeParticles.addController(smokeController);
+        bezierCube.addController(bezierCurveController);
+        sphereGeometry.addController(sphereController);
     }
 	
 	public List<Texture> getTextures() {

@@ -81,11 +81,10 @@ public class MotionController extends Controller {
 
         // Newton's laws of motion.
         Vector3D currentVelocity = Vector3D.add(this.initialVelocity, this.gravity.copy().multiplied(dtTotalSeconds));
-        currentVelocity.multiply(dtSeconds);
 
         //Vector3D currentTranslation = Vector3D.add(this.initialTransformation.getTranslation(), Vector3D.add(this.initialVelocity, currentVelocity).multiplied(0.5f * dtSeconds));
         Vector3D baseTranslation = this.controlledSpatialObject.getLocalTransformation().getTranslation();
-        Vector3D candidateTranslation = Vector3D.add(baseTranslation, currentVelocity);
+        Vector3D candidateTranslation = Vector3D.add(baseTranslation, currentVelocity.multiplied(dtSeconds));
 
         Spatial root = getTopParent();
         List<Collision> collisions = this.controlledSpatialObject.intersectsWithUnderlyingGeometry(root);
@@ -104,9 +103,7 @@ public class MotionController extends Controller {
                     }
 
                     candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                    //currentVelocity.set(minAxis, 0);
-                    //oldPosition.set(minAxis, oldPosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                    //velocity.set(minAxis, 0);
+                    this.initialVelocity = Vector3D.zero();
                     break;
                 }
             }

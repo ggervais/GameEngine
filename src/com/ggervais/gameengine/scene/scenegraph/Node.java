@@ -123,7 +123,11 @@ public class Node extends Spatial {
                 Iterator<Collision> collisionIterator = collisions.iterator();
                 while(collisionIterator.hasNext()) {
                     Collision collision = collisionIterator.next();
-                    if (collision.getFirst() == collision.getSecond()) {
+                    if (collision.getFirst() == collision.getSecond() /*||
+                        (collision.getFirst().getBoundingBox().getMinCorner().x() == 0 && collision.getFirst().getBoundingBox().getMinCorner().y() == 0 && collision.getFirst().getBoundingBox().getMinCorner().z() == 0 &&
+                         collision.getFirst().getBoundingBox().getMaxCorner().x() == 0 && collision.getFirst().getBoundingBox().getMaxCorner().y() == 0 && collision.getFirst().getBoundingBox().getMaxCorner().z() == 0 &&
+                         collision.getSecond().getBoundingBox().getMinCorner().x() == 0 && collision.getSecond().getBoundingBox().getMinCorner().y() == 0 && collision.getSecond().getBoundingBox().getMinCorner().z() == 0 &&
+                         collision.getSecond().getBoundingBox().getMaxCorner().x() == 0 && collision.getSecond().getBoundingBox().getMaxCorner().y() == 0 && collision.getSecond().getBoundingBox().getMaxCorner().z() == 0)*/) {
                         collisionIterator.remove();
                     }
                 }

@@ -135,8 +135,9 @@ public class FreeFlyCamera extends Camera {
                     }
                 }
 
-                candidatePosition.set(minAxis, candidatePosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                break;
+                if (collision.getPenetrationVector().get(minAxis) < Float.MAX_VALUE) {
+                    candidatePosition.set(minAxis, candidatePosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                }
             }
         }
         setPosition(candidatePosition);
