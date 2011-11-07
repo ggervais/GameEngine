@@ -28,6 +28,7 @@ public abstract class Spatial {
     protected BoundingSphere boundingSphere;
     private boolean pickedInCurrentUpdate; // TODO temporary code.
     protected List<Light> lights;
+    private boolean checkCollisionsWhenMoving;
 
     public Spatial() {
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
@@ -39,6 +40,7 @@ public abstract class Spatial {
         this.boundingSphere = new BoundingSphere(Point3D.zero(), 0);
         this.pickedInCurrentUpdate = false;
         this.lights = new ArrayList<Light>();
+        checkCollisionsWhenMoving = true;
     }
 
     public BoundingBox getBoundingBox() {
@@ -293,5 +295,13 @@ public abstract class Spatial {
 
     public List<Collision> intersectsWithUnderlyingGeometry(Spatial spatial) {
         return spatial.doIntersectsWithUnderlyingGeometry(this);
+    }
+
+    public boolean isCheckCollisionsWhenMoving() {
+        return checkCollisionsWhenMoving;
+    }
+
+    public void setCheckCollisionsWhenMoving(boolean checkCollisionsWhenMoving) {
+        this.checkCollisionsWhenMoving = checkCollisionsWhenMoving;
     }
 }

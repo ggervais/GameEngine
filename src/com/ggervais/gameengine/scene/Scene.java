@@ -244,6 +244,7 @@ public class Scene extends Observable {
         ParticlesGeometry fireParticles = new ParticlesGeometry(200, 0);
         fireParticles.setNbActive(0);
         fireParticles.setEffect(fireEffect);
+        fireParticles.setCheckCollisionsWhenMoving(false);
         Transformation particlesTransformation = new Transformation();
         fireParticles.setLocalTransformation(particlesTransformation);
         ParticleController fireController = new ParticleController(new Vector3D(0, 9.81f, 0), 0, 0, 0, 850, 100, 0.75f, 0, 2, 7);
@@ -255,6 +256,7 @@ public class Scene extends Observable {
         ParticlesGeometry smokeParticles = new ParticlesGeometry(200, 0);
         smokeParticles.setNbActive(0);
         smokeParticles.setEffect(smokeEffect);
+        smokeParticles.setCheckCollisionsWhenMoving(false);
         Transformation smokeTransformation = new Transformation();
         smokeTransformation.setTranslation(0, 1.5f * particlesTransformation.getScale().x(), 0);
         smokeParticles.setLocalTransformation(smokeTransformation);
@@ -330,23 +332,33 @@ public class Scene extends Observable {
         log.info(immobileCube);
 
         this.sceneGraphRoot.addLight(light2);
-        //this.sceneGraphRoot.addChild(sphereGeometry);
+        this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
-        //this.sceneGraphRoot.addChild(fireNode);
+        this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
-        //this.sceneGraphRoot.addChild(pumpkin);
+        this.sceneGraphRoot.addChild(pumpkin);
         this.sceneGraphRoot.addChild(immobileCube);
 
-        /*
-        Effect ef = new Effect();
+
+        /*Effect ef = new Effect();
         ef.addTexture(texGuillaume);
         Spatial cube = new CubeGeometry();
         Transformation temp = new Transformation();
         temp.setScale(10, 10, 10);
         cube.setLocalTransformation(temp);
         cube.setEffect(ef);
-        this.sceneGraphRoot.addChild(cube);*/
+        this.sceneGraphRoot.addChild(cube);
+
+        Effect ef2 = new Effect();
+        ef2.addTexture(texGuillaume);
+        Spatial anotherCube = new CubeGeometry();
+        Transformation temp2 = new Transformation();
+        temp2.setScale(10, 20, 10);
+        temp2.setTranslation(10, 5, 0);
+        anotherCube.setLocalTransformation(temp2);
+        anotherCube.setEffect(ef2);
+        this.sceneGraphRoot.addChild(anotherCube);          */
 
         this.sceneGraphRoot.updateGeometryState(System.currentTimeMillis(), true);
         this.sceneGraphRoot.updateRenderState();

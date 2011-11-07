@@ -71,6 +71,7 @@ public abstract class SceneRenderer implements Observer {
 
     public void drawGeometry(Geometry geometry) {
         setState(geometry.getStates());
+
         setWorldTransformations(geometry.getWorldTransformation());
 
         if (geometry.getEffect() != null) {

@@ -17,6 +17,7 @@ public class MotionController extends Controller {
     private Vector3D initialVelocity; // In m/s
     private Transformation initialTransformation;
     private boolean rotateWhileMoving;
+    private boolean firstUpdateOccurred;
 
     public MotionController(Vector3D gravity, float speed, float theta, float phi) {
         this(gravity, Vector3D.createFromPolarCoordinates(speed, theta, phi), true);
@@ -35,6 +36,7 @@ public class MotionController extends Controller {
         this.initialVelocity = initialVelocity;
         this.initialTransformation = new Transformation();
         this.rotateWhileMoving = rotateWhileMoving;
+        this.firstUpdateOccurred = false;
     }
 
     private Spatial getTopParent() {
@@ -86,25 +88,27 @@ public class MotionController extends Controller {
         Vector3D baseTranslation = this.controlledSpatialObject.getLocalTransformation().getTranslation();
         Vector3D candidateTranslation = Vector3D.add(baseTranslation, currentVelocity.multiplied(dtSeconds));
 
-        Spatial root = getTopParent();
-        List<Collision> collisions = this.controlledSpatialObject.intersectsWithUnderlyingGeometry(root);
-        if (collisions.size() > 0) {
-            for (Collision collision : collisions) {
-                if (collision.getFirst() == this.controlledSpatialObject && collision.getSecond() != this.controlledSpatialObject) {
+        if (this.firstUpdateOccurred && this.controlledSpatialObject.isCheckCollisionsWhenMoving()) {
+            Spatial root = getTopParent();
+            List<Collision> collisions = this.controlledSpatialObject.intersectsWithUnderlyingGeometry(root);
+            if (collisions.size() > 0) {
+                for (Collision collision : collisions) {
+                    if (collision.getFirst() == this.controlledSpatialObject && collision.getSecond() != this.controlledSpatialObject) {
 
-                    float minComponent = Float.MAX_VALUE;
-                    int minAxis = 0;
+                        float minComponent = Float.MAX_VALUE;
+                        int minAxis = 0;
 
-                    for (int i = 0; i < 3; i++) {
-                        if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
-                            minComponent = collision.getPenetrationVector().get(i);
-                            minAxis = i;
+                        for (int i = 0; i < 3; i++) {
+                            if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
+                                minComponent = collision.getPenetrationVector().get(i);
+                                minAxis = i;
+                            }
                         }
-                    }
 
-                    if (collision.getPenetrationVector().get(minAxis) < Float.MAX_VALUE) {
-                        candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                        this.initialVelocity = Vector3D.zero();
+                        if (collision.getPenetrationVector().get(minAxis) < Float.MAX_VALUE) {
+                            candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                            //this.initialVelocity = Vector3D.zero();
+                        }
                     }
                 }
             }
@@ -132,6 +136,10 @@ public class MotionController extends Controller {
                     transformation.setRotationMatrix(tempMatrix);
                 }
             }
+        }
+
+        if (!this.firstUpdateOccurred) {
+            this.firstUpdateOccurred = true;
         }
     }
 }
