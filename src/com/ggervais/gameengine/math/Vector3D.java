@@ -1,5 +1,7 @@
 package com.ggervais.gameengine.math;
 
+import java.util.Vector;
+
 public class Vector3D {
 	private float x;
 	private float y;
@@ -83,6 +85,9 @@ public class Vector3D {
 	
 	public Vector3D normalized() {
 		float length = length();
+        if (length == 0) {
+            return Vector3D.zero();
+        }
 		return new Vector3D(x() / length, y() / length, z() / length);
 	}
 	

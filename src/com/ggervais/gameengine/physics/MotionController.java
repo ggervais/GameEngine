@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.physics;
 
+import com.ggervais.gameengine.geometry.SphereGeometry;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
@@ -107,7 +108,7 @@ public class MotionController extends Controller {
 
                         if (collision.getPenetrationVector().get(minAxis) < Float.MAX_VALUE) {
                             candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                            //this.initialVelocity = Vector3D.zero();
+                            this.initialVelocity = Vector3D.zero();
                         }
                     }
                 }
@@ -133,7 +134,7 @@ public class MotionController extends Controller {
                 tempMatrix.mult(initialRotation);
 
                 if (this.rotateWhileMoving) {
-                    transformation.setRotationMatrix(tempMatrix);
+                    //transformation.setRotationMatrix(tempMatrix);
                 }
             }
         }
