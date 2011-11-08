@@ -13,6 +13,7 @@ import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.particle.*;
+import com.ggervais.gameengine.physics.InputControlledController;
 import com.ggervais.gameengine.physics.MotionController;
 import com.ggervais.gameengine.render.Viewport;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
@@ -332,7 +333,7 @@ public class Scene extends Observable {
         log.info(immobileCube);
 
         this.sceneGraphRoot.addLight(light2);
-        this.sceneGraphRoot.addChild(sphereGeometry);
+        //this.sceneGraphRoot.addChild(sphereGeometry);
         this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
@@ -360,15 +361,13 @@ public class Scene extends Observable {
         anotherCube.setEffect(ef2);
         this.sceneGraphRoot.addChild(anotherCube);          */
 
-        this.sceneGraphRoot.updateGeometryState(System.currentTimeMillis(), true);
-        this.sceneGraphRoot.updateRenderState();
-
         gCube1.addController(controller);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
         fireParticles.addController(fireController);
         smokeParticles.addController(smokeController);
         bezierCube.addController(bezierCurveController);
         sphereGeometry.addController(sphereController);
+        immobileCube.addController(new InputControlledController());
     }
 	
 	public List<Texture> getTextures() {

@@ -1,6 +1,7 @@
 package com.ggervais.gameengine.physics;
 
 import com.ggervais.gameengine.geometry.SphereGeometry;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
@@ -75,7 +76,7 @@ public class MotionController extends Controller {
     }
 
     @Override
-    public void doUpdate(long currentTime) {
+    public void doUpdate(long currentTime, InputController inputController) {
         long dtTotal = currentTime - this.startTime - this.pauseOffset;
         float dtTotalSeconds = dtTotal / 1000f;
 
@@ -134,7 +135,7 @@ public class MotionController extends Controller {
                 tempMatrix.mult(initialRotation);
 
                 if (this.rotateWhileMoving) {
-                    //transformation.setRotationMatrix(tempMatrix);
+                    transformation.setRotationMatrix(tempMatrix);
                 }
             }
         }

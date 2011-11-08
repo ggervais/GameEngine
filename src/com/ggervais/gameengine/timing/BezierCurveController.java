@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.timing;
 
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 
@@ -34,7 +35,7 @@ public class BezierCurveController extends Controller {
     }
 
     @Override
-    public void doUpdate(long currentTime) {
+    public void doUpdate(long currentTime, InputController inputController) {
 
         float diffInMs = currentTime - this.lastUpdateTime;
         this.currentLength += (this.speed * (diffInMs / 1000f));

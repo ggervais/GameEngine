@@ -1,6 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.Plane;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
@@ -67,14 +68,14 @@ public abstract class Spatial {
         return this.parent;
     }
 
-    public void updateControllers(long currentTime) {
+    public void updateControllers(long currentTime, InputController inputController) {
         for (Controller controller : this.controllers) {
-            controller.update(currentTime);
+            controller.update(currentTime, inputController);
         }
     }
 
-    public void updateGeometryState(long currentTime, boolean isInitiator) {
-        updateWorldData(currentTime);
+    public void updateGeometryState(long currentTime, InputController inputController, boolean isInitiator) {
+        updateWorldData(currentTime, inputController);
         updateWorldBound();
         if (isInitiator) {
             propagateBoundToRoot();
@@ -157,9 +158,9 @@ public abstract class Spatial {
         }
     }
 
-    protected void updateWorldData(long currentTime) {
+    protected void updateWorldData(long currentTime, InputController inputController) {
 
-        updateControllers(currentTime);
+        updateControllers(currentTime, inputController);
 
         if (this.parent != null) {
             this.worldTransform = Transformation.product(this.parent.getWorldTransformation(), this.localTransform);
@@ -169,7 +170,7 @@ public abstract class Spatial {
         }
 
         for (Light light : this.lights) {
-            light.updateWorldData(currentTime);
+            light.updateWorldData(currentTime, inputController);
         }
 
     }

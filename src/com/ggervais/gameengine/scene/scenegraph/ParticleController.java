@@ -2,6 +2,7 @@ package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.Point3D;
@@ -92,10 +93,10 @@ public class ParticleController extends MotionController {
     }
 
     @Override
-    public void doUpdate(long currentTime) {
+    public void doUpdate(long currentTime, InputController inputController) {
 
         // This updates particle system's motion (inherited from MotionController).
-        super.doUpdate(currentTime);
+        super.doUpdate(currentTime, inputController);
 
         if (!isInitialized) {
             initializeTimes(currentTime);

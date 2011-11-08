@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.GlobalState;
@@ -55,11 +56,11 @@ public class Node extends Spatial {
     }
 
     @Override
-    public void updateWorldData(long currentTime) {
-        super.updateWorldData(currentTime);
+    public void updateWorldData(long currentTime, InputController inputController) {
+        super.updateWorldData(currentTime, inputController);
 
         for (Spatial child : this.children) {
-            child.updateGeometryState(currentTime, false);
+            child.updateGeometryState(currentTime, inputController, false);
         }
     }
 

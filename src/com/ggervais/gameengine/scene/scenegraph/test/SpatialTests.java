@@ -1,6 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph.test;
 
 import com.ggervais.gameengine.geometry.CubeGeometry;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.scene.scenegraph.Node;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
@@ -33,8 +34,9 @@ public class SpatialTests extends TestCase {
         cubes.addChild(cube1);
         cubes.addChild(cube2);
 
-        cube1.updateGeometryState(currentTime, true);
-        cube2.updateGeometryState(currentTime, true);
+        InputController inputController = new InputController();
+        cube1.updateGeometryState(currentTime, inputController, true);
+        cube2.updateGeometryState(currentTime, inputController, true);
 
         cubes.updateBoundState();
 

@@ -191,7 +191,7 @@ public class Game {
         this.scene.update(currentTime);
         Node root = this.scene.getSceneGraphRoot();
         
-        root.updateGeometryState(currentTime, true);
+        root.updateGeometryState(currentTime, this.inputController, true);
         root.updateRenderState();
 
         pickCheck(root, this.scene.getPickingRay(this.scene.getCamera()));
