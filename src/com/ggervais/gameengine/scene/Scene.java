@@ -176,11 +176,6 @@ public class Scene extends Observable {
         FireEmitter fireEmitter4 = new FireEmitter(new Point3D(12.5f, 0, 0), 0.25f);
         ParticleSubsystem.getInstance().addEmitter(fireEmitter4);
 
-        //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
-		this.camera = new FreeFlyCamera();
-        this.camera.setPosition(new Point3D(0, 0, 10));
-
-
         // SceneGraph initialization
 
         WireframeState wireframeStateOn = new WireframeState(true);
@@ -334,11 +329,11 @@ public class Scene extends Observable {
 
         this.sceneGraphRoot.addLight(light2);
         //this.sceneGraphRoot.addChild(sphereGeometry);
-        this.sceneGraphRoot.addChild(gCube1);
-        fireNode.addGlobalState(lightingOff);
-        this.sceneGraphRoot.addChild(fireNode);
-        this.sceneGraphRoot.addChild(bezierCube);
-        this.sceneGraphRoot.addChild(pumpkin);
+        //this.sceneGraphRoot.addChild(gCube1);
+        //fireNode.addGlobalState(lightingOff);
+        //this.sceneGraphRoot.addChild(fireNode);
+        //this.sceneGraphRoot.addChild(bezierCube);
+        //this.sceneGraphRoot.addChild(pumpkin);
         this.sceneGraphRoot.addChild(immobileCube);
 
 
@@ -368,6 +363,11 @@ public class Scene extends Observable {
         bezierCube.addController(bezierCurveController);
         sphereGeometry.addController(sphereController);
         immobileCube.addController(new InputControlledController());
+
+        //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
+		this.camera = new FreeFlyCamera();
+        this.camera.setPosition(new Point3D(0, 0, 10));
+        //this.camera = new SpatialFollowingCamera(immobileCube, new Vector3D(0, 5, -5));
     }
 	
 	public List<Texture> getTextures() {

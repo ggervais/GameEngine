@@ -10,11 +10,13 @@ import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import net.java.games.input.Component;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
 public class InputControlledController extends MotionController {
 
+    private static final Logger log = Logger.getLogger(InputControlledController.class);
     private InputController previousInputController;
     private static final float SPEED = 0.1f;
     private static final float ONE_RADIAN = 0.01745f;
