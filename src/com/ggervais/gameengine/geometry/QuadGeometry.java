@@ -50,10 +50,10 @@ public class QuadGeometry extends Geometry {
         this.vertexBuffer.addVertex(vertex4);
         this.textureBuffer.addCoords(texture10);
 
-        this.indexBuffer.addIndex(0);
-        this.indexBuffer.addIndex(1);
-        this.indexBuffer.addIndex(2);
-        this.indexBuffer.addIndex(3);
+        this.indexBuffer.addIndex(4, 0);
+        this.indexBuffer.addIndex(4, 1);
+        this.indexBuffer.addIndex(4, 2);
+        this.indexBuffer.addIndex(4, 3);
 
         Face face = new Face();
         face.addVertex(vertex1);

@@ -18,14 +18,14 @@ public class Arrow extends Model {
 		this.vertexBuffer.addVertex(new Vertex(new Point3D(0.75f, 0.25f, 0), Color.GREEN, 0, 0));
 		this.vertexBuffer.addVertex(new Vertex(new Point3D(0.75f, -0.25f, 0), Color.GREEN, 0, 0));
 		
-		this.indexBuffer.addIndex(0);
-		this.indexBuffer.addIndex(1);
+		this.indexBuffer.addIndex(2, 0);
+		this.indexBuffer.addIndex(2, 1);
 		
-		this.indexBuffer.addIndex(1);
-		this.indexBuffer.addIndex(2);
+		this.indexBuffer.addIndex(2, 1);
+		this.indexBuffer.addIndex(2, 2);
 		
-		this.indexBuffer.addIndex(1);
-		this.indexBuffer.addIndex(3);
+		this.indexBuffer.addIndex(2, 1);
+		this.indexBuffer.addIndex(2, 3);
 	}
 
 }

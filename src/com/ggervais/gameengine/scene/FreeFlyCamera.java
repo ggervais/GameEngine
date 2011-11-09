@@ -100,7 +100,10 @@ public class FreeFlyCamera extends Camera {
 		
 		clampPhi();
 
-        setDirection(new Vector3D((float) Math.cos(this.phi) * (float) Math.cos(this.theta), (float) Math.sin(this.theta), (float) Math.sin(this.phi) * (float) Math.cos(this.theta)).normalized());
+        float rotationX = (float) Math.cos(this.phi) * (float) Math.cos(this.theta);
+        float rotationY = (float) Math.sin(this.theta);
+        float rotationZ = (float) Math.sin(this.phi) * (float) Math.cos(this.theta);
+        setDirection(new Vector3D(rotationX, rotationY, rotationZ).normalized());
 
 		Vector3D cross = Vector3D.crossProduct(this.direction, this.up).normalized();
         this.right.x(cross.x());

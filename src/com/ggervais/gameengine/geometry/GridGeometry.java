@@ -94,13 +94,13 @@ public class GridGeometry extends Geometry {
 	            face2.addTextureCoords(new TextureCoords(fourthVertex.getTextureU(), fourthVertex.getTextureV()));
 	            face2.addTextureCoords(new TextureCoords(thirdVertex.getTextureU(), thirdVertex.getTextureV()));
 	            
-	            this.indexBuffer.addIndex(first);
-	            this.indexBuffer.addIndex(second);
-	            this.indexBuffer.addIndex(fourth);
+	            this.indexBuffer.addIndex(3, first);
+	            this.indexBuffer.addIndex(3, second);
+	            this.indexBuffer.addIndex(3, fourth);
 	            
-	            this.indexBuffer.addIndex(first);
-	            this.indexBuffer.addIndex(fourth);
-	            this.indexBuffer.addIndex(third);
+	            this.indexBuffer.addIndex(3, first);
+	            this.indexBuffer.addIndex(3, fourth);
+	            this.indexBuffer.addIndex(3, third);
 	            
 	            index++;
 			}

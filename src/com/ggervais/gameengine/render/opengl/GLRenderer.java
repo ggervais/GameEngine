@@ -232,73 +232,82 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void drawElements(Geometry geometry) {
-        int nbVerticesPerFace = geometry.getNbVerticesPerFace();
+        //int nbVerticesPerFace = geometry.getNbVerticesPerFace();
 		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
 
-		switch(nbVerticesPerFace) {
-			case 1:
-				glPrimitiveType = GL2.GL_POINTS;
-				break;
-			case 2:
-				glPrimitiveType = GL2.GL_LINES;
-				break;
-			case 3:
-				glPrimitiveType = GL2.GL_TRIANGLES;
-				break;
-			case 4:
-				glPrimitiveType = GL2.GL_QUADS;
-				break;
-		}
-        Effect effect = geometry.getEffect();
+		Effect effect = geometry.getEffect();
         Texture texture = null;
 
-		gl.glBegin(glPrimitiveType);
-            VertexBuffer vertexBuffer = geometry.getVertexBuffer();
-            IndexBuffer indexBuffer = geometry.getIndexBuffer();
-            TextureBuffer textureBuffer = geometry.getTextureBuffer();
-			for(int i = 0; i < indexBuffer.size(); i++) {
-                int index = indexBuffer.getIndex(i);
-		        if (index < vertexBuffer.size()) {
 
-                    Vertex vertex = vertexBuffer.getVertex(index);
-                    Point3D vertexPosition = vertex.getPosition();
-                    Vector3D normal = geometry.getNormal(index);
+        VertexBuffer vertexBuffer = geometry.getVertexBuffer();
+        IndexBuffer indexBuffer = geometry.getIndexBuffer();
+        TextureBuffer textureBuffer = geometry.getTextureBuffer();
 
-                    if (effect != null) {
-                        Color color = effect.getColor(index);
-                        gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-                    }
+        List<Integer> subIndicesKeys = indexBuffer.getNbVerticesList();
 
-                    if (effect != null) {
-                        for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
-                            TextureCoords coords = null;
-                            try {
-                                coords = effect.getTextureCoords(textureIndex, index);
-                                //coords = textureBuffer.getCoords(index);
-                            } catch (Exception e) {
+        for (int nbVerticesPerFace : subIndicesKeys) {
+            List<Integer> subIndexBuffer = indexBuffer.getSubIndexBuffer(nbVerticesPerFace);
 
-                            }
+            switch(nbVerticesPerFace) {
+                case 1:
+                    glPrimitiveType = GL2.GL_POINTS;
+                    break;
+                case 2:
+                    glPrimitiveType = GL2.GL_LINES;
+                    break;
+                case 3:
+                    glPrimitiveType = GL2.GL_TRIANGLES;
+                    break;
+                case 4:
+                    glPrimitiveType = GL2.GL_QUADS;
+                    break;
+            }
 
-                            if (coords != null) {
-                                float tu = coords.getTextureU();
-                                float tv = coords.getTextureV();
+            gl.glBegin(glPrimitiveType);
+                for(int i = 0; i < subIndexBuffer.size(); i++) {
+                    int index = subIndexBuffer.get(i);
+                    if (index < vertexBuffer.size()) {
 
-                                //tu = minBounds.x() + tu * w;
-                                //tv = minBounds.y() + tv * h;
-                                gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
-                                //gl.glTexCoord2f(tu, tv);
+                        Vertex vertex = vertexBuffer.getVertex(index);
+                        Point3D vertexPosition = vertex.getPosition();
+                        Vector3D normal = geometry.getNormal(index);
+
+                        if (effect != null) {
+                            Color color = effect.getColor(index);
+                            gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+                        }
+
+                        if (effect != null) {
+                            for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
+                                TextureCoords coords = null;
+                                try {
+                                    coords = effect.getTextureCoords(textureIndex, index);
+                                    //coords = textureBuffer.getCoords(index);
+                                } catch (Exception e) {
+
+                                }
+
+                                if (coords != null) {
+                                    float tu = coords.getTextureU();
+                                    float tv = coords.getTextureV();
+
+                                    //tu = minBounds.x() + tu * w;
+                                    //tv = minBounds.y() + tv * h;
+                                    gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
+                                    //gl.glTexCoord2f(tu, tv);
+                                }
                             }
                         }
-                    }
 
-                    if (normal != null) {
-                        gl.glNormal3f(normal.x(), normal.y(), normal.z());
-                    }
+                        if (normal != null) {
+                            gl.glNormal3f(normal.x(), normal.y(), normal.z());
+                        }
 
-                    gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
+                        gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
+                    }
                 }
-			}
-		gl.glEnd();
+            gl.glEnd();
+        }
 
         /*gl.glBegin(GL.GL_LINES);
         gl.glColor4f(1f, 1f, 1f, 1f);

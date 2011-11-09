@@ -107,13 +107,13 @@ public class ParticlesGeometry extends Geometry {
             this.textureBuffer.addCoords(new TextureCoords());
             this.textureBuffer.addCoords(new TextureCoords());
 
-            this.indexBuffer.addIndex(vertexCounter);
-            this.indexBuffer.addIndex(vertexCounter + 1);
-            this.indexBuffer.addIndex(vertexCounter + 2);
+            this.indexBuffer.addIndex(3, vertexCounter);
+            this.indexBuffer.addIndex(3, vertexCounter + 1);
+            this.indexBuffer.addIndex(3, vertexCounter + 2);
 
-            this.indexBuffer.addIndex(vertexCounter + 2);
-            this.indexBuffer.addIndex(vertexCounter + 3);
-            this.indexBuffer.addIndex(vertexCounter);
+            this.indexBuffer.addIndex(3, vertexCounter + 2);
+            this.indexBuffer.addIndex(3, vertexCounter + 3);
+            this.indexBuffer.addIndex(3, vertexCounter);
 
             vertexCounter += 4;
         }

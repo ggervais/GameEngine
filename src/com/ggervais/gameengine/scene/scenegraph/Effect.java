@@ -143,6 +143,10 @@ public class Effect {
     }
 
     public void addTextureCoordinates(int i, TextureCoords coords) {
+        if (i > this.textureCoordinates.size() - 1) {
+            this.textureCoordinates.add(new ArrayList<TextureCoords>());
+        }
+
         List<TextureCoords> array = this.textureCoordinates.get(i);
         if (array != null) {
             array.add(coords);

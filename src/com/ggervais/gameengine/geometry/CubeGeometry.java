@@ -61,13 +61,13 @@ public class CubeGeometry extends Geometry {
 
         int vertexCounter = 0;
         for (int i = 0; i < 6; i++) {
-            this.indexBuffer.addIndex(vertexCounter);
-            this.indexBuffer.addIndex(vertexCounter + 1);
-            this.indexBuffer.addIndex(vertexCounter + 2);
+            this.indexBuffer.addIndex(3, vertexCounter);
+            this.indexBuffer.addIndex(3, vertexCounter + 1);
+            this.indexBuffer.addIndex(3, vertexCounter + 2);
 
-            this.indexBuffer.addIndex(vertexCounter + 2);
-            this.indexBuffer.addIndex(vertexCounter + 3);
-            this.indexBuffer.addIndex(vertexCounter);
+            this.indexBuffer.addIndex(3, vertexCounter + 2);
+            this.indexBuffer.addIndex(3, vertexCounter + 3);
+            this.indexBuffer.addIndex(3, vertexCounter);
 
             vertexCounter += 4;
         }

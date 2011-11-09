@@ -170,15 +170,26 @@ public class ObjFileLoader extends GeometryLoader {
 
                     geometry.getVertexBuffer().addVertex(vertex);
 
-				} else if (elementType.equals("f") && nbTokens == 4) {
-					String strV1 = tokenizer.nextToken();
-					String strV2 = tokenizer.nextToken();
-					String strV3 = tokenizer.nextToken();
-					
-					String[] v1Parts = strV1.split("/");
-					String[] v2Parts = strV2.split("/");
-					String[] v3Parts = strV3.split("/");
-					
+				} else if (elementType.equals("f") && nbTokens >= 4) {
+
+                    String[] indices = new String[nbTokens - 1];
+                    int i = 0;
+                    while(tokenizer.hasMoreTokens()) {
+                        indices[i] = tokenizer.nextToken();
+                        i++;
+                    }
+
+                    int nbVerticesPerFace = indices.length;
+					for (String strIndex : indices) {
+                        String[] parts = strIndex.split("/");
+                        int v = Integer.parseInt(parts[0]);
+                        if (parts.length >= 2) {
+                            int t = Integer.parseInt(parts[1]);
+                            textureCoordsIndices.add(t);
+                        }
+                        geometry.getIndexBuffer().addIndex(nbVerticesPerFace, v - 1);
+                    }
+					/*
 					int v1 = Integer.parseInt(v1Parts[0]);
 					int v2 = Integer.parseInt(v2Parts[0]);
 					int v3 = Integer.parseInt(v3Parts[0]);
@@ -210,16 +221,16 @@ public class ObjFileLoader extends GeometryLoader {
 
                     geometry.getIndexBuffer().addIndex(v1 - 1);
                     geometry.getIndexBuffer().addIndex(v2 - 1);
-                    geometry.getIndexBuffer().addIndex(v3 - 1);
+                    geometry.getIndexBuffer().addIndex(v3 - 1);*/
 
 				} else if (elementType.equals("vt") && (nbTokens == 3 || nbTokens == 4)) {
 					String strU = tokenizer.nextToken();
 					String strV = tokenizer.nextToken();
-					String strW = tokenizer.nextToken();
+					//String strW = tokenizer.nextToken();
 					
 					float u = Float.parseFloat(strU);
 					float v = Float.parseFloat(strV);
-					float w = Float.parseFloat(strW);
+					//float w = Float.parseFloat(strW);
 					
 					TextureCoords coords = new TextureCoords(u, 1 - v);
 					coordsList.add(coords);

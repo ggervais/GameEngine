@@ -203,21 +203,22 @@ public abstract class Geometry extends Spatial {
     private void computeVertexNormals() throws UnsupportedOperationException {
         this.normals.clear();
 
-        if (this.nbVerticesPerFace != DEFAULT_NB_VERTICES_PER_FACE) {
+        if (!this.indexBuffer.hasSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE)) {
             throw new UnsupportedOperationException("Only " + DEFAULT_NB_VERTICES_PER_FACE + " vertices per face supported right now.");
         }
 
-        int nbFaces = this.indexBuffer.size() / this.nbVerticesPerFace;
+        int nbFaces = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE).size() / DEFAULT_NB_VERTICES_PER_FACE;
 
         // for each vertex
         for (int i = 0; i < this.vertexBuffer.size(); i++) {
             Vector3D sumOfFaceNormals = Vector3D.zero();
             // for each face
-            for (int j = 0; j < this.indexBuffer.size(); j += this.nbVerticesPerFace) {
+            List<Integer> subIndexBuffer = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE);
+            for (int j = 0; j < subIndexBuffer.size(); j += DEFAULT_NB_VERTICES_PER_FACE) {
                 // j points to the current vertex index
-                int indexOfFirstVertexInFace = this.indexBuffer.getIndex(j);
-                int indexOfSecondVertexInFace = this.indexBuffer.getIndex(j + 1);
-                int indexOfThirdVertexInFace = this.indexBuffer.getIndex(j + 2);
+                int indexOfFirstVertexInFace = subIndexBuffer.get(j);
+                int indexOfSecondVertexInFace = subIndexBuffer.get(j + 1);
+                int indexOfThirdVertexInFace = subIndexBuffer.get(j + 2);
 
                 // if indexed vertex == current vertex
                 if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace) {

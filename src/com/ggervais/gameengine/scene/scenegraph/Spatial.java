@@ -205,7 +205,7 @@ public abstract class Spatial {
             }
         }
 
-        if (!culled) {
+        if (!culled || 1 == 1) {
             draw(renderer);
         }
     }

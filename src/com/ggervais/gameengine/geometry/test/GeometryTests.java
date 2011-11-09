@@ -27,9 +27,9 @@ public class GeometryTests extends TestCase {
         vertexBuffer.addVertex(v3);
 
         IndexBuffer indexBuffer = new IndexBuffer();
-        indexBuffer.addIndex(0);
-        indexBuffer.addIndex(1);
-        indexBuffer.addIndex(2);
+        indexBuffer.addIndex(3, 0);
+        indexBuffer.addIndex(3, 1);
+        indexBuffer.addIndex(3, 2);
 
         geometry.setBuffers(vertexBuffer, indexBuffer);
         geometry.setGeometryDirty(true);
@@ -60,9 +60,9 @@ public class GeometryTests extends TestCase {
         vertexBuffer.addVertex(v3);
 
         IndexBuffer indexBuffer = new IndexBuffer();
-        indexBuffer.addIndex(0);
-        indexBuffer.addIndex(1);
-        indexBuffer.addIndex(2);
+        indexBuffer.addIndex(3, 0);
+        indexBuffer.addIndex(3, 1);
+        indexBuffer.addIndex(3, 2);
 
         geometry.setBuffers(vertexBuffer, indexBuffer);
         geometry.setGeometryDirty(true);
@@ -93,9 +93,9 @@ public class GeometryTests extends TestCase {
         vertexBuffer.addVertex(v3);
 
         IndexBuffer indexBuffer = new IndexBuffer();
-        indexBuffer.addIndex(0);
-        indexBuffer.addIndex(1);
-        indexBuffer.addIndex(2);
+        indexBuffer.addIndex(3, 0);
+        indexBuffer.addIndex(3, 1);
+        indexBuffer.addIndex(3, 2);
 
         geometry.setBuffers(vertexBuffer, indexBuffer);
         geometry.setGeometryDirty(true);
@@ -127,13 +127,13 @@ public class GeometryTests extends TestCase {
         vertexBuffer.addVertex(v4);
 
         IndexBuffer indexBuffer = new IndexBuffer();
-        indexBuffer.addIndex(0);
-        indexBuffer.addIndex(1);
-        indexBuffer.addIndex(3);
+        indexBuffer.addIndex(3, 0);
+        indexBuffer.addIndex(3, 1);
+        indexBuffer.addIndex(3, 3);
 
-        indexBuffer.addIndex(0);
-        indexBuffer.addIndex(3);
-        indexBuffer.addIndex(2);
+        indexBuffer.addIndex(3, 0);
+        indexBuffer.addIndex(3, 3);
+        indexBuffer.addIndex(3, 2);
 
         geometry.setBuffers(vertexBuffer, indexBuffer);
         geometry.setGeometryDirty(true);

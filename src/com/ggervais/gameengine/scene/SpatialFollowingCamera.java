@@ -28,11 +28,11 @@ public class SpatialFollowingCamera extends Camera {
 
         if (worldMatrix != null) {
 
-            Vector3D translation = worldMatrix.mult(this.offsetVector);
-            Vector3D position = new Vector3D(worldMatrix.getElement(1, 4), worldMatrix.getElement(2, 4), worldMatrix.getElement(3, 4));
+            Point3D cameraLookAt = worldMatrix.mult(Point3D.zero());
+            Point3D cameraPosition = worldMatrix.mult(Point3D.add(Point3D.zero(), this.offsetVector));
 
-            setPosition(new Point3D(translation.x(), translation.y(), translation.z()));
-            setDirection(Vector3D.sub(position, translation));
+            setPosition(cameraPosition);
+            setDirection(cameraLookAt.sub(cameraPosition));
         }
     }
 }

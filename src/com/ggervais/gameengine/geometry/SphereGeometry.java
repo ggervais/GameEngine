@@ -81,13 +81,13 @@ public class SphereGeometry extends Geometry {
                 this.vertexBuffer.addVertex(thirdVertex);
                 this.vertexBuffer.addVertex(fourthVertex);*/
 				
-				this.indexBuffer.addIndex(first);
-				this.indexBuffer.addIndex(second);
-				this.indexBuffer.addIndex(third);
+				this.indexBuffer.addIndex(3, first);
+				this.indexBuffer.addIndex(3, second);
+				this.indexBuffer.addIndex(3, third);
 				
-				this.indexBuffer.addIndex(first);
-				this.indexBuffer.addIndex(third);
-				this.indexBuffer.addIndex(fourth);
+				this.indexBuffer.addIndex(3, first);
+				this.indexBuffer.addIndex(3, third);
+				this.indexBuffer.addIndex(3, fourth);
 				
 				addFace(face1);
 				addFace(face2);

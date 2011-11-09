@@ -1,33 +1,47 @@
 package com.ggervais.gameengine.geometry.primitives;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class IndexBuffer {
 
-	private List<Integer> indices;
+	private Map<Integer, List<Integer>> indices;
 	
 	public IndexBuffer() {
-		this.indices = new ArrayList<Integer>();
+		this.indices = new HashMap<Integer, List<Integer>>();
 	}
 	
 	public int size() {
-		return this.indices.size();
+        int sum = 0;
+        for (int nbVertices : this.indices.keySet()) {
+            sum += this.indices.get(nbVertices).size();
+        }
+		return sum;
 	}
 	
-	public int getIndex(int i) {
-		return this.indices.get(i);
+	public int getIndex(int nbVertices, int i) {
+		return this.indices.get(nbVertices).get(i);
 	}
 	
-	public void addIndex(int index) {
-		this.indices.add(index);
-	}
-	
-	public void removeIndex(Integer index) {
-		this.indices.remove(index);
+	public void addIndex(int nbVertices, int index) {
+        if (!this.indices.containsKey(nbVertices)) {
+            this.indices.put(nbVertices, new ArrayList<Integer>());
+        }
+		this.indices.get(nbVertices).add(index);
 	}
 
-    public void clear() {
-        this.indices.clear();
+    public List<Integer> getNbVerticesList() {
+        List<Integer> returnList = new ArrayList<Integer>();
+        for (int nbVertices : this.indices.keySet()) {
+            returnList.add(nbVertices);
+        }
+        return returnList;
+    }
+
+    public boolean hasSubIndexBuffer(int nbVertices) {
+        return this.indices.containsKey(nbVertices);
+    }
+
+    public List<Integer> getSubIndexBuffer(int nbVertices) {
+        return this.indices.get(nbVertices);
     }
 }
