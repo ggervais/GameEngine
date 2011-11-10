@@ -62,7 +62,6 @@ public class Scene extends Observable {
         Texture texTerrain = TextureLoader.loadTexture("assets/textures/heightmap.jpg", true);
         Texture texFlare = TextureLoader.loadTexture("assets/textures/flare.png", 1, 3);
         Texture texShockwave = TextureLoader.loadTexture("assets/textures/shockwave.png");
-        Texture texSpaceship = TextureLoader.loadTexture("assets/textures/SpaceShipUV.jpg");
         Texture texTitle = TextureLoader.loadTextAsTexture("Guillaume Gervais' Test Game Engine");
         Texture texAscii = TextureLoader.loadTexture("assets/textures/font.png");//TextureLoader.loadDefaultFontAsciiTexture();
         //Texture texAscii = TextureLoader.loadDefaultFontAsciiTexture();
@@ -103,10 +102,6 @@ public class Scene extends Observable {
         matAscii.setName("ascii");
         matAscii.addTexture(texAscii);
 
-        Material matSpaceship = new Material();
-        matSpaceship.setName("spaceship");
-        matSpaceship.addTexture(texSpaceship);
-
         ResourceSubsystem resourceSubsystem = ResourceSubsystem.getInstance();
         resourceSubsystem.addResource(matGuillaume);
         resourceSubsystem.addResource(matGraffiti);
@@ -117,7 +112,6 @@ public class Scene extends Observable {
         resourceSubsystem.addResource(matShockwave);
         resourceSubsystem.addResource(matTitle);
         resourceSubsystem.addResource(matAscii);
-        resourceSubsystem.addResource(matSpaceship);
 
 		float fortyFiveDegrees = (float) Math.toRadians(45);
 
@@ -330,7 +324,7 @@ public class Scene extends Observable {
         Transformation spaceshipTransformation = new Transformation();
         spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
         spaceship.setLocalTransformation(spaceshipTransformation);
-        spaceship.getEffect().addTexture(texSpaceship);
+        //spaceship.getEffect().addTexture(texSpaceship);
         spaceship.addGlobalState(lightingOff);
 
 

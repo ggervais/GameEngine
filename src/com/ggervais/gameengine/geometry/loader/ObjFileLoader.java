@@ -48,8 +48,8 @@ public class ObjFileLoader extends GeometryLoader {
             FileInputStream in = new FileInputStream("assets/models/" + file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            String line = reader.readLine();
-            while(line != null) {
+            String line;
+            while((line = reader.readLine()) != null) {
                 if (line.equals("")) {
                     continue;
                 }
@@ -67,8 +67,9 @@ public class ObjFileLoader extends GeometryLoader {
                     }
                 }
 
-                line = reader.readLine();
+
             }
+            reader.close();
 
             if (material.getName().length() == 0) {
                 material.setName(filename);
@@ -94,9 +95,9 @@ public class ObjFileLoader extends GeometryLoader {
 		try {
 			FileInputStream in = new FileInputStream("assets/models/" + file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			
-			String line = reader.readLine();
-			while(line != null) {
+
+            String line;
+			while((line = reader.readLine()) != null) {
 				if (line.equals("")) {
 					continue;
 				}
@@ -109,9 +110,8 @@ public class ObjFileLoader extends GeometryLoader {
 						texture = TextureLoader.loadTexture("assets/textures/" + textureFilename);
 					}
 				}
-
-				line = reader.readLine();
 			}
+            reader.close();
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
 		} catch (IOException ioe) {

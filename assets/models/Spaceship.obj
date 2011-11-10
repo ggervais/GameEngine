@@ -1,6 +1,6 @@
 # Blender3D v246 OBJ File: Spaceship.blend
 # www.blender3d.org
-#mtllib Spaceship.mtl
+mtllib Spaceship.mtl
 o Cube.001
 v 7.084129 2.473878 -1.048382
 v 7.715323 3.130323 0.814745
@@ -2526,7 +2526,7 @@ vt 0.318499 0.200339
 vt 0.298854 0.127737
 vt 0.228762 0.316565
 vt 0.138175 0.342819
-#usemtl SpaceShipUV_SpaceShipUV.jpg
+usemtl SpaceShipUV_SpaceShipUV.jpg
 s off
 f 1/1 2/2 3/3 4/4
 f 1/1 5/5 6/6 2/2
