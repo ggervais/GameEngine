@@ -74,11 +74,12 @@ public class QuadGeometry extends Geometry {
     @Override
     protected void generateTextureCoords(Effect effect) {
          for (int i = 0; i < effect.nbTextures(); i++) {
-            effect.clearTextureCoordinates(i);
-            effect.addTextureCoordinates(i, new TextureCoords(0, 0));
-            effect.addTextureCoordinates(i, new TextureCoords(0, 1));
-            effect.addTextureCoordinates(i, new TextureCoords(1, 1));
-            effect.addTextureCoordinates(i, new TextureCoords(1, 0));
+             effect.clearTextureCoordinates(i, 4);
+
+             effect.addTextureCoordinates(i, 4, new TextureCoords(0, 0));
+             effect.addTextureCoordinates(i, 4, new TextureCoords(0, 1));
+             effect.addTextureCoordinates(i, 4, new TextureCoords(1, 1));
+             effect.addTextureCoordinates(i, 4, new TextureCoords(1, 0));
         }
     }
 

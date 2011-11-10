@@ -297,7 +297,10 @@ public class Scene extends Observable {
 
         Transformation immobileCubeTransformation = new Transformation();
         CubeGeometry immobileCube = new CubeGeometry();
+        Effect immobileCubeEffect = new Effect();
+        immobileCubeEffect.addTexture(texGuillaume);
         immobileCube.setLocalTransformation(immobileCubeTransformation);
+        immobileCube.setEffect(immobileCubeEffect);
 
 
         GlobalState lightingOn = new LightingState(true);
@@ -373,8 +376,8 @@ public class Scene extends Observable {
         spaceship.addController(new InputControlledController());
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
-		this.camera = new FreeFlyCamera();
-        this.camera.setPosition(new Point3D(0, 0, 10));
+		//this.camera = new FreeFlyCamera();
+        //this.camera.setPosition(new Point3D(0, 0, 10));
         this.camera = new SpatialFollowingCamera(spaceship, new Vector3D(0, 0, 30));
     }
 	

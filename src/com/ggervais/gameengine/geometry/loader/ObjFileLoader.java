@@ -7,9 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.Model;
@@ -136,7 +134,7 @@ public class ObjFileLoader extends GeometryLoader {
 
 		List<Vertex> vertices = new ArrayList<Vertex>();
 		List<TextureCoords> coordsList = new ArrayList<TextureCoords>();
-		List<Integer> textureCoordsIndices = new ArrayList<Integer>();
+		Map<Integer, List<Integer>> textureCoordsIndices = new HashMap<Integer, List<Integer>>();
 		try {
 			FileInputStream in = new FileInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -185,7 +183,10 @@ public class ObjFileLoader extends GeometryLoader {
                         int v = Integer.parseInt(parts[0]);
                         if (parts.length >= 2) {
                             int t = Integer.parseInt(parts[1]);
-                            textureCoordsIndices.add(t);
+                            if (!textureCoordsIndices.containsKey(nbVerticesPerFace)) {
+                                textureCoordsIndices.put(nbVerticesPerFace, new ArrayList<Integer>());
+                            }
+                            textureCoordsIndices.get(nbVerticesPerFace).add(t);
                         }
                         geometry.getIndexBuffer().addIndex(nbVerticesPerFace, v - 1);
                     }
@@ -246,10 +247,12 @@ public class ObjFileLoader extends GeometryLoader {
 				line = reader.readLine();
 			}
             Effect effect = new Effect();
-			for (Integer i : textureCoordsIndices) {
-				TextureCoords coords = coordsList.get(i - 1);
-                effect.addTextureCoordinates(0, coords);
-				model.getTextureBuffer().addCoords(coords);
+			for (int nbVerticesPerFace : textureCoordsIndices.keySet()) {
+                for (int i : textureCoordsIndices.get(nbVerticesPerFace)) {
+                    TextureCoords coords = coordsList.get(i - 1);
+                    effect.addTextureCoordinates(0, nbVerticesPerFace, coords);
+                    model.getTextureBuffer().addCoords(coords);
+                }
 			}
 			geometry.setEffect(effect);
 			reader.close();

@@ -215,7 +215,7 @@ public class ParticlesGeometry extends Geometry {
         for (int i = 0; i < effect.nbTextures(); i++) {
             Texture texture = effect.getTexture(i);
 
-            effect.clearTextureCoordinates(i);
+            effect.clearTextureCoordinates(i, 3);
             for (int j = 0; j < this.positions.size(); j++) {
 
                 int cell = random.nextInt(texture.getNbCellsWidth() * texture.getNbCellsHeight());
@@ -238,10 +238,13 @@ public class ParticlesGeometry extends Geometry {
                 float tv4 = 0;
 
 
-                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
-                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
-                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
-                effect.addTextureCoordinates(i, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
+                effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
+                effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
+                effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
+
+                effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
+                effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
+                effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
             }
         }
     }

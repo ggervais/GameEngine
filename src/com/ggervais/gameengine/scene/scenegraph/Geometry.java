@@ -204,7 +204,8 @@ public abstract class Geometry extends Spatial {
         this.normals.clear();
 
         if (!this.indexBuffer.hasSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE)) {
-            throw new UnsupportedOperationException("Only " + DEFAULT_NB_VERTICES_PER_FACE + " vertices per face supported right now.");
+            log.warn("Only " + DEFAULT_NB_VERTICES_PER_FACE + " vertices per face supported right now.");
+            return;
         }
 
         int nbFaces = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE).size() / DEFAULT_NB_VERTICES_PER_FACE;

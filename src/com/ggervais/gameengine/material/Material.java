@@ -36,7 +36,10 @@ public class Material implements Resource {
     }
 
     public Texture getTexture(int index) {
-        return this.textures.get(index);
+        if (index >= 0 && index < this.textures.size()) {
+            return this.textures.get(index);
+        }
+        return null;
     }
 
     public String getName() {
