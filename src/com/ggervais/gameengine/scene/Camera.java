@@ -37,6 +37,7 @@ public abstract class Camera implements InputSensitive {
     protected Geometry cameraGeometry;
 
     private List<Plane> frustumPlanes;
+    private List<Point3D> frustumPoints;
     private boolean isFrustumDirty;
 	
 	public Camera(Point3D position, Vector3D direction, Vector3D up, float fieldOfView, float near, float far) {
@@ -47,6 +48,7 @@ public abstract class Camera implements InputSensitive {
         this.near = near;
         this.far = far;
         this.frustumPlanes = new ArrayList<Plane>();
+        this.frustumPoints = new ArrayList<Point3D>();
         this.isFrustumDirty = true;
         this.cameraGeometry = new CubeGeometry();
 	}
@@ -100,6 +102,16 @@ public abstract class Camera implements InputSensitive {
         frustumPlanes.add(rightPlane);
         frustumPlanes.add(nearPlane);
         frustumPlanes.add(farPlane);
+
+        this.frustumPoints.clear();
+        this.frustumPoints.add(nearTopLeft);
+        this.frustumPoints.add(nearTopRight);
+        this.frustumPoints.add(nearBottomLeft);
+        this.frustumPoints.add(nearBottomRight);
+        this.frustumPoints.add(farTopLeft);
+        this.frustumPoints.add(farTopRight);
+        this.frustumPoints.add(farBottomLeft);
+        this.frustumPoints.add(farBottomRight);
     }
 
     public List<Plane> getPlanes(Viewport viewport) {
@@ -109,6 +121,10 @@ public abstract class Camera implements InputSensitive {
             this.isFrustumDirty = false;
         }
         return this.frustumPlanes;
+    }
+
+    public List<Point3D> getPoints() {
+        return this.frustumPoints;
     }
 
 
@@ -189,6 +205,6 @@ public abstract class Camera implements InputSensitive {
         return this.cameraGeometry;
     }
 
-    public abstract void update(InputController inputController, Spatial sceneGraphRoot);
+    public abstract void update(long currentTime, InputController inputController, Spatial sceneGraphRoot);
 	
 }

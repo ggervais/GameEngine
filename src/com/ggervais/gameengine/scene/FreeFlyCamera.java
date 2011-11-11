@@ -57,7 +57,7 @@ public class FreeFlyCamera extends Camera {
 	}
 	
 	@Override
-	public void update(InputController inputController, Spatial sceneGraphRoot) {
+	public void update(long currentTime, InputController inputController, Spatial sceneGraphRoot) {
 		
 		boolean isForwardKeyDown = false;
         boolean isBackwardKeyDown = false;

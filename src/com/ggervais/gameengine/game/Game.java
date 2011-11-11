@@ -189,7 +189,7 @@ public class Game {
 
         if (this.isControlled) {
             this.inputController.centerMouse();
-            this.scene.getCamera().update(inputController, this.scene.getSceneGraphRoot());
+            this.scene.getCamera().update(currentTime, inputController, this.scene.getSceneGraphRoot());
             setBlankCursor();
         } else {
             setDefaultCursor();

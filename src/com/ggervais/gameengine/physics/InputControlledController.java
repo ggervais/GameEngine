@@ -20,7 +20,7 @@ public class InputControlledController extends MotionController {
     private InputController previousInputController;
     private static final float SPEED = 0.1f;
     private static final float ONE_RADIAN = 0.01745f;
-	private static final float MIN_THETA = (float) (-Math.PI / 2 + ONE_RADIAN);
+	private static final float MIN_THETA = (float) (-Math.PI / 4 + ONE_RADIAN);
 	private static final float MAX_THETA = (float) (Math.PI / 4 - ONE_RADIAN);
 
     private float theta;
@@ -93,10 +93,14 @@ public class InputControlledController extends MotionController {
 
 
 		// Damp the movement.
-		this.phi += diffX * 0.005f;
-		this.theta += diffY * 0.005f;
 
-		//this.phi = MathUtils.clamp(this.phi, MIN_PHI, MAX_PHI);
+        float displacementPhi = diffX * 0.005f;
+        float displacementTheta = diffY * 0.005f;
+
+		this.phi += displacementPhi;
+		this.theta += displacementTheta;
+
+		//this.phi = MathUtils.clamp(this.phi, MIN_THETA, MAX_THETA);
 		this.theta = MathUtils.clamp(this.theta, MIN_THETA, MAX_THETA);
 
         if (transformation != null) {

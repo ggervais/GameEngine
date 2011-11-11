@@ -41,19 +41,6 @@ public class MotionController extends Controller {
         this.firstUpdateOccurred = false;
     }
 
-    private Spatial getTopParent() {
-
-        Spatial current = this.controlledSpatialObject;
-        Spatial parent = current.getParent();
-
-        while (parent != null) {
-            current = parent;
-            parent = current.getParent();
-        }
-
-        return current;
-    }
-
     @Override
     public void setControlledObject(Spatial object) {
         super.setControlledObject(object);
@@ -91,7 +78,7 @@ public class MotionController extends Controller {
         Vector3D candidateTranslation = Vector3D.add(baseTranslation, currentVelocity.multiplied(dtSeconds));
 
         if (this.firstUpdateOccurred && this.controlledSpatialObject.isCheckCollisionsWhenMoving()) {
-            Spatial root = getTopParent();
+            Spatial root = this.controlledSpatialObject.getTopParent();
             List<Collision> collisions = this.controlledSpatialObject.intersectsWithUnderlyingGeometry(root);
             if (collisions.size() > 0) {
                 for (Collision collision : collisions) {
