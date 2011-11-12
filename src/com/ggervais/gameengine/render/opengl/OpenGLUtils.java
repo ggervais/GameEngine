@@ -11,6 +11,7 @@ import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
+import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.material.texture.Texture;
@@ -19,6 +20,8 @@ import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.render.Frustum;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
+import com.ggervais.gameengine.scene.scenegraph.Transformation;
+import com.jogamp.opengl.util.gl2.GLUT;
 import org.apache.log4j.Logger;
 
 public class OpenGLUtils {
@@ -214,11 +217,58 @@ public class OpenGLUtils {
         gl.glPopMatrix();
     }
 
+    public static void drawFrustum(GL2 gl, List<Point3D> points) {
+        if (points.size() == 8) {
+
+            gl.glBegin(GL2.GL_LINE);
+            gl.glColor4f(0, 0, 0, 1);
+
+                gl.glVertex3f(points.get(0).x(), points.get(0).y(), points.get(0).z());
+                gl.glVertex3f(points.get(1).x(), points.get(1).y(), points.get(1).z());
+
+                gl.glVertex3f(points.get(2).x(), points.get(2).y(), points.get(2).z());
+                gl.glVertex3f(points.get(3).x(), points.get(3).y(), points.get(3).z());
+
+                gl.glVertex3f(points.get(0).x(), points.get(0).y(), points.get(0).z());
+                gl.glVertex3f(points.get(2).x(), points.get(2).y(), points.get(2).z());
+
+                gl.glVertex3f(points.get(1).x(), points.get(1).y(), points.get(1).z());
+                gl.glVertex3f(points.get(3).x(), points.get(3).y(), points.get(3).z());
+
+                gl.glVertex3f(points.get(4).x(), points.get(4).y(), points.get(4).z());
+                gl.glVertex3f(points.get(5).x(), points.get(5).y(), points.get(5).z());
+
+                gl.glVertex3f(points.get(6).x(), points.get(6).y(), points.get(6).z());
+                gl.glVertex3f(points.get(7).x(), points.get(7).y(), points.get(7).z());
+
+                gl.glVertex3f(points.get(4).x(), points.get(4).y(), points.get(4).z());
+                gl.glVertex3f(points.get(6).x(), points.get(6).y(), points.get(6).z());
+
+                gl.glVertex3f(points.get(5).x(), points.get(5).y(), points.get(5).z());
+                gl.glVertex3f(points.get(7).x(), points.get(7).y(), points.get(7).z());
+
+                gl.glVertex3f(points.get(0).x(), points.get(0).y(), points.get(0).z());
+                gl.glVertex3f(points.get(4).x(), points.get(4).y(), points.get(4).z());
+
+                gl.glVertex3f(points.get(1).x(), points.get(1).y(), points.get(1).z());
+                gl.glVertex3f(points.get(5).x(), points.get(5).y(), points.get(5).z());
+
+                gl.glVertex3f(points.get(2).x(), points.get(2).y(), points.get(2).z());
+                gl.glVertex3f(points.get(6).x(), points.get(6).y(), points.get(6).z());
+
+                gl.glVertex3f(points.get(3).x(), points.get(3).y(), points.get(3).z());
+                gl.glVertex3f(points.get(7).x(), points.get(7).y(), points.get(7).z());
+
+            gl.glEnd();
+        }
+    }
+
     public static void drawBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {
 
-        drawAugmentedBoundingBox(gl, box, isPicked);
+        //drawAugmentedBoundingBox(gl, box, isPicked);
 
-        /*gl.glPushMatrix();
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glPushMatrix();
 
         Point3D firstPoint = box.getMinCorner();
         Point3D secondPoint = Point3D.add(firstPoint, new Vector3D(box.getWidth(), 0, 0));
@@ -289,7 +339,36 @@ public class OpenGLUtils {
 
         gl.glEnd();
 
-        gl.glPopMatrix();*/
+        gl.glPopMatrix();
+    }
+
+    public static void drawBoneHierarchy(GL2 gl, GLUT glut, Bone root) {
+
+        gl.glPushMatrix();
+
+        if (!root.isPositioningAbsolute() && root.getParent() != null) {
+            gl.glTranslatef(root.getParent().getEndPosition().x(), root.getParent().getEndPosition().y(), root.getParent().getEndPosition().z());
+            log.info(root.getName() + " Translated to " + root.getParent().getEndPosition());
+        }
+        gl.glBegin(GL2.GL_LINES);
+
+
+        gl.glColor4f(1, 0, 0, 1);
+        log.info(root.getStartPosition());
+        gl.glVertex3f(root.getStartPosition().x(), root.getStartPosition().y(), root.getStartPosition().z());
+
+        gl.glColor4f(0, 1, 0, 1);
+        log.info(root.getEndPosition());
+        gl.glVertex3f(root.getEndPosition().x(), root.getEndPosition().y(), root.getEndPosition().z());
+        log.info("======");
+
+        gl.glEnd();
+
+        for (Bone child : root.getChildren()) {
+            drawBoneHierarchy(gl, glut, child);
+        }
+
+        gl.glPopMatrix();
     }
 
     private static void drawAugmentedBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {

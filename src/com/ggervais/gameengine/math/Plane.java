@@ -94,4 +94,8 @@ public class Plane {
 	public Vector3D getNormal() {
 		return this.normal;
 	}
+
+    public String toString() {
+        return this.point + " " + this.normal;
+    }
 }

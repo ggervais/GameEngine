@@ -380,11 +380,12 @@ public class Matrix4x4 {
                   - a13*a21*a34*a42 - a13*a22*a31*a44 - a13*a24*a32*a41
                   - a14*a21*a32*a43 - a14*a22*a33*a41 - a14*a23*a31*a42;
 
+        Matrix4x4 inverse = new Matrix4x4();
+
         if (det == 0) {
             return null;
         }
 
-        Matrix4x4 inverse = new Matrix4x4();
 
         float b11 = a22*a33*a44 + a23*a34*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 - a24*a33*a42;
         float b12 = a12*a34*a43 + a13*a32*a44 + a14*a33*a42 - a12*a33*a44 - a13*a34*a42 - a14*a32*a43;

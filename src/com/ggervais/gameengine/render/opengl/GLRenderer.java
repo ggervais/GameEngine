@@ -18,6 +18,7 @@ import javax.media.opengl.glu.GLU;
 import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.Quad;
 import com.ggervais.gameengine.geometry.primitives.*;
+import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.particle.Particle;
@@ -31,6 +32,7 @@ import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
 import com.ggervais.gameengine.scene.Camera;
 import com.ggervais.gameengine.scene.DisplayableEntity;
+import com.ggervais.gameengine.scene.FreeFlyCamera;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.scene.scenegraph.*;
@@ -38,6 +40,7 @@ import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
+import com.jogamp.opengl.util.gl2.GLUT;
 import org.apache.log4j.Logger;
 
 public class GLRenderer extends SceneRenderer implements GLEventListener {
@@ -45,6 +48,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private static final Logger log = Logger.getLogger(GLRenderer.class);
 
 	private GLU glu;
+    private GLUT glut;
     private GL2 gl;
     private int nbLights;
     private static final int MAX_LIGHTS = 8;
@@ -58,6 +62,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		super(scene, canvas);
 		canvas.addGLEventListener(this);
 		this.glu = new GLU();
+        this.glut = new GLUT();
         this.nbLights = 0;
 	}
 
@@ -420,7 +425,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void drawBoundingBox(BoundingBox box, boolean isPicked) {
-        OpenGLUtils.drawBoundingBox(gl, box, isPicked);
+        //OpenGLUtils.drawBoundingBox(gl, box, isPicked);
     }
 
     public void reshape(GLAutoDrawable glDrawable, int x, int y, int width,	int height) {
@@ -585,9 +590,38 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         controlPoints.add(new Point3D(2.5f, 2.5f, -10));
         controlPoints.add(new Point3D(4f, -8f, -15));
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
-        gl.glEnable(GL2.GL_LIGHTING);
 
-        OpenGLUtils.drawBoundingBox(gl, this.scene.getCamera().getCameraGeometry().getBoundingBox(),  false);
+
+        //OpenGLUtils.drawBoundingBox(gl, this.scene.getCamera().getCameraGeometry().getBoundingBox(), false);
+
+
+        BoundingBox boundingBox = new BoundingBox(new Point3D(-1.1010036f, -1332.267f, -10.783917f), new Point3D(57.401665f, 36.188408f, 23.829382f));
+        List<Point3D> points = new ArrayList<Point3D>();
+        points.add(new Point3D(57.817886f, -0.7727107f, 19.195755f));
+        points.add(new Point3D(57.81893f, -0.7727107f, 19.195305f));
+        points.add(new Point3D(57.81784f, -0.7735305f, 19.195644f));
+        points.add(new Point3D(57.818886f, -0.7735305f, 19.195194f));
+        points.add(new Point3D(-833.4447f, 552.6644f, -610.42487f));
+        points.add(new Point3D(215.01859f, 552.6644f, -1060.647f));
+        points.add(new Point3D(-880.35486f, -267.18738f, -719.6679f));
+        points.add(new Point3D(168.10837f, -267.18738f, -1169.89f));
+
+        //OpenGLUtils.drawBoundingBox(gl, boundingBox, true);
+        //OpenGLUtils.drawViewFustrumPoints(gl, points);
+
+
+        Bone root = new Bone(new Point3D(0, 10, 0), new Point3D(0, 10, 0), false, "NullBone");
+        Bone head = new Bone(new Point3D(0, 0, 0), new Point3D(0, -1, 0), false, "Head");
+        Bone back = new Bone(Point3D.zero(), new Point3D(0, -3, 0), false, "Back");
+        root.addChild(head);
+        head.addChild(back);
+        root.propagateTransformation();
+
+        gl.glDisable(GL2.GL_LIGHTING);
+
+        OpenGLUtils.drawBoneHierarchy(gl, glut, root);
+
+        gl.glEnable(GL2.GL_LIGHTING);
 
         gl.glFlush();
     }

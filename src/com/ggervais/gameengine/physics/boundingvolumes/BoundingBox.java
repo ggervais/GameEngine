@@ -37,6 +37,12 @@ public class BoundingBox {
        return Math.abs(maxCorner.z() - minCorner.z());
     }
 
+    public boolean contains(Point3D point) {
+        return minCorner.x() <= point.x() && maxCorner.x() >= point.x() &&
+               minCorner.y() <= point.y() && maxCorner.y() >= point.y() &&
+               minCorner.z() <= point.z() && maxCorner.z() >= point.z();
+    }
+
     public void transform(Transformation transformation) {
 
         float width = getWidth();
@@ -236,7 +242,8 @@ public class BoundingBox {
         int nbIn = 0;
         int nbOut = 0;
         for (int i = 0; i < points.size(); i++) {
-            if (plane.getSignedDistanceFromPlane(points.get(i)) < 0) {
+            float signedDistance = plane.getSignedDistanceFromPlane(points.get(i));
+            if (signedDistance < 0) {
                 nbOut++;
             } else {
                 nbIn++;
@@ -251,9 +258,9 @@ public class BoundingBox {
 
         if (nbIn == 0) {
             result = false;
-        } else if (nbOut > 0) {
-            result = true;
         }
+
+        //System.out.println(nbIn);
 
         return result;
     }
@@ -306,6 +313,26 @@ public class BoundingBox {
         }
 
         return penetrationVector;
+    }
+
+    public List<Point3D> getPoints() {
+
+        List<Point3D> points = new ArrayList<Point3D>();
+
+        float width = getWidth();
+        float height = getHeight();
+        float depth = getDepth();
+
+        points.add(this.minCorner);
+        points.add(Point3D.add(this.minCorner, new Vector3D(width, 0, 0)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(width, 0, depth)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(0, 0, depth)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(0, height, 0)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(0, height, depth)));
+        points.add(Point3D.add(this.minCorner, new Vector3D(width, 0, depth)));
+        points.add(this.maxCorner);
+
+        return points;
     }
 
     public String toString() {

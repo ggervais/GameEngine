@@ -286,13 +286,14 @@ public class Scene extends Observable {
         blueEffect.setColor(new Color(0, 0, 255));
         SphereGeometry sphereGeometry = new SphereGeometry(50, 50);
         sphereGeometry.setEffect(blueEffect);
-        sphereTransformation.setTranslation(10, 0, 0);
+        sphereTransformation.setTranslation(0, 0, 0);
         sphereGeometry.setLocalTransformation(sphereTransformation);
 
         Transformation immobileCubeTransformation = new Transformation();
         CubeGeometry immobileCube = new CubeGeometry();
         Effect immobileCubeEffect = new Effect();
         immobileCubeEffect.addTexture(texGuillaume);
+        immobileCubeTransformation.setTranslation(20, 0, 0);
         immobileCube.setLocalTransformation(immobileCubeTransformation);
         immobileCube.setEffect(immobileCubeEffect);
 
@@ -332,14 +333,14 @@ public class Scene extends Observable {
         log.info(bezierCube);
         log.info(immobileCube);
 
-        this.sceneGraphRoot.addLight(light2);
+       /* this.sceneGraphRoot.addLight(light2);
         this.sceneGraphRoot.addChild(sphereGeometry);
-        this.sceneGraphRoot.addChild(gCube1);
+        //this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
         this.sceneGraphRoot.addChild(spaceship);
-        this.sceneGraphRoot.addChild(immobileCube);
+        this.sceneGraphRoot.addChild(immobileCube);  */
 
 
         /*Effect ef = new Effect();
@@ -361,18 +362,18 @@ public class Scene extends Observable {
         anotherCube.setEffect(ef2);
         this.sceneGraphRoot.addChild(anotherCube);          */
 
-        gCube1.addController(controller);
+        /*gCube1.addController(controller);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
         fireParticles.addController(fireController);
         smokeParticles.addController(smokeController);
         bezierCube.addController(bezierCurveController);
         sphereGeometry.addController(sphereController);
-        spaceship.addController(new InputControlledController());
+        spaceship.addController(new InputControlledController());*/
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
-		//this.camera = new FreeFlyCamera();
+		this.camera = new FreeFlyCamera();
         //this.camera.setPosition(new Point3D(0, 0, 10));
-        this.camera = new SpatialFollowingCamera(spaceship, new Vector3D(0, 0, 30));
+        //this.camera = new SpatialFollowingCamera(spaceship, new Vector3D(0, 0, 30));
     }
 	
 	public List<Texture> getTextures() {
@@ -457,5 +458,13 @@ public class Scene extends Observable {
 
     public List<Plane> getFrustumPlanes() {
         return this.camera.getPlanes(this.viewport);
+    }
+
+    public List<Point3D> getFrustumPoints() {
+        return this.camera.getFrustumPoints(this.viewport);
+    }
+
+    public boolean isPointInViewFrustum(Point3D point3D) {
+        return this.camera.isPointInFrustum(this.viewport, point3D);
     }
 }

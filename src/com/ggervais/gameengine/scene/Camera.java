@@ -114,6 +114,54 @@ public abstract class Camera implements InputSensitive {
         this.frustumPoints.add(farBottomRight);
     }
 
+    public List<Point3D> getFrustumPoints(Viewport viewport) {
+
+        this.frustumPlanes.clear();
+
+        Point3D nearCenter = Point3D.add(this.position, this.direction.multiplied(this.near));
+        Point3D farCenter = Point3D.add(this.position, this.direction.multiplied(this.far));
+
+        Vector3D realUp = this.up.copy();
+        Vector3D right;
+        if (realUp.equals(direction)) {
+            right = DEFAULT_RIGHT;
+        } else {
+            right = Vector3D.crossProduct(this.direction, realUp).normalized();
+        }
+        realUp = Vector3D.crossProduct(right, this.direction);
+
+        float nearPlaneHeight = 2f * (float) Math.tan(fieldOfView / 2f) * this.near;
+        float nearPlaneWidth = nearPlaneHeight * viewport.getAspectRatio();
+
+        float farPlaneHeight = 2f * (float) Math.tan(fieldOfView / 2f) * this.far;
+        float farPlaneWidth = farPlaneHeight * viewport.getAspectRatio();
+
+        Point3D nearTopLeft = Point3D.sub(Point3D.add(nearCenter, Vector3D.multiply(realUp, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+        Point3D nearTopRight = Point3D.add(Point3D.add(nearCenter, Vector3D.multiply(realUp, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+        Point3D nearBottomLeft = Point3D.sub(Point3D.sub(nearCenter, Vector3D.multiply(realUp, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+        Point3D nearBottomRight = Point3D.add(Point3D.sub(nearCenter, Vector3D.multiply(realUp, nearPlaneHeight / 2f)), Vector3D.multiply(right, nearPlaneWidth / 2f));
+
+        Point3D farTopLeft = Point3D.sub(Point3D.add(farCenter, Vector3D.multiply(realUp, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));
+        Point3D farTopRight = Point3D.add(Point3D.add(farCenter, Vector3D.multiply(realUp, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));
+        Point3D farBottomLeft = Point3D.sub(Point3D.sub(farCenter, Vector3D.multiply(realUp, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));
+        Point3D farBottomRight = Point3D.add(Point3D.sub(farCenter, Vector3D.multiply(realUp, farPlaneHeight / 2f)), Vector3D.multiply(right, farPlaneWidth / 2f));
+
+        List<Point3D> points = new ArrayList<Point3D>();
+
+        points.add(nearTopLeft);
+        points.add(nearTopRight);
+        points.add(nearBottomLeft);
+        points.add(nearBottomRight);
+
+        points.add(farTopLeft);
+        points.add(farTopRight);
+        points.add(farBottomLeft);
+        points.add(farBottomRight);
+
+        return points;
+
+    }
+
     public List<Plane> getPlanes(Viewport viewport) {
 
         if (this.isFrustumDirty) {
@@ -203,6 +251,52 @@ public abstract class Camera implements InputSensitive {
 
     public Spatial getCameraGeometry() {
         return this.cameraGeometry;
+    }
+
+    public boolean isPointInFrustum(Viewport viewport, Point3D point) {
+
+        boolean inside = false;
+
+        if (viewport != null && point != null) {
+
+            this.direction.normalize();
+            Point3D pointProjection = Point3D.zero();
+            Vector3D cameraPositionToPoint = point.sub(this.position);
+            pointProjection.z(cameraPositionToPoint.dotProduct(this.direction));
+
+            if (pointProjection.z() >= this.getNear() && pointProjection.z() <= this.getFar()) {
+                // Z is OK, we can continue.
+
+                Vector3D realUp = this.up.copy();
+                Vector3D right;
+                if (realUp.equals(direction)) {
+                    right = DEFAULT_RIGHT;
+                } else {
+                    right = Vector3D.crossProduct(this.direction, realUp).normalized();
+                }
+                realUp = Vector3D.crossProduct(right, this.direction);
+
+                pointProjection.x(cameraPositionToPoint.dotProduct(right));
+                pointProjection.y(cameraPositionToPoint.dotProduct(realUp));
+
+                float planeHeight = pointProjection.z() * 2f * (float) Math.tan(fieldOfView / 2f);
+                float planeHeightHalved = planeHeight / 2f;
+
+                if (pointProjection.y() >= -planeHeightHalved && pointProjection.y() <= planeHeightHalved) {
+                    // Y is OK, we can continue.
+                    float planeWidth = planeHeight * viewport.getAspectRatio();
+                    float planeWidthHalved = planeWidth / 2f;
+                    if (pointProjection.x() >= -planeWidthHalved && pointProjection.x() <= planeWidthHalved) {
+                        // X is OK, we can continue.
+                        // Continuing means the point is in the frustum.
+                        inside = true;
+                    }
+                }
+
+            }
+        }
+
+        return inside;
     }
 
     public abstract void update(long currentTime, InputController inputController, Spatial sceneGraphRoot);

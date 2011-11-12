@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.math.test;
 
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -45,7 +46,14 @@ public class PlaneTests extends TestCase {
 		assertEquals(0.0f, point.y());
 		assertEquals(0.0f, point.z());
 	}
-	
+
+    public void testFrustumPlaneIntersectsBoundingBox() {
+        Plane plane = new Plane(new Point3D(57.817886f, -0.7727107f, 19.195755f), new Vector3D(0.6046069f, 0.071116485f, -0.7933429f));
+        BoundingBox boundingBox = new BoundingBox(new Point3D(-1.2167114f, -3488.1074f, -10.777065f), new Point3D(56.50507f, 35.639698f, 23.275265f));
+
+        assertTrue(boundingBox.intersectsOrIsInside(plane));
+    }
+
 	public static Test suite() {
 		return new TestSuite(PlaneTests.class);
 	}

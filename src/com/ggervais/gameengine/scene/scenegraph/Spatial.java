@@ -1,6 +1,8 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
+import com.ggervais.gameengine.geometry.SphereGeometry;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.Plane;
 import com.ggervais.gameengine.math.Point3D;
@@ -42,6 +44,19 @@ public abstract class Spatial {
         this.pickedInCurrentUpdate = false;
         this.lights = new ArrayList<Light>();
         checkCollisionsWhenMoving = true;
+    }
+
+    public Spatial getTopParent() {
+
+        Spatial current = this;
+        Spatial parent = current.getParent();
+
+        while (parent != null) {
+            current = parent;
+            parent = current.getParent();
+        }
+
+        return current;
     }
 
     public BoundingBox getBoundingBox() {
@@ -198,16 +213,32 @@ public abstract class Spatial {
         boolean culled = false;
 
         List<Plane> planes = renderer.getScene().getFrustumPlanes();
+        int offendedIndex = 0;
+        Plane offendedPlane = null;
+        List<Point3D> frustumPoints = renderer.getScene().getFrustumPoints();
         for (Plane plane : planes) {
             if (!getBoundingBox().intersectsOrIsInside(plane)) {
                 culled = true;
+                offendedPlane = plane;
                 break;
             }
+            offendedIndex++;
         }
 
-        if (!culled || 1 == 1) {
+        if (!culled) {
             draw(renderer);
-        }
+        }/* else {
+            Spatial parent = getTopParent();
+            if (parent == this) {
+                log.info("Node is culled! i:" + offendedIndex + " p: " + offendedPlane + " bb: " + getBoundingBox());
+                int i = 0;
+                for (Point3D p : frustumPoints) {
+                    log.info("Point #" + i + ": " + p);
+                    i++;
+                }
+                log.info("======");
+            }
+        }*/
     }
 
     public Transformation getLocalTransformation() {
