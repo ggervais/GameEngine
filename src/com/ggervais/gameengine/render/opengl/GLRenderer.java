@@ -609,18 +609,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         //OpenGLUtils.drawBoundingBox(gl, boundingBox, true);
         //OpenGLUtils.drawViewFustrumPoints(gl, points);
 
-
-        Bone root = new Bone(new Point3D(0, 10, 0), new Point3D(0, 10, 0), false, "NullBone");
-        Bone head = new Bone(new Point3D(0, 0, 0), new Point3D(0, -1, 0), false, "Head");
-        Bone back = new Bone(Point3D.zero(), new Point3D(0, -3, 0), false, "Back");
-        root.addChild(head);
-        head.addChild(back);
-        root.propagateTransformation();
-
-        gl.glDisable(GL2.GL_LIGHTING);
-
-        OpenGLUtils.drawBoneHierarchy(gl, glut, root);
-
         gl.glEnable(GL2.GL_LIGHTING);
 
         gl.glFlush();

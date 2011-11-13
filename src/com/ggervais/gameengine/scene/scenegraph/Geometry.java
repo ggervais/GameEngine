@@ -1,6 +1,7 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.primitives.*;
+import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
@@ -22,6 +23,7 @@ public abstract class Geometry extends Spatial {
 	private List<Face> faces;
     protected int nbFaces;
     protected List<Vector3D> normals;
+    protected Bone boneHierarchyRoot;
 
     private BoundingBox modelBoundingBox;
     private boolean isGeometryDirty;
@@ -286,5 +288,13 @@ public abstract class Geometry extends Spatial {
 
     public Map<GlobalStateType, GlobalState> getStates() {
         return this.globalStates;
+    }
+
+    public Bone getBoneHierarchyRoot() {
+        return boneHierarchyRoot;
+    }
+
+    public void setBoneHierarchyRoot(Bone boneHierarchyRoot) {
+        this.boneHierarchyRoot = boneHierarchyRoot;
     }
 }

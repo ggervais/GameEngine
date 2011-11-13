@@ -342,35 +342,6 @@ public class OpenGLUtils {
         gl.glPopMatrix();
     }
 
-    public static void drawBoneHierarchy(GL2 gl, GLUT glut, Bone root) {
-
-        gl.glPushMatrix();
-
-        if (!root.isPositioningAbsolute() && root.getParent() != null) {
-            gl.glTranslatef(root.getParent().getEndPosition().x(), root.getParent().getEndPosition().y(), root.getParent().getEndPosition().z());
-            log.info(root.getName() + " Translated to " + root.getParent().getEndPosition());
-        }
-        gl.glBegin(GL2.GL_LINES);
-
-
-        gl.glColor4f(1, 0, 0, 1);
-        log.info(root.getStartPosition());
-        gl.glVertex3f(root.getStartPosition().x(), root.getStartPosition().y(), root.getStartPosition().z());
-
-        gl.glColor4f(0, 1, 0, 1);
-        log.info(root.getEndPosition());
-        gl.glVertex3f(root.getEndPosition().x(), root.getEndPosition().y(), root.getEndPosition().z());
-        log.info("======");
-
-        gl.glEnd();
-
-        for (Bone child : root.getChildren()) {
-            drawBoneHierarchy(gl, glut, child);
-        }
-
-        gl.glPopMatrix();
-    }
-
     private static void drawAugmentedBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {
 
         Point3D firstPoint = Point3D.sub(box.getMinCorner(), new Vector3D(0.1f, 0.1f, 0.1f));

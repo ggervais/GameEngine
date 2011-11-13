@@ -121,7 +121,7 @@ public class ObjFileLoader extends GeometryLoader {
 		return texture;
 	}
 	
-	public static Geometry loadFile(String filename, Scene scene) {
+	public static Geometry loadFile(String filename) {
 		File file = new File(filename);
 		
 		System.out.print("Loading " + filename + "... ");

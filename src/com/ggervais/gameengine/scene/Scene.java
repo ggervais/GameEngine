@@ -7,6 +7,7 @@ import java.util.Observable;
 
 import com.ggervais.gameengine.geometry.*;
 import com.ggervais.gameengine.geometry.loader.ObjFileLoader;
+import com.ggervais.gameengine.geometry.loader.XFileLoader;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
@@ -321,7 +322,7 @@ public class Scene extends Observable {
         MotionController sphereController = new MotionController(Vector3D.zero(), 1, 0, 0);
 
 
-        Geometry spaceship = ObjFileLoader.loadFile("assets/models/Spaceship.obj", this);
+        Geometry spaceship = ObjFileLoader.loadFile("assets/models/Spaceship.obj");
         Transformation spaceshipTransformation = new Transformation();
         spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
         spaceship.setLocalTransformation(spaceshipTransformation);
@@ -329,12 +330,18 @@ public class Scene extends Observable {
         spaceship.addGlobalState(lightingOff);
 
 
-        log.info(gCube1);
-        log.info(bezierCube);
-        log.info(immobileCube);
+        /*Spatial bouncyThing = ObjFileLoader.loadFile("assets/models/bouncy_thing.obj", this);
+        Transformation bouncyThingTransformation = new Transformation();
+        bouncyThingTransformation.setScale(0.1f);
+        bouncyThing.setLocalTransformation(bouncyThingTransformation);
+        sceneGraphRoot.addChild(bouncyThing);
 
-       /* this.sceneGraphRoot.addLight(light2);
-        this.sceneGraphRoot.addChild(sphereGeometry);
+        this.sceneGraphRoot.addLight(light2);*/
+
+
+        Spatial warrior = XFileLoader.loadFile("assets/models/warrior.x");
+
+        /*this.sceneGraphRoot.addChild(sphereGeometry);
         //this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
