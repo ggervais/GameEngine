@@ -16,6 +16,7 @@ public class Bone {
 
     private String name;
     private Matrix4x4 transformMatrix;
+    private Matrix4x4 combinedMatrix;
     private Matrix4x4 skinOffsetMatrix;
     private List<Integer> vertexIndices;
     private List<Float> weights;
@@ -26,6 +27,8 @@ public class Bone {
         this.children = new ArrayList<Bone>();
         this.vertexIndices = new ArrayList<Integer>();
         this.weights = new ArrayList<Float>();
+        this.transformMatrix = Matrix4x4.createIdentity();
+        this.combinedMatrix = Matrix4x4.createIdentity();
     }
 
     public Bone(String name) {
@@ -33,6 +36,8 @@ public class Bone {
         this.children = new ArrayList<Bone>();
         this.vertexIndices = new ArrayList<Integer>();
         this.weights = new ArrayList<Float>();
+        this.transformMatrix = Matrix4x4.createIdentity();
+        this.combinedMatrix = Matrix4x4.createIdentity();
     }
 
     public Bone(String name, Matrix4x4 transformMatrix, Matrix4x4 skinOffsetMatrix) {
@@ -42,6 +47,7 @@ public class Bone {
         this.children = new ArrayList<Bone>();
         this.vertexIndices = new ArrayList<Integer>();
         this.weights = new ArrayList<Float>();
+        this.combinedMatrix = Matrix4x4.createIdentity();
     }
 
     public String getName() {
@@ -156,5 +162,27 @@ public class Bone {
             }
         }
         return foundBone;
+    }
+
+    public Matrix4x4 getCombinedMatrix() {
+        return this.combinedMatrix;
+    }
+
+    public void updateMatrices() {
+        if (this.parent != null) {
+            this.combinedMatrix = Matrix4x4.mult(this.parent.getCombinedMatrix(), this.transformMatrix);
+            //this.combinedMatrix = Matrix4x4.mult(this.transformMatrix, this.parent.getCombinedMatrix());
+        } else {
+            this.combinedMatrix = Matrix4x4.createIdentity();
+        }
+
+        for (Bone child : this.children) {
+            child.updateMatrices();
+        }
+    }
+
+    public Matrix4x4 getFinalMatrix() {
+        return Matrix4x4.mult(this.combinedMatrix, this.skinOffsetMatrix);
+        //return Matrix4x4.mult(this.skinOffsetMatrix, this.combinedMatrix);
     }
 }
