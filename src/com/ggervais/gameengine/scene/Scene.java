@@ -65,6 +65,8 @@ public class Scene extends Observable {
         Texture texShockwave = TextureLoader.loadTexture("assets/textures/shockwave.png");
         Texture texTitle = TextureLoader.loadTextAsTexture("Guillaume Gervais' Test Game Engine");
         Texture texAscii = TextureLoader.loadTexture("assets/textures/font.png");//TextureLoader.loadDefaultFontAsciiTexture();
+        Texture texWarrior = TextureLoader.loadTexture("assets/textures/Warrior.jpg");
+        Texture texCylinder = TextureLoader.loadTexture("assets/textures/cylinder.jpg");
         //Texture texAscii = TextureLoader.loadDefaultFontAsciiTexture();
 
         Material matGuillaume = new Material();
@@ -103,6 +105,14 @@ public class Scene extends Observable {
         matAscii.setName("ascii");
         matAscii.addTexture(texAscii);
 
+        Material matWarrior = new Material();
+        matWarrior.setName("warrior");
+        matWarrior.addTexture(texWarrior);
+
+        Material matCylinder = new Material();
+        matWarrior.setName("cylinder");
+        matWarrior.addTexture(texCylinder);
+
         ResourceSubsystem resourceSubsystem = ResourceSubsystem.getInstance();
         resourceSubsystem.addResource(matGuillaume);
         resourceSubsystem.addResource(matGraffiti);
@@ -113,6 +123,8 @@ public class Scene extends Observable {
         resourceSubsystem.addResource(matShockwave);
         resourceSubsystem.addResource(matTitle);
         resourceSubsystem.addResource(matAscii);
+        resourceSubsystem.addResource(matWarrior);
+        resourceSubsystem.addResource(matCylinder);
 
 		float fortyFiveDegrees = (float) Math.toRadians(45);
 
@@ -329,6 +341,23 @@ public class Scene extends Observable {
         //spaceship.getEffect().addTexture(texSpaceship);
         spaceship.addGlobalState(lightingOff);
 
+        log.info(this.sceneGraphRoot);
+        Node lastNode = null;
+        for (int i = 0; i < 10; i++) {
+            Node cubeNode = new Node();
+            CubeGeometry cube = new CubeGeometry();
+            Transformation cubeTransformation = new Transformation();
+            cubeTransformation.setTranslation(1, 1, -1);
+            cubeNode.setLocalTransformation(cubeTransformation);
+            cubeNode.addChild(cube);
+            if (lastNode != null) {
+                lastNode.addChild(cubeNode);
+            }
+            lastNode = cubeNode;
+            if (i == 0) {
+                //this.sceneGraphRoot.addChild(cubeNode);
+            }
+        }
 
         /*Spatial bouncyThing = ObjFileLoader.loadFile("assets/models/bouncy_thing.obj", this);
         Transformation bouncyThingTransformation = new Transformation();
@@ -340,6 +369,26 @@ public class Scene extends Observable {
 
 
         Spatial warrior = XFileLoader.loadFile("assets/models/warrior.x");
+        Transformation warriorTransformation = new Transformation();
+        warriorTransformation.setScale(0.1f);
+        warrior.setLocalTransformation(warriorTransformation);
+        Effect warriorEffect = warrior.getEffect();
+        if (warriorEffect != null) {
+            warriorEffect.addTexture(texWarrior);
+        }
+        warrior.addGlobalState(lightingOff);
+        this.sceneGraphRoot.addChild(warrior);
+
+        Spatial cylinder = XFileLoader.loadFile("assets/models/bouncy_thing.x");
+        Transformation cylinderTransformation = new Transformation();
+        cylinderTransformation.setScale(0.1f);
+        cylinder.setLocalTransformation(cylinderTransformation);
+        Effect cylinderEffect = cylinder.getEffect();
+        if (cylinderEffect != null) {
+            cylinderEffect.addTexture(texCylinder);
+        }
+        cylinder.addGlobalState(lightingOff);
+        //this.sceneGraphRoot.addChild(cylinder);
 
         /*this.sceneGraphRoot.addChild(sphereGeometry);
         //this.sceneGraphRoot.addChild(gCube1);

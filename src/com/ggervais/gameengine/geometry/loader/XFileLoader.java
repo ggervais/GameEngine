@@ -1,17 +1,20 @@
 package com.ggervais.gameengine.geometry.loader;
 
 import com.ggervais.gameengine.geometry.MeshGeometry;
+import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.skinning.Bone;
+import com.ggervais.gameengine.geometry.skinning.SkinWeights;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.scene.Scene;
+import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.io.*;
+import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,10 +35,13 @@ public class XFileLoader extends GeometryLoader {
     private static final Pattern SKIN_WEIGHTS_PATTERN = Pattern.compile(".*\\bskinweights\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern X_SKIN_MESH_HEADER_PATTERN = Pattern.compile(".*\\bxskinmeshheader\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
 
+    private static final boolean COLUMN_MAJOR_MATRIX = true;
+
     // Right now, only text-based .x files are supported.
     public static Geometry loadFile(String filename) {
 
-        Geometry loadedGeometry = new MeshGeometry();
+        Bone rootBone = null;
+        List<MeshGeometry> encounteredGeometries =  new ArrayList<MeshGeometry>();
         try {
             File file = new File(filename);
             if (!file.exists()) {
@@ -83,17 +89,13 @@ public class XFileLoader extends GeometryLoader {
                                 skipToNextBeginningOfBlock(reader);
                             }
 
-                            Bone rootBone = handleFrame(reader, frameName, 0);
-                            rootBone.logTree();
+                            rootBone = handleFrame(reader, frameName, encounteredGeometries, 0);
 
                             continue;
                         }
-
-                        //System.out.println(line);
                     }
                 }
             }
-
 
             reader.close();
         } catch (FileNotFoundException fnfe) {
@@ -102,10 +104,70 @@ public class XFileLoader extends GeometryLoader {
             log.error(ioe.getMessage());
         }
 
-        File file = new File(filename);
+        Map<Integer, Float> weightSums = new HashMap<Integer, Float>();
+        for (Geometry geometry : encounteredGeometries) {
+            for (SkinWeights skinWeights : geometry.getSkinWeightsList()) {
+                String boneName = skinWeights.getBoneName();
+                Bone foundBone = rootBone.findByName(boneName);
+                if (foundBone != null) {
+                    for (int index : skinWeights.getIndicesWeights().keySet()) {
+                        float weight = skinWeights.getIndicesWeights().get(index);
+                        foundBone.addVertexIndex(index);
+                        foundBone.addWeight(weight);
 
+                        if (!weightSums.containsKey(index)) {
+                            weightSums.put(index, 0f);
+                        }
+                        float currentWeight = weightSums.get(index);
+                        float sum = currentWeight + weight;
+                        weightSums.put(index, sum);
+                        log.info(String.format("For vertex %d, %f + %f = %f.", index, currentWeight, weight, sum));
+                    }
+                    foundBone.setSkinOffsetMatrix(skinWeights.getSkinOffsetMatrix());
+                }
+            }
+        }
+        log.info("======");
+        for (int index : weightSums.keySet()) {
+            log.info(String.format("For vertex %d, total weight is %f.", index, weightSums.get(index)));
+        }
+
+        rootBone.logTree();
+
+        Geometry loadedGeometry = encounteredGeometries.get(0);
+        if (loadedGeometry == null) {
+            loadedGeometry = new MeshGeometry();
+        }
 
         return loadedGeometry;
+    }
+
+    private static int readNextInteger(BufferedReader reader, String delimiter) throws IOException {
+        String strInteger = readAllDataUntilNextOccurrenceOfString(reader, delimiter).trim();
+        int integer = 0;
+        try {
+            integer = Integer.parseInt(strInteger);
+        } catch (NumberFormatException nfe) {}
+
+        return integer;
+    }
+
+    private static float readNextFloat(BufferedReader reader, String delimiter) throws IOException {
+        String strFloat = readAllDataUntilNextOccurrenceOfString(reader, delimiter).trim();
+        float floatValue = 0;
+        try {
+            floatValue = Float.parseFloat(strFloat);
+        } catch (NumberFormatException nfe) {}
+
+        return floatValue;
+    }
+
+    private static String readNextString(BufferedReader reader, String delimiter, boolean delimitedByQuotes) throws IOException {
+        String string = readAllDataUntilNextOccurrenceOfString(reader, delimiter).trim();
+        if (delimitedByQuotes) {
+            string = string.replaceAll("^\"", "").replaceAll("\"$", "");
+        }
+        return string;
     }
 
     private static MeshGeometry handleMesh(BufferedReader reader, String name, Bone bone) throws IOException {
@@ -113,12 +175,7 @@ public class XFileLoader extends GeometryLoader {
 
         log.info("handling mesh " + name);
 
-        String strNbVertices = readAllDataUntilNextOccurrenceOfString(reader, ";").trim();
-        int nbVertices = 0;
-        try {
-            nbVertices = Integer.parseInt(strNbVertices);
-        } catch (NumberFormatException nfe) {}
-
+        int nbVertices = readNextInteger(reader, ";");
         for (int i = 0; i < nbVertices; i++) {
             String endOfPosition = (i < nbVertices - 1 ? "," : ";;");
             String strVertex = readAllDataUntilNextOccurrenceOfString(reader, endOfPosition).trim();
@@ -139,19 +196,10 @@ public class XFileLoader extends GeometryLoader {
             }
         }
 
-        String strNbFaces = readAllDataUntilNextOccurrenceOfString(reader, ";").trim();
-        int nbFaces = 0;
-        try {
-            nbFaces = Integer.parseInt(strNbFaces);
-        } catch (NumberFormatException nfe) {}
-
+        int nbFaces = readNextInteger(reader, ";");
         log.info("Mesh has " + nbFaces + " faces.");
         for (int i = 0; i < nbFaces; i++) {
-            String strNbVerticesInFace = readAllDataUntilNextOccurrenceOfString(reader, ";").trim();
-            int nbVerticesInFace = 0;
-            try {
-                nbVerticesInFace = Integer.parseInt(strNbVerticesInFace);
-            } catch (NumberFormatException nfe) {}
+            int nbVerticesInFace = readNextInteger(reader, ";");
 
             String endOfPosition = (i < nbFaces - 1 ? ";," : ";;");
             String strVertex = readAllDataUntilNextOccurrenceOfString(reader, endOfPosition).trim();
@@ -185,7 +233,7 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                skipToCorrespondingEndOfBlock(reader);
+                handleTextureCoordinates(reader, createdMesh);
                 log.info("Skipping MeshTextureCoords for now.");
 
                 continue;
@@ -225,8 +273,7 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                skipToCorrespondingEndOfBlock(reader);
-                log.info("Skipping SkinWeights for now.");
+                handleSkinWeights(reader, createdMesh);
 
                 continue;
             }
@@ -238,6 +285,39 @@ public class XFileLoader extends GeometryLoader {
         }
 
         return createdMesh;
+    }
+
+    private static void handleTextureCoordinates(BufferedReader reader, MeshGeometry createdMesh) throws IOException {
+        int nbVertices = readNextInteger(reader, ";");
+        List<TextureCoords> coordsPerVertex = new ArrayList<TextureCoords>();
+
+        for (int i = 0; i < nbVertices; i++) {
+            String endOfPosition = (i < nbVertices - 1 ? ";," : ";;");
+            String strVertex = readAllDataUntilNextOccurrenceOfString(reader, endOfPosition).trim();
+            String[] textureParts = strVertex.split(";");
+            if (textureParts.length == 2) {
+                String strTU = textureParts[0];
+                String strTV = textureParts[1];
+
+                try {
+                    float tu = Float.parseFloat(strTU);
+                    float tv = Float.parseFloat(strTV);
+                    coordsPerVertex.add(new TextureCoords(tu, tv));
+                } catch (NumberFormatException nfe) {}
+            }
+        }
+
+        Effect effect = new Effect();
+        for (int nbVerticesPerFace : createdMesh.getIndexBuffer().getNbVerticesList()) {
+            for (int vertexIndex : createdMesh.getIndexBuffer().getSubIndexBuffer(nbVerticesPerFace)) {
+                TextureCoords coords = coordsPerVertex.get(vertexIndex);
+                if (coords != null) {
+                    effect.addTextureCoordinates(0, nbVerticesPerFace, coords);
+                }
+            }
+        }
+        createdMesh.setEffect(effect);
+        skipToCorrespondingEndOfBlock(reader);
     }
 
     private static String readAllDataUntilNextOccurrenceOfString(BufferedReader reader, String string) throws IOException {
@@ -259,21 +339,66 @@ public class XFileLoader extends GeometryLoader {
         return finalString;
     }
 
-    private static void handleSkinWeights(BufferedReader reader) throws IOException {
+    private static void handleSkinWeights(BufferedReader reader, MeshGeometry createdMesh) throws IOException {
 
+        String affectedBoneName = readNextString(reader, ";", true);
+
+        SkinWeights skinWeights = new SkinWeights();
+        skinWeights.setBoneName(affectedBoneName);
+
+        List<Integer> indices = new ArrayList<Integer>();
+        List<Float> weights = new ArrayList<Float>();
+        int nbIndicesAndWeights = readNextInteger(reader, ";");
+        for (int i = 0; i < nbIndicesAndWeights; i++) {
+            String delimiter = (i < nbIndicesAndWeights - 1 ? "," : ";");
+            int index = readNextInteger(reader, delimiter);
+            indices.add(index);
+        }
+        for (int i = 0; i < nbIndicesAndWeights; i++) {
+            String delimiter = (i < nbIndicesAndWeights - 1 ? "," : ";");
+            float weight = readNextFloat(reader, delimiter);
+            weights.add(weight);
+        }
+        for (int i = 0; i < nbIndicesAndWeights; i++) {
+            int index = indices.get(i);
+            float weight = weights.get(i);
+            skinWeights.getIndicesWeights().put(index, weight);
+        }
+
+        float[] matrixArray = new float[16];
+        int lastIndexProcessed = 0;
         boolean stopParsing = false;
         String line;
         while(!stopParsing && (line = reader.readLine()) != null) {
-
             line = line.trim();
-
             if (lineShouldBeIgnored(line)) {
                 continue;
             }
+
+            String[] parts = line.split(Character.toString(XFileConstants.LIST_DELIMITER));
+            for (String part : parts) {
+                try {
+                    float element = Float.parseFloat(part.replace(Character.toString(XFileConstants.LIST_DELIMITER), "").replace(Character.toString(XFileConstants.LIST_END), ""));
+                    matrixArray[lastIndexProcessed] = element;
+                    lastIndexProcessed++;
+                } catch (NumberFormatException nfe) {}
+            }
+
+            if (line.contains(Character.toString(XFileConstants.LIST_END))) {
+                stopParsing = true;
+            }
         }
+
+
+        skinWeights.setSkinOffsetMatrix(Matrix4x4.createFromFloatArray(matrixArray, COLUMN_MAJOR_MATRIX));
+
+        createdMesh.getSkinWeightsList().add(skinWeights);
+
+        skipToCorrespondingEndOfBlock(reader);
+
     }
 
-    private static Bone handleFrame(BufferedReader reader, String name, int level) throws IOException {
+    private static Bone handleFrame(BufferedReader reader, String name, List<MeshGeometry> geometries, int level) throws IOException {
 
         Bone bone = new Bone();
 
@@ -321,8 +446,8 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                Geometry meshGeometry = handleMesh(reader, meshName, bone);
-
+                MeshGeometry meshGeometry = handleMesh(reader, meshName, bone);
+                geometries.add(meshGeometry);
                 continue;
             }
 
@@ -337,7 +462,7 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                Bone childBone = handleFrame(reader, frameName, level + 1);
+                Bone childBone = handleFrame(reader, frameName, geometries, level + 1);
                 bone.addChild(childBone);
             }
             if (line.contains(Character.toString(XFileConstants.END_BLOCK))) {
@@ -380,7 +505,7 @@ public class XFileLoader extends GeometryLoader {
 
         // Here, we assume that the matrix is column major, but it is not documented, so this assumption is based
         // on what matrices look like in sample .x files.
-        Matrix4x4 matrix = Matrix4x4.createFromFloatArray(matrixArray, true);
+        Matrix4x4 matrix = Matrix4x4.createFromFloatArray(matrixArray, COLUMN_MAJOR_MATRIX);
         return matrix;
     }
 
@@ -429,7 +554,7 @@ public class XFileLoader extends GeometryLoader {
     }
 
     public static void main(String[] args) {
-        XFileLoader.loadFile("assets/models/warrior.x");
-        //XFileLoader.loadFile("assets/models/bouncy_thing.x");
+        //XFileLoader.loadFile("assets/models/warrior.x");
+        XFileLoader.loadFile("assets/models/bouncy_thing.x");
     }
 }

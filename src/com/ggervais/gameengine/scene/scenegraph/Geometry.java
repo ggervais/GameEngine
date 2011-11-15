@@ -2,6 +2,7 @@ package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.primitives.*;
 import com.ggervais.gameengine.geometry.skinning.Bone;
+import com.ggervais.gameengine.geometry.skinning.SkinWeights;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
@@ -25,6 +26,8 @@ public abstract class Geometry extends Spatial {
     protected List<Vector3D> normals;
     protected Bone boneHierarchyRoot;
 
+    protected List<SkinWeights> skinWeightsList;
+
     private BoundingBox modelBoundingBox;
     private boolean isGeometryDirty;
 
@@ -46,6 +49,7 @@ public abstract class Geometry extends Spatial {
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
         this.modelBoundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
         this.nbFaces = 0;
+        this.skinWeightsList = new ArrayList<SkinWeights>();
 	}
 
     public Vector3D getNormal(int index) {
@@ -296,5 +300,13 @@ public abstract class Geometry extends Spatial {
 
     public void setBoneHierarchyRoot(Bone boneHierarchyRoot) {
         this.boneHierarchyRoot = boneHierarchyRoot;
+    }
+
+    public List<SkinWeights> getSkinWeightsList() {
+        return skinWeightsList;
+    }
+
+    public void setSkinWeightsList(List<SkinWeights> skinWeights) {
+        this.skinWeightsList = skinWeights;
     }
 }

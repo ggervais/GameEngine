@@ -101,6 +101,10 @@ public class Bone {
         this.vertexIndices.add(index);
     }
 
+    public void addWeight(float weight) {
+        this.weights.add(weight);
+    }
+
     public Bone getParent() {
         return parent;
     }
@@ -110,7 +114,12 @@ public class Bone {
     }
 
     public String toString() {
-        return String.format("Bone '%s', with %d %s.", (this.name != null ? this.name : "<null>"), this.children.size(), (this.children.size() > 1 ? "children" : "child"));
+        StringBuilder logString = new StringBuilder();
+        logString.append(String.format("Bone '%s', with %d %s. ", (this.name != null ? this.name : "<null>"), this.children.size(), (this.children.size() > 1 ? "children" : "child")));
+        logString.append(String.format("Nb. indices: %d. Nb. weights: %d. Skin offset matrix: \n%s", this.vertexIndices.size(), this.weights.size(), this.skinOffsetMatrix));
+
+
+        return logString.toString();
     }
 
     public void logTree() {
@@ -132,5 +141,20 @@ public class Bone {
             child.logTree(level + 1);
         }
 
+    }
+
+    public Bone findByName(String name) {
+        Bone foundBone = null;
+        if (name != null && name.length() > 0 && name.equals(this.name)) {
+            foundBone = this;
+        } else {
+            for (Bone child: this.children) {
+                foundBone = child.findByName(name);
+                if (foundBone != null) {
+                    break;
+                }
+            }
+        }
+        return foundBone;
     }
 }

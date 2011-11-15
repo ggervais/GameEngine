@@ -265,9 +265,9 @@ public class OpenGLUtils {
 
     public static void drawBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {
 
-        //drawAugmentedBoundingBox(gl, box, isPicked);
+        drawAugmentedBoundingBox(gl, box, isPicked);
 
-        gl.glDisable(GL2.GL_LIGHTING);
+        /*gl.glDisable(GL2.GL_LIGHTING);
         gl.glPushMatrix();
 
         Point3D firstPoint = box.getMinCorner();
@@ -339,7 +339,7 @@ public class OpenGLUtils {
 
         gl.glEnd();
 
-        gl.glPopMatrix();
+        gl.glPopMatrix();*/
     }
 
     private static void drawAugmentedBoundingBox(GL2 gl, BoundingBox box, boolean isPicked) {

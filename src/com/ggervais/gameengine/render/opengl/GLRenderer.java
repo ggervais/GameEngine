@@ -425,7 +425,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void drawBoundingBox(BoundingBox box, boolean isPicked) {
-        //OpenGLUtils.drawBoundingBox(gl, box, isPicked);
+        OpenGLUtils.drawBoundingBox(gl, box, isPicked);
     }
 
     public void reshape(GLAutoDrawable glDrawable, int x, int y, int width,	int height) {
