@@ -106,6 +106,9 @@ public class XFileLoader extends GeometryLoader {
 
         Map<Integer, Float> weightSums = new HashMap<Integer, Float>();
         for (Geometry geometry : encounteredGeometries) {
+
+            geometry.setBoneHierarchyRoot(rootBone);
+
             for (SkinWeights skinWeights : geometry.getSkinWeightsList()) {
                 String boneName = skinWeights.getBoneName();
                 Bone foundBone = rootBone.findByName(boneName);
