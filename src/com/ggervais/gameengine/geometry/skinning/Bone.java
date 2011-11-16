@@ -27,6 +27,7 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.transformMatrix = Matrix4x4.createIdentity();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.skinOffsetMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
     }
 
@@ -37,13 +38,14 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.transformMatrix = Matrix4x4.createIdentity();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.skinOffsetMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
     }
 
     public Bone(String name, Matrix4x4 transformMatrix, Matrix4x4 skinOffsetMatrix) {
         this.name = name;
-        this.transformMatrix = transformMatrix;
-        this.skinOffsetMatrix = skinOffsetMatrix;
+        setTransformMatrix(transformMatrix);
+        setSkinOffsetMatrix(skinOffsetMatrix);
         this.children = new ArrayList<Bone>();
         this.vertexIndices = new ArrayList<Integer>();
         this.weights = new ArrayList<Float>();
@@ -122,7 +124,12 @@ public class Bone {
     }
 
     public void setTransformMatrix(Matrix4x4 transformMatrix) {
-        this.transformMatrix = transformMatrix;
+
+        if (transformMatrix != null) {
+            this.transformMatrix = transformMatrix;
+        } else {
+            this.transformMatrix = Matrix4x4.createIdentity();
+        }
     }
 
     public Matrix4x4 getSkinOffsetMatrix() {
@@ -130,7 +137,12 @@ public class Bone {
     }
 
     public void setSkinOffsetMatrix(Matrix4x4 skinOffsetMatrix) {
-        this.skinOffsetMatrix = skinOffsetMatrix;
+
+        if (skinOffsetMatrix != null) {
+            this.skinOffsetMatrix = skinOffsetMatrix;
+        } else {
+            this.skinOffsetMatrix = Matrix4x4.createIdentity();
+        }
     }
 
     public List<Integer> getVertexIndices() {
@@ -238,12 +250,12 @@ public class Bone {
             }
         }
 
+        Matrix4x4 parentMatrix = Matrix4x4.createIdentity();
         if (this.parent != null) {
-            this.combinedMatrix = Matrix4x4.mult(this.parent.getCombinedMatrix(), transformMatrixToUse);
-            //this.combinedMatrix = Matrix4x4.mult(this.transformMatrix, this.parent.getCombinedMatrix());
-        } else {
-            this.combinedMatrix = Matrix4x4.createIdentity();
+            parentMatrix = this.parent.getCombinedMatrix();
         }
+        //this.combinedMatrix = Matrix4x4.mult(transformMatrixToUse, parentMatrix);
+        this.combinedMatrix = Matrix4x4.mult(parentMatrix, transformMatrixToUse);
 
         for (Bone child : this.children) {
             child.updateMatrices();
