@@ -371,6 +371,7 @@ public class Scene extends Observable {
         Spatial warrior = XFileLoader.loadFile("assets/models/warrior.x");
         Transformation warriorTransformation = new Transformation();
         warriorTransformation.setScale(0.1f);
+        warriorTransformation.setRotation(-fortyFiveDegrees * 2, -fortyFiveDegrees * 2, 0);
         warrior.setLocalTransformation(warriorTransformation);
         Effect warriorEffect = warrior.getEffect();
         if (warriorEffect != null) {
@@ -382,13 +383,14 @@ public class Scene extends Observable {
         Spatial cylinder = XFileLoader.loadFile("assets/models/bouncy_thing.x");
         Transformation cylinderTransformation = new Transformation();
         cylinderTransformation.setScale(0.1f);
+        cylinderTransformation.setTranslation(10, 0, 0);
         cylinder.setLocalTransformation(cylinderTransformation);
         Effect cylinderEffect = cylinder.getEffect();
         if (cylinderEffect != null) {
             cylinderEffect.addTexture(texCylinder);
         }
         cylinder.addGlobalState(lightingOff);
-        //this.sceneGraphRoot.addChild(cylinder);
+        this.sceneGraphRoot.addChild(cylinder);
 
         /*this.sceneGraphRoot.addChild(sphereGeometry);
         //this.sceneGraphRoot.addChild(gCube1);

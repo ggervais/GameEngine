@@ -1,12 +1,8 @@
 package com.ggervais.gameengine.geometry.skinning;
 
 import com.ggervais.gameengine.math.Matrix4x4;
-import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.Transform;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +18,8 @@ public class Bone {
     private List<Float> weights;
     private List<Bone> children;
     private Bone parent;
+    private int currentAnimationKey;
+    private Animation currentAnimation;
 
     public Bone() {
         this.children = new ArrayList<Bone>();
@@ -29,6 +27,7 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.transformMatrix = Matrix4x4.createIdentity();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.currentAnimationKey = 0;
     }
 
     public Bone(String name) {
@@ -38,6 +37,7 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.transformMatrix = Matrix4x4.createIdentity();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.currentAnimationKey = 0;
     }
 
     public Bone(String name, Matrix4x4 transformMatrix, Matrix4x4 skinOffsetMatrix) {
@@ -48,6 +48,65 @@ public class Bone {
         this.vertexIndices = new ArrayList<Integer>();
         this.weights = new ArrayList<Float>();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.currentAnimationKey = 0;
+    }
+
+    public void setCurrentAnimationSet(AnimationSet animationSet) {
+        this.currentAnimationKey = 0;
+        if (animationSet != null) {
+            for (int i = 0; i < animationSet.getNbAnimations(); i++) {
+                Animation animation = animationSet.getAnimation(i);
+                if (animation.getBoneName() != null && animation.getBoneName().length() > 0 && animation.getBoneName().equals(this.name)) {
+                    this.currentAnimation = animation;
+                    break;
+                }
+            }
+        }
+        for (Bone child : this.children) {
+            child.setCurrentAnimationSet(animationSet);
+        }
+    }
+
+    public void setCurrentAnimationKeyRatio(float ratio) {
+
+        if (this.currentAnimation != null) {
+            int nbAnimationKeys = this.currentAnimation.getNbAnimationKeys();
+            int index = (int) Math.floor(ratio * nbAnimationKeys);
+
+            this.currentAnimationKey = index;
+        }
+
+        for (Bone child : this.children) {
+            child.setCurrentAnimationKeyRatio(ratio);
+        }
+    }
+
+    public void incrementCurrentAnimationKey() {
+        if (this.currentAnimation != null) {
+            if (this.currentAnimationKey < this.currentAnimation.getNbAnimationKeys() - 1) {
+                this.currentAnimationKey++;
+            } else {
+                this.currentAnimationKey = 0;
+            }
+        }
+
+        for (Bone child : this.children) {
+            child.incrementCurrentAnimationKey();
+        }
+    }
+
+    public void decrementCurrentAnimationKey() {
+        if (this.currentAnimation != null) {
+            if (this.currentAnimationKey > 0) {
+                this.currentAnimationKey--;
+            } else {
+                this.currentAnimationKey = this.currentAnimation.getNbAnimationKeys() - 1;
+            }
+        }
+
+        for (Bone child : this.children) {
+            child.decrementCurrentAnimationKey();
+        }
     }
 
     public String getName() {
@@ -169,8 +228,18 @@ public class Bone {
     }
 
     public void updateMatrices() {
+
+        Matrix4x4 transformMatrixToUse = this.transformMatrix;
+
+        if (this.currentAnimation != null) {
+            AnimationKey animationKey = this.currentAnimation.getAnimationKey(this.currentAnimationKey);
+            if (animationKey != null) {
+                transformMatrixToUse = animationKey.getTransformMatrix();
+            }
+        }
+
         if (this.parent != null) {
-            this.combinedMatrix = Matrix4x4.mult(this.parent.getCombinedMatrix(), this.transformMatrix);
+            this.combinedMatrix = Matrix4x4.mult(this.parent.getCombinedMatrix(), transformMatrixToUse);
             //this.combinedMatrix = Matrix4x4.mult(this.transformMatrix, this.parent.getCombinedMatrix());
         } else {
             this.combinedMatrix = Matrix4x4.createIdentity();

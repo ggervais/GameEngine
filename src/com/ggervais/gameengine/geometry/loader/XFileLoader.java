@@ -3,14 +3,14 @@ package com.ggervais.gameengine.geometry.loader;
 import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
-import com.ggervais.gameengine.geometry.skinning.Bone;
-import com.ggervais.gameengine.geometry.skinning.SkinWeights;
+import com.ggervais.gameengine.geometry.skinning.*;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import org.apache.log4j.Logger;
 
+import javax.naming.OperationNotSupportedException;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
@@ -27,21 +27,26 @@ public class XFileLoader extends GeometryLoader {
     private static final Pattern HEADER_PATTERN = Pattern.compile(".*\\bheader\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile(".*\\btemplate\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern FRAME_PATTERN = Pattern.compile(".*\\bframe\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ANIMATION_SET_PATTERN = Pattern.compile(".*\\banimationset\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern FRAME_TRANSFORM_MATRIX_PATTERN = Pattern.compile(".*\\bframetransformmatrix\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern MESH_PATTERN = Pattern.compile(".*\\bmesh\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern MESH_TEXTURE_COORDS_PATTERN = Pattern.compile(".*\\bmeshtexturecoords\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern MESH_MATERIAL_LIST_PATTERN = Pattern.compile(".*\\bmeshmateriallist\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern MESH_NORMALS_PATTERN = Pattern.compile(".*\\bmeshnormals\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern SKIN_WEIGHTS_PATTERN = Pattern.compile(".*\\bskinweights\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ANIMATION_PATTERN = Pattern.compile(".*\\banimation\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ANIMATION_KEY_PATTERN = Pattern.compile(".*\\banimationkey\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern X_SKIN_MESH_HEADER_PATTERN = Pattern.compile(".*\\bxskinmeshheader\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ANIMATION_BONE_NAME_PATTERN = Pattern.compile(".*\\{(.+)\\}.*", Pattern.CASE_INSENSITIVE);
 
     private static final boolean COLUMN_MAJOR_MATRIX = true;
 
     // Right now, only text-based .x files are supported.
-    public static Geometry loadFile(String filename) {
+    public static MeshGeometry loadFile(String filename) {
 
         Bone rootBone = null;
         List<MeshGeometry> encounteredGeometries =  new ArrayList<MeshGeometry>();
+        List<AnimationSet> animationSets = new ArrayList<AnimationSet>();
         try {
             File file = new File(filename);
             if (!file.exists()) {
@@ -67,6 +72,7 @@ public class XFileLoader extends GeometryLoader {
                 String line;
                 while((line = reader.readLine()) != null) {
                     line = line.trim();
+
                     if (lineShouldBeIgnored(line)) {
                         continue;
                     } else {
@@ -93,6 +99,23 @@ public class XFileLoader extends GeometryLoader {
 
                             continue;
                         }
+                        Matcher animationSetMatcher = ANIMATION_SET_PATTERN.matcher(line);
+                        if (animationSetMatcher.matches()) {
+
+                            String animationSetName = null;
+                            try {
+                                animationSetName = animationSetMatcher.group(1).trim();
+                            } catch (Exception e) {}
+
+                            if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
+                                skipToNextBeginningOfBlock(reader);
+                            }
+
+                            AnimationSet animationSet = handleAnimationSet(reader, animationSetName, rootBone);
+                            animationSets.add(animationSet);
+
+                            continue;
+                        }
                     }
                 }
             }
@@ -105,9 +128,17 @@ public class XFileLoader extends GeometryLoader {
         }
 
         Map<Integer, Float> weightSums = new HashMap<Integer, Float>();
-        for (Geometry geometry : encounteredGeometries) {
+        for (MeshGeometry geometry : encounteredGeometries) {
 
+            if (animationSets.size() > 0) {
+                rootBone.setCurrentAnimationSet(animationSets.get(0));
+            }
             geometry.setBoneHierarchyRoot(rootBone);
+
+            for (AnimationSet animationSet : animationSets) {
+                geometry.addAnimationSet(animationSet);
+            }
+
 
             for (SkinWeights skinWeights : geometry.getSkinWeightsList()) {
                 String boneName = skinWeights.getBoneName();
@@ -124,25 +155,147 @@ public class XFileLoader extends GeometryLoader {
                         float currentWeight = weightSums.get(index);
                         float sum = currentWeight + weight;
                         weightSums.put(index, sum);
-                        log.info(String.format("For vertex %d, %f + %f = %f.", index, currentWeight, weight, sum));
                     }
                     foundBone.setSkinOffsetMatrix(skinWeights.getSkinOffsetMatrix());
                 }
             }
         }
-        log.info("======");
-        for (int index : weightSums.keySet()) {
-            log.info(String.format("For vertex %d, total weight is %f.", index, weightSums.get(index)));
-        }
 
         rootBone.logTree();
 
-        Geometry loadedGeometry = encounteredGeometries.get(0);
+        MeshGeometry loadedGeometry = encounteredGeometries.get(0);
         if (loadedGeometry == null) {
             loadedGeometry = new MeshGeometry();
         }
 
         return loadedGeometry;
+    }
+
+    private static void handleAnimationKey(BufferedReader reader, Animation animation) throws IOException {
+
+        int keyType = readNextInteger(reader, ";");
+        int nbKeys = readNextInteger(reader, ";");
+
+        if (keyType == 3 || keyType == 4) {
+            for (int i = 0; i < nbKeys; i++) {
+                long timestamp = readNextLong(reader, ";");
+                int nbElements = readNextInteger(reader, ";");
+                int indexInMatrix = 0;
+                if (nbElements == 16) {
+                    float[] matrixArray = new float[16];
+                    for (int m = 0; m < nbElements; m++) {
+                        String endElement = ",";
+                        if (m == nbElements - 1) {
+                            if (i == nbKeys - 1) {
+                                endElement = ";;;";
+                            } else {
+                                endElement = ";;,";
+                            }
+                        }
+                        float matrixElement = readNextFloat(reader, endElement);
+                        matrixArray[m] = matrixElement;
+                    }
+                    Matrix4x4 keyMatrix = Matrix4x4.createFromFloatArray(matrixArray, COLUMN_MAJOR_MATRIX);
+                    AnimationKey animationKey = new AnimationKey();
+                    animationKey.setTimestamp(timestamp);
+                    animationKey.setTransformMatrix(keyMatrix);
+                    animation.addAnimationKey(animationKey);
+                }
+            }
+        }
+
+        skipToCorrespondingEndOfBlock(reader);
+    }
+
+    private static Animation handleAnimation(BufferedReader reader) throws IOException {
+
+        String affectedBoneName = "";
+
+        Animation animation = new Animation();
+
+        boolean stopParsing = false;
+        String line;
+        while(!stopParsing && (line = reader.readLine()) != null) {
+
+            line = line.trim();
+
+            if (lineShouldBeIgnored(line)) {
+                continue;
+            }
+
+            if (line.contains(Character.toString(XFileConstants.BEGIN_BLOCK)) && line.contains(Character.toString(XFileConstants.END_BLOCK))) {
+                Matcher boneNameMatcher = ANIMATION_BONE_NAME_PATTERN.matcher(line);
+                if (boneNameMatcher.matches()) {
+                    try {
+                        affectedBoneName = boneNameMatcher.group(1).trim();
+                    } catch (Exception e) {}
+                }
+
+                animation.setBoneName(affectedBoneName);
+
+                log.info("Affected bone name " + affectedBoneName);
+                if ("Bip01_L_Arm".equals(affectedBoneName)) {
+                    int a = 0; //
+                }
+                continue;
+            }
+
+            if (ANIMATION_KEY_PATTERN.matcher(line).matches()) {
+                if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
+                    skipToNextBeginningOfBlock(reader);
+                }
+                handleAnimationKey(reader, animation);
+
+
+                continue;
+            }
+            if (line.contains(Character.toString(XFileConstants.END_BLOCK))) {
+                stopParsing = true;
+            }
+        }
+
+        return animation;
+    }
+
+    private static AnimationSet handleAnimationSet(BufferedReader reader, String name, Bone rootBone) throws IOException {
+
+        AnimationSet animationSet = new AnimationSet();
+        animationSet.setName(name);
+
+        boolean stopParsing = false;
+        String line;
+        while(!stopParsing && (line = reader.readLine()) != null) {
+
+            line = line.trim();
+
+            if (lineShouldBeIgnored(line)) {
+                continue;
+            }
+
+            String animationName = "";
+            Matcher animationMatcher = ANIMATION_PATTERN.matcher(line);
+            if (animationMatcher.matches()) {
+
+                try {
+                    animationName = animationMatcher.group(1).trim();
+                } catch (Exception e) {}
+
+                if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
+                    skipToNextBeginningOfBlock(reader);
+                }
+
+                Animation animation = handleAnimation(reader);
+                animation.setName(animationName);
+                animationSet.addAnimation(animation);
+
+                continue;
+            }
+            if (line.contains(Character.toString(XFileConstants.END_BLOCK))) {
+                stopParsing = true;
+            }
+        }
+
+        return animationSet;
     }
 
     private static int readNextInteger(BufferedReader reader, String delimiter) throws IOException {
@@ -153,6 +306,16 @@ public class XFileLoader extends GeometryLoader {
         } catch (NumberFormatException nfe) {}
 
         return integer;
+    }
+
+    private static long readNextLong(BufferedReader reader, String delimiter) throws IOException {
+        String strLong = readAllDataUntilNextOccurrenceOfString(reader, delimiter).trim();
+        long longValue = 0;
+        try {
+            longValue = Integer.parseInt(strLong);
+        } catch (NumberFormatException nfe) {}
+
+        return longValue;
     }
 
     private static float readNextFloat(BufferedReader reader, String delimiter) throws IOException {
@@ -186,9 +349,9 @@ public class XFileLoader extends GeometryLoader {
             if (vertexParts.length == 3) {
 
                 try {
-                    float x = Float.parseFloat(vertexParts[0]);
-                    float y = Float.parseFloat(vertexParts[1]);
-                    float z = Float.parseFloat(vertexParts[2]);
+                    float x = Float.parseFloat(vertexParts[0].trim());
+                    float y = Float.parseFloat(vertexParts[1].trim());
+                    float z = Float.parseFloat(vertexParts[2].trim());
 
                     Point3D position = new Point3D(x, y, z);
 					Vertex vertex = new Vertex(position, Color.WHITE, 0, 0);
@@ -210,7 +373,7 @@ public class XFileLoader extends GeometryLoader {
             if (vertexParts.length == nbVerticesInFace) {
 
                 for (int v = 0; v < nbVerticesInFace; v++) {
-                    String vertexPart = vertexParts[v];
+                    String vertexPart = vertexParts[v].trim();
                     try {
                         int index = Integer.parseInt(vertexPart);
                         createdMesh.getIndexBuffer().addIndex(nbVerticesInFace, index);
@@ -299,8 +462,8 @@ public class XFileLoader extends GeometryLoader {
             String strVertex = readAllDataUntilNextOccurrenceOfString(reader, endOfPosition).trim();
             String[] textureParts = strVertex.split(";");
             if (textureParts.length == 2) {
-                String strTU = textureParts[0];
-                String strTV = textureParts[1];
+                String strTU = textureParts[0].trim();
+                String strTV = textureParts[1].trim();
 
                 try {
                     float tu = Float.parseFloat(strTU);
@@ -557,7 +720,7 @@ public class XFileLoader extends GeometryLoader {
     }
 
     public static void main(String[] args) {
-        //XFileLoader.loadFile("assets/models/warrior.x");
-        XFileLoader.loadFile("assets/models/bouncy_thing.x");
+        XFileLoader.loadFile("assets/models/cochdanse.x");
+        //XFileLoader.loadFile("assets/models/bouncy_thing.x");
     }
 }
