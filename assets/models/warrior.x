@@ -2364,7 +2364,7 @@ Frame Bip01 {
         0.000000;0.000000;0.000000;;
         0.000000;0.000000;0.000000;;
         TextureFilename {
-          "Warrior.bmp";
+          "Warrior.jpg";
         }
       }
     }

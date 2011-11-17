@@ -62,7 +62,7 @@ Material PDX01_-_Default {
  0.000000;0.000000;0.000000;;
 
  TextureFilename {
-  "metal_mangledpaint-01_df_.dds";
+  "cylinder.jpg";
  }
 }
 

@@ -152,10 +152,12 @@ public class Effect {
     }
 
     public void clearTextureCoordinates(int textureIndex, int nbVerticesPerFace) {
-         if (this.textureCoordinates.get(textureIndex).containsKey(nbVerticesPerFace)) {
-            List<TextureCoords> array = this.textureCoordinates.get(textureIndex).get(nbVerticesPerFace);
-            if (array != null) {
-                array.clear();
+        if (textureIndex >= 0 && textureIndex <= this.textureCoordinates.size() - 1) {
+            if (this.textureCoordinates.get(textureIndex).containsKey(nbVerticesPerFace)) {
+                List<TextureCoords> array = this.textureCoordinates.get(textureIndex).get(nbVerticesPerFace);
+                if (array != null) {
+                    array.clear();
+                }
             }
         }
     }

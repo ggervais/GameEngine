@@ -4,13 +4,14 @@ import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.skinning.*;
+import com.ggervais.gameengine.material.Material;
+import com.ggervais.gameengine.material.texture.Texture;
+import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
-import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import org.apache.log4j.Logger;
 
-import javax.naming.OperationNotSupportedException;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
@@ -35,9 +36,11 @@ public class XFileLoader extends GeometryLoader {
     private static final Pattern MESH_NORMALS_PATTERN = Pattern.compile(".*\\bmeshnormals\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern SKIN_WEIGHTS_PATTERN = Pattern.compile(".*\\bskinweights\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern ANIMATION_PATTERN = Pattern.compile(".*\\banimation\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern MATERIAL_PATTERN = Pattern.compile(".*\\bmaterial\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TEXTURE_FILENAME_PATTERN = Pattern.compile(".*\\btexturefilename\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern ANIMATION_KEY_PATTERN = Pattern.compile(".*\\banimationkey\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern X_SKIN_MESH_HEADER_PATTERN = Pattern.compile(".*\\bxskinmeshheader\\b(.+)?\\b.*", Pattern.CASE_INSENSITIVE);
-    private static final Pattern ANIMATION_BONE_NAME_PATTERN = Pattern.compile(".*\\{(.+)\\}.*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern REFERENCE_PATTERN = Pattern.compile(".*\\{(.+)\\}.*", Pattern.CASE_INSENSITIVE);
 
     private static final boolean COLUMN_MAJOR_MATRIX = true;
 
@@ -45,6 +48,7 @@ public class XFileLoader extends GeometryLoader {
     public static MeshGeometry loadFile(String filename) {
 
         Bone rootBone = null;
+        List<Material> materials = new ArrayList<Material>();
         List<MeshGeometry> encounteredGeometries =  new ArrayList<MeshGeometry>();
         List<AnimationSet> animationSets = new ArrayList<AnimationSet>();
         try {
@@ -95,10 +99,24 @@ public class XFileLoader extends GeometryLoader {
                                 skipToNextBeginningOfBlock(reader);
                             }
 
-                            rootBone = handleFrame(reader, frameName, encounteredGeometries, 0);
+                            rootBone = handleFrame(reader, frameName, encounteredGeometries, materials, 0);
 
                             continue;
                         }
+
+                        Matcher materialMatcher = MATERIAL_PATTERN.matcher(line);
+                        if (materialMatcher.matches()) {
+                            String materialName = null;
+                            try {
+                                materialName = materialMatcher.group(1).trim();
+                            } catch (Exception e) {}
+                            if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
+                                skipToNextBeginningOfBlock(reader);
+                            }
+                            Material material = handleMaterial(reader, materialName);
+                            materials.add(material);
+                        }
+
                         Matcher animationSetMatcher = ANIMATION_SET_PATTERN.matcher(line);
                         if (animationSetMatcher.matches()) {
 
@@ -132,6 +150,9 @@ public class XFileLoader extends GeometryLoader {
 
             if (animationSets.size() > 0) {
                 rootBone.setCurrentAnimationSet(animationSets.get(0));
+            }
+            if (animationSets.size() > 1) {
+                rootBone.setCurrentAnimationSet(animationSets.get(1));
             }
             geometry.setBoneHierarchyRoot(rootBone);
 
@@ -224,7 +245,7 @@ public class XFileLoader extends GeometryLoader {
             }
 
             if (line.contains(Character.toString(XFileConstants.BEGIN_BLOCK)) && line.contains(Character.toString(XFileConstants.END_BLOCK))) {
-                Matcher boneNameMatcher = ANIMATION_BONE_NAME_PATTERN.matcher(line);
+                Matcher boneNameMatcher = REFERENCE_PATTERN.matcher(line);
                 if (boneNameMatcher.matches()) {
                     try {
                         affectedBoneName = boneNameMatcher.group(1).trim();
@@ -336,7 +357,7 @@ public class XFileLoader extends GeometryLoader {
         return string;
     }
 
-    private static MeshGeometry handleMesh(BufferedReader reader, String name, Bone bone) throws IOException {
+    private static MeshGeometry handleMesh(BufferedReader reader, String name, Bone bone, List<Material> materials) throws IOException {
         MeshGeometry createdMesh = new MeshGeometry();
 
         log.info("handling mesh " + name);
@@ -419,7 +440,7 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                skipToCorrespondingEndOfBlock(reader);
+                handleMeshMaterialList(reader, createdMesh, materials);
                 log.info("Skipping MeshMaterialList for now.");
 
                 continue;
@@ -453,6 +474,160 @@ public class XFileLoader extends GeometryLoader {
         return createdMesh;
     }
 
+    private static void handleMeshMaterialList(BufferedReader reader, MeshGeometry createdMesh, List<Material> materials) throws IOException {
+        int nbMaterials = readNextInteger(reader, ";");
+        int nbIndices = readNextInteger(reader, ";");
+
+        Map<Integer, Integer> materialFrequencies = new HashMap<Integer, Integer>();
+
+        for (int i = 0; i < nbIndices; i++) {
+            String endElement = (i < nbIndices - 1 ? "," : ";");
+            int materialIndex = readNextInteger(reader, endElement);
+            if (!materialFrequencies.containsKey(materialIndex)) {
+                materialFrequencies.put(materialIndex, 0);
+            }
+            materialFrequencies.put(materialIndex, materialFrequencies.get(materialIndex) + 1);
+        }
+
+        int maxFrequency = -1;
+        int selectedMaterialIndex = 0;
+        for (int materialIndex : materialFrequencies.keySet()) {
+            int frequency = materialFrequencies.get(materialIndex);
+            if (frequency > maxFrequency) {
+                maxFrequency = frequency;
+                selectedMaterialIndex = materialIndex;
+            }
+        }
+
+        boolean stopParsing = false;
+        String line;
+        int nbMaterialsEncountered = 0;
+        while(!stopParsing && (line = reader.readLine()) != null) {
+            line = line.trim();
+
+            if (lineShouldBeIgnored(line)) {
+                continue;
+            }
+
+            Matcher materialMatcher = MATERIAL_PATTERN.matcher(line);
+            if (materialMatcher.matches()) {
+                if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
+                    skipToNextBeginningOfBlock(reader);
+                }
+                if (nbMaterialsEncountered == selectedMaterialIndex) {
+                    String materialName = "";
+                    try {
+                        materialName = materialMatcher.group(1).trim();
+                    } catch (Exception e) {}
+
+                    Material material = handleMaterial(reader, materialName);
+
+                    if (createdMesh.getEffect() == null) {
+                        createdMesh.setEffect(new Effect());
+                    }
+                    for (int i = 0; i < material.nbTextures(); i++) {
+                        createdMesh.getEffect().addTexture(material.getTexture(i));
+                    }
+                } else {
+                    skipToCorrespondingEndOfBlock(reader);
+                }
+                nbMaterialsEncountered++;
+                continue;
+            }
+
+            Matcher materialReferenceMatcher = REFERENCE_PATTERN.matcher(line);
+            if (materialReferenceMatcher.matches()) {
+                String materialName = "";
+                try {
+                    materialName = materialReferenceMatcher.group(1).trim();
+                } catch (Exception e) {}
+
+                Material foundMaterial = null;
+                for (Material material : materials) {
+                    if (material.getName() != null && material.getName().equals(materialName)) {
+                        foundMaterial = material;
+                        break;
+                    }
+                }
+                if (foundMaterial != null) {
+                    if (createdMesh.getEffect() == null) {
+                        createdMesh.setEffect(new Effect());
+                    }
+                    for (int i = 0; i < foundMaterial.nbTextures(); i++) {
+                        createdMesh.getEffect().addTexture(foundMaterial.getTexture(i));
+                    }
+                }
+                nbMaterialsEncountered++;
+                continue;
+            }
+
+            if (nbMaterialsEncountered >= nbMaterials && line.contains(Character.toString(XFileConstants.END_BLOCK))) {
+                stopParsing = true;
+            }
+        }
+
+    }
+
+    private static Material handleMaterial(BufferedReader reader, String name) throws IOException {
+
+        log.info("Loading material " + name);
+
+        Material material = new Material();
+        material.setName(name);
+
+        float r = readNextFloat(reader, ";");
+        float g = readNextFloat(reader, ";");
+        float b = readNextFloat(reader, ";");
+        float a = readNextFloat(reader, ";;");
+
+        float power = readNextFloat(reader, ";");
+
+        float specularR = readNextFloat(reader, ";");
+        float specularG = readNextFloat(reader, ";");
+        float specularB = readNextFloat(reader, ";;");
+
+        float emissiveR = readNextFloat(reader, ";");
+        float emissiveG = readNextFloat(reader, ";");
+        float emissiveB = readNextFloat(reader, ";;");
+
+
+        boolean stopParsing = false;
+        String line;
+        int nbMaterialsEncountered = 0;
+        String textureFilename = "";
+
+        while(!stopParsing && (line = reader.readLine()) != null) {
+            line = line.trim();
+
+            if (lineShouldBeIgnored(line)) {
+                continue;
+            }
+
+            if (TEXTURE_FILENAME_PATTERN.matcher(line).matches()) {
+                if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
+                    skipToNextBeginningOfBlock(reader);
+                }
+                textureFilename = readNextString(reader, ";", true);
+                continue;
+            }
+
+            if (line.contains(Character.toString(XFileConstants.END_BLOCK))) {
+                stopParsing = true;
+            }
+        }
+
+        if (textureFilename != null && textureFilename.length() > 0) {
+            Texture texture = TextureLoader.loadTexture("assets/textures/" + textureFilename);
+            if (texture != null) {
+                material.addTexture(texture);
+            }
+        }
+
+        skipToCorrespondingEndOfBlock(reader);
+
+        return material;
+    }
+
     private static void handleTextureCoordinates(BufferedReader reader, MeshGeometry createdMesh) throws IOException {
         int nbVertices = readNextInteger(reader, ";");
         List<TextureCoords> coordsPerVertex = new ArrayList<TextureCoords>();
@@ -473,16 +648,19 @@ public class XFileLoader extends GeometryLoader {
             }
         }
 
-        Effect effect = new Effect();
+        if (createdMesh.getEffect() == null) {
+            createdMesh.setEffect(new Effect());
+        }
         for (int nbVerticesPerFace : createdMesh.getIndexBuffer().getNbVerticesList()) {
+            createdMesh.getEffect().clearTextureCoordinates(0, nbVertices);
             for (int vertexIndex : createdMesh.getIndexBuffer().getSubIndexBuffer(nbVerticesPerFace)) {
                 TextureCoords coords = coordsPerVertex.get(vertexIndex);
                 if (coords != null) {
-                    effect.addTextureCoordinates(0, nbVerticesPerFace, coords);
+                    createdMesh.getEffect().addTextureCoordinates(0, nbVerticesPerFace, coords);
                 }
             }
         }
-        createdMesh.setEffect(effect);
+
         skipToCorrespondingEndOfBlock(reader);
     }
 
@@ -564,7 +742,7 @@ public class XFileLoader extends GeometryLoader {
 
     }
 
-    private static Bone handleFrame(BufferedReader reader, String name, List<MeshGeometry> geometries, int level) throws IOException {
+    private static Bone handleFrame(BufferedReader reader, String name, List<MeshGeometry> geometries, List<Material> materials, int level) throws IOException {
 
         Bone bone = new Bone();
 
@@ -612,7 +790,7 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                MeshGeometry meshGeometry = handleMesh(reader, meshName, bone);
+                MeshGeometry meshGeometry = handleMesh(reader, meshName, bone, materials);
                 geometries.add(meshGeometry);
                 continue;
             }
@@ -628,8 +806,9 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                Bone childBone = handleFrame(reader, frameName, geometries, level + 1);
+                Bone childBone = handleFrame(reader, frameName, geometries, materials, level + 1);
                 bone.addChild(childBone);
+                continue;
             }
             if (line.contains(Character.toString(XFileConstants.END_BLOCK))) {
                 stopParsing = true;
