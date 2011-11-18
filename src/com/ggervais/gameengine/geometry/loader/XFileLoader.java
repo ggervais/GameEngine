@@ -182,8 +182,6 @@ public class XFileLoader extends GeometryLoader {
             }
         }
 
-        rootBone.logTree();
-
         MeshGeometry loadedGeometry = encounteredGeometries.get(0);
         if (loadedGeometry == null) {
             loadedGeometry = new MeshGeometry();
@@ -502,6 +500,7 @@ public class XFileLoader extends GeometryLoader {
         boolean stopParsing = false;
         String line;
         int nbMaterialsEncountered = 0;
+        Material finalMaterial = null;
         while(!stopParsing && (line = reader.readLine()) != null) {
             line = line.trim();
 
@@ -520,14 +519,8 @@ public class XFileLoader extends GeometryLoader {
                         materialName = materialMatcher.group(1).trim();
                     } catch (Exception e) {}
 
-                    Material material = handleMaterial(reader, materialName);
+                    finalMaterial = handleMaterial(reader, materialName);
 
-                    if (createdMesh.getEffect() == null) {
-                        createdMesh.setEffect(new Effect());
-                    }
-                    for (int i = 0; i < material.nbTextures(); i++) {
-                        createdMesh.getEffect().addTexture(material.getTexture(i));
-                    }
                 } else {
                     skipToCorrespondingEndOfBlock(reader);
                 }
@@ -542,19 +535,10 @@ public class XFileLoader extends GeometryLoader {
                     materialName = materialReferenceMatcher.group(1).trim();
                 } catch (Exception e) {}
 
-                Material foundMaterial = null;
                 for (Material material : materials) {
                     if (material.getName() != null && material.getName().equals(materialName)) {
-                        foundMaterial = material;
+                        finalMaterial = material;
                         break;
-                    }
-                }
-                if (foundMaterial != null) {
-                    if (createdMesh.getEffect() == null) {
-                        createdMesh.setEffect(new Effect());
-                    }
-                    for (int i = 0; i < foundMaterial.nbTextures(); i++) {
-                        createdMesh.getEffect().addTexture(foundMaterial.getTexture(i));
                     }
                 }
                 nbMaterialsEncountered++;
@@ -562,6 +546,14 @@ public class XFileLoader extends GeometryLoader {
             }
 
             if (nbMaterialsEncountered >= nbMaterials && line.contains(Character.toString(XFileConstants.END_BLOCK))) {
+                if (finalMaterial != null) {
+                    if (createdMesh.getEffect() == null) {
+                        createdMesh.setEffect(new Effect());
+                    }
+                    for (int i = 0; i < finalMaterial.nbTextures(); i++) {
+                        createdMesh.getEffect().addTexture(finalMaterial.getTexture(i));
+                    }
+                }
                 stopParsing = true;
             }
         }

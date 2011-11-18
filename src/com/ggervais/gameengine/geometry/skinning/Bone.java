@@ -13,12 +13,14 @@ public class Bone {
     private String name;
     private Matrix4x4 transformMatrix;
     private Matrix4x4 combinedMatrix;
+    private Matrix4x4 nextCombinedMatrix;
     private Matrix4x4 skinOffsetMatrix;
     private List<Integer> vertexIndices;
     private List<Float> weights;
     private List<Bone> children;
     private Bone parent;
     private int currentAnimationKey;
+    private int nextAnimationKey;
     private Animation currentAnimation;
 
     public Bone() {
@@ -27,8 +29,10 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.transformMatrix = Matrix4x4.createIdentity();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.nextCombinedMatrix = Matrix4x4.createIdentity();
         this.skinOffsetMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
+        this.nextAnimationKey = 1;
     }
 
     public Bone(String name) {
@@ -38,8 +42,10 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.transformMatrix = Matrix4x4.createIdentity();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.nextCombinedMatrix = Matrix4x4.createIdentity();
         this.skinOffsetMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
+        this.nextAnimationKey = 1;
     }
 
     public Bone(String name, Matrix4x4 transformMatrix, Matrix4x4 skinOffsetMatrix) {
@@ -50,7 +56,9 @@ public class Bone {
         this.vertexIndices = new ArrayList<Integer>();
         this.weights = new ArrayList<Float>();
         this.combinedMatrix = Matrix4x4.createIdentity();
+        this.nextCombinedMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
+        this.nextAnimationKey = 1;
     }
 
     public void setCurrentAnimationSet(AnimationSet animationSet) {
@@ -63,33 +71,42 @@ public class Bone {
                     break;
                 }
             }
+            this.nextAnimationKey = getNextAnimationKey();
+            log.info(currentAnimationKey + " " + nextAnimationKey);
         }
         for (Bone child : this.children) {
             child.setCurrentAnimationSet(animationSet);
         }
     }
 
-    public void setCurrentAnimationKeyRatio(float ratio) {
-
+    private int getNextAnimationKey() {
+        int key = this.currentAnimationKey;
         if (this.currentAnimation != null) {
-            int nbAnimationKeys = this.currentAnimation.getNbAnimationKeys();
-            int index = (int) Math.floor(ratio * nbAnimationKeys);
-
-            this.currentAnimationKey = index;
+            if (this.currentAnimationKey < this.currentAnimation.getNbAnimationKeys() - 1) {
+                key++;
+            } else {
+                key = 0;
+            }
         }
+        return key;
+    }
 
-        for (Bone child : this.children) {
-            child.setCurrentAnimationKeyRatio(ratio);
+    private int getPreviousAnimationKey() {
+        int key = 0;
+        if (this.currentAnimation != null) {
+            if (this.currentAnimationKey > 0) {
+                key--;
+            } else {
+                key = this.currentAnimation.getNbAnimationKeys() - 1;
+            }
         }
+        return key;
     }
 
     public void incrementCurrentAnimationKey() {
         if (this.currentAnimation != null) {
-            if (this.currentAnimationKey < this.currentAnimation.getNbAnimationKeys() - 1) {
-                this.currentAnimationKey++;
-            } else {
-                this.currentAnimationKey = 0;
-            }
+            this.currentAnimationKey = getNextAnimationKey();
+            this.nextAnimationKey = getNextAnimationKey();
         }
 
         for (Bone child : this.children) {
@@ -97,7 +114,7 @@ public class Bone {
         }
     }
 
-    public void decrementCurrentAnimationKey() {
+    /*public void decrementCurrentAnimationKey() {
         if (this.currentAnimation != null) {
             if (this.currentAnimationKey > 0) {
                 this.currentAnimationKey--;
@@ -109,7 +126,7 @@ public class Bone {
         for (Bone child : this.children) {
             child.decrementCurrentAnimationKey();
         }
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -241,29 +258,48 @@ public class Bone {
 
     public void updateMatrices() {
 
-        Matrix4x4 transformMatrixToUse = this.transformMatrix;
+        Matrix4x4 currentTransformMatrixToUse = this.transformMatrix;
+        Matrix4x4 nextTransformMatrixToUse = this.transformMatrix;
 
         if (this.currentAnimation != null) {
             AnimationKey animationKey = this.currentAnimation.getAnimationKey(this.currentAnimationKey);
             if (animationKey != null) {
-                transformMatrixToUse = animationKey.getTransformMatrix();
+                currentTransformMatrixToUse = animationKey.getTransformMatrix();
+            }
+
+            animationKey = this.currentAnimation.getAnimationKey(this.nextAnimationKey);
+            if (animationKey != null) {
+                nextTransformMatrixToUse = animationKey.getTransformMatrix();
             }
         }
 
-        Matrix4x4 parentMatrix = Matrix4x4.createIdentity();
+        Matrix4x4 currentParentMatrix = Matrix4x4.createIdentity();
         if (this.parent != null) {
-            parentMatrix = this.parent.getCombinedMatrix();
+            currentParentMatrix = this.parent.getCombinedMatrix();
         }
-        //this.combinedMatrix = Matrix4x4.mult(transformMatrixToUse, parentMatrix);
-        this.combinedMatrix = Matrix4x4.mult(parentMatrix, transformMatrixToUse);
+        this.combinedMatrix = Matrix4x4.mult(currentParentMatrix, currentTransformMatrixToUse);
+
+
+        Matrix4x4 nextParentMatrix = Matrix4x4.createIdentity();
+        if (this.parent != null) {
+            nextParentMatrix = this.parent.getNextCombinedMatrix();
+        }
+        this.nextCombinedMatrix = Matrix4x4.mult(nextParentMatrix, nextTransformMatrixToUse);
 
         for (Bone child : this.children) {
             child.updateMatrices();
         }
     }
 
+    public Matrix4x4 getNextCombinedMatrix() {
+        return this.nextCombinedMatrix;
+    }
+
     public Matrix4x4 getFinalMatrix() {
         return Matrix4x4.mult(this.combinedMatrix, this.skinOffsetMatrix);
-        //return Matrix4x4.mult(this.skinOffsetMatrix, this.combinedMatrix);
+    }
+
+    public Matrix4x4 getNextFinalMatrix() {
+        return Matrix4x4.mult(this.nextCombinedMatrix, this.skinOffsetMatrix);
     }
 }

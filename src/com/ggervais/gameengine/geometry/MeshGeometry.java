@@ -60,10 +60,6 @@ public class MeshGeometry extends Geometry {
         }
         float ratio = (currentTime - this.lastUpdate) / DELAY;
 
-        if (ratio > 0) {
-            int a = 0;
-        }
-
         this.boneHierarchyRoot.updateMatrices();
         this.skinnedVertexBuffer = this.vertexBuffer.copy();
 
@@ -74,11 +70,7 @@ public class MeshGeometry extends Geometry {
         for (SkinWeights weights : this.skinWeightsList) {
             Bone bone = this.boneHierarchyRoot.findByName(weights.getBoneName());
             Matrix4x4 finalMatrixForCurrentKey = bone.getFinalMatrix();
-            this.boneHierarchyRoot.incrementCurrentAnimationKey();
-            this.boneHierarchyRoot.updateMatrices();
-            Matrix4x4 finalMatrixForNextKey = bone.getFinalMatrix();
-            this.boneHierarchyRoot.decrementCurrentAnimationKey();
-            this.boneHierarchyRoot.updateMatrices();
+            Matrix4x4 finalMatrixForNextKey = bone.getNextFinalMatrix();
             if (bone != null) {
 
                 for (int index : weights.getIndicesWeights().keySet()) {
