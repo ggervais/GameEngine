@@ -27,12 +27,16 @@ public class MeshGeometry extends Geometry {
     private List<AnimationSet> animationSets;
     private static final Logger log = Logger.getLogger(MeshGeometry.class);
     private long lastUpdate;
+    private long lastChangeTime;
+    private int currentAnimationSet;
 
     public MeshGeometry() {
         super();
         this.useSkinnedVersion = false;
         this.animationSets = new ArrayList<AnimationSet>();
         this.lastUpdate = 0;
+        this.lastChangeTime = 0;
+        this.currentAnimationSet = -1;
     }
 
     @Override
@@ -52,10 +56,29 @@ public class MeshGeometry extends Geometry {
             this.lastUpdate = currentTime;
         }
 
+        if (this.lastChangeTime == 0) {
+            this.lastChangeTime = currentTime;
+        }
+
+        if (this.currentAnimationSet == -1) {
+            this.currentAnimationSet = 0;
+        }
+
         if (this.animationSets.size() > 0) {
+
             if (currentTime - this.lastUpdate >= DELAY) {
                 this.boneHierarchyRoot.incrementCurrentAnimationKey();
                 this.lastUpdate = currentTime;
+            }
+
+            if (currentTime - this.lastChangeTime >= 5000 && this.animationSets.size() > 1) {
+                if (this.currentAnimationSet < this.animationSets.size() - 1) {
+                    this.currentAnimationSet++;
+                } else {
+                    this.currentAnimationSet = 0;
+                }
+                this.boneHierarchyRoot.setCurrentAnimationSet(this.animationSets.get(this.currentAnimationSet));
+                this.lastChangeTime = currentTime;
             }
         }
         float ratio = (currentTime - this.lastUpdate) / DELAY;

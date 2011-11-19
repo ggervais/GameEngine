@@ -169,8 +169,9 @@ public abstract class Geometry extends Spatial {
         float maxY = (-Float.MAX_VALUE);
         float maxZ = (-Float.MAX_VALUE);
 
-        for (int i = 0; i < this.vertexBuffer.size(); i++) {
-            Vertex vertex = this.vertexBuffer.getVertex(i);
+        VertexBuffer vertexBufferToUse = getVertexBuffer();
+        for (int i = 0; i < vertexBufferToUse.size(); i++) {
+            Vertex vertex = vertexBufferToUse.getVertex(i);
             Point3D position = transform.mult(vertex.getPosition());
 
             minX = Math.min(position.x(), minX);

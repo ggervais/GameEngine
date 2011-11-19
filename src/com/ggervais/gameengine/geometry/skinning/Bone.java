@@ -22,6 +22,7 @@ public class Bone {
     private int currentAnimationKey;
     private int nextAnimationKey;
     private Animation currentAnimation;
+    private Animation nextAnimation;
 
     public Bone() {
         this.children = new ArrayList<Bone>();
@@ -61,6 +62,23 @@ public class Bone {
         this.nextAnimationKey = 1;
     }
 
+    public void setNextAnimationSet(AnimationSet animationSet) {
+        this.nextAnimationKey = 0;
+        if (animationSet != null) {
+            for (int i = 0; i < animationSet.getNbAnimations(); i++) {
+                Animation animation = animationSet.getAnimation(i);
+                if (animation.getBoneName() != null && animation.getBoneName().length() > 0 && animation.getBoneName().equals(this.name)) {
+                    this.nextAnimation = animation;
+                    break;
+                }
+            }
+        }
+
+        for (Bone child : this.children) {
+            child.setNextAnimationSet(animationSet);
+        }
+    }
+
     public void setCurrentAnimationSet(AnimationSet animationSet) {
         this.currentAnimationKey = 0;
         if (animationSet != null) {
@@ -71,8 +89,10 @@ public class Bone {
                     break;
                 }
             }
+            if (this.nextAnimation == this.currentAnimation) {
+                this.currentAnimationKey = this.nextAnimationKey;
+            }
             this.nextAnimationKey = getNextAnimationKey();
-            log.info(currentAnimationKey + " " + nextAnimationKey);
         }
         for (Bone child : this.children) {
             child.setCurrentAnimationSet(animationSet);
@@ -105,7 +125,12 @@ public class Bone {
 
     public void incrementCurrentAnimationKey() {
         if (this.currentAnimation != null) {
-            this.currentAnimationKey = getNextAnimationKey();
+            if (this.nextAnimation != null && this.currentAnimation != this.nextAnimation) {
+                this.currentAnimation = this.nextAnimation;
+                this.currentAnimationKey = this.nextAnimationKey;
+            } else {
+                this.currentAnimationKey = getNextAnimationKey();
+            }
             this.nextAnimationKey = getNextAnimationKey();
         }
 

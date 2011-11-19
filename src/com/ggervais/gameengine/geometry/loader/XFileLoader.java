@@ -151,9 +151,6 @@ public class XFileLoader extends GeometryLoader {
             if (animationSets.size() > 0) {
                 rootBone.setCurrentAnimationSet(animationSets.get(0));
             }
-            if (animationSets.size() > 1) {
-                rootBone.setCurrentAnimationSet(animationSets.get(1));
-            }
             geometry.setBoneHierarchyRoot(rootBone);
 
             for (AnimationSet animationSet : animationSets) {
