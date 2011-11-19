@@ -2,6 +2,7 @@ package com.ggervais.gameengine.geometry;
 
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
+import com.ggervais.gameengine.geometry.skinning.Animation;
 import com.ggervais.gameengine.geometry.skinning.AnimationSet;
 import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.geometry.skinning.SkinWeights;
@@ -29,6 +30,7 @@ public class MeshGeometry extends Geometry {
     private long lastUpdate;
     private long lastChangeTime;
     private int currentAnimationSet;
+    private float currentAnimationSetDuration;
 
     public MeshGeometry() {
         super();
@@ -37,6 +39,7 @@ public class MeshGeometry extends Geometry {
         this.lastUpdate = 0;
         this.lastChangeTime = 0;
         this.currentAnimationSet = -1;
+        this.currentAnimationSetDuration = 5000f;
     }
 
     @Override
@@ -71,13 +74,19 @@ public class MeshGeometry extends Geometry {
                 this.lastUpdate = currentTime;
             }
 
-            if (currentTime - this.lastChangeTime >= 5000 && this.animationSets.size() > 1) {
+            if (currentTime - this.lastChangeTime >= this.currentAnimationSetDuration * 3 && this.animationSets.size() > 1) {
                 if (this.currentAnimationSet < this.animationSets.size() - 1) {
                     this.currentAnimationSet++;
                 } else {
                     this.currentAnimationSet = 0;
                 }
-                this.boneHierarchyRoot.setCurrentAnimationSet(this.animationSets.get(this.currentAnimationSet));
+                AnimationSet animationSet = this.animationSets.get(this.currentAnimationSet);
+                if (animationSet.getNbAnimations() > 0) {
+                    Animation firstAnimation = animationSet.getAnimation(0);
+                    int nbAnimationKeys = firstAnimation.getNbAnimationKeys();
+                    this.currentAnimationSetDuration = nbAnimationKeys * DELAY;
+                }
+                this.boneHierarchyRoot.setCurrentAnimationSet(animationSet);
                 this.lastChangeTime = currentTime;
             }
         }
