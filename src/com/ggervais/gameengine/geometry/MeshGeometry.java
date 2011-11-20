@@ -55,6 +55,10 @@ public class MeshGeometry extends Geometry {
     public void updateGeometryState(long currentTime, InputController inputController, boolean isInitiator) {
         super.updateGeometryState(currentTime, inputController, isInitiator);
 
+        if (this.boneHierarchyRoot == null) {
+            return;
+        }
+
         if (this.lastUpdate == 0) {
             this.lastUpdate = currentTime;
         }
