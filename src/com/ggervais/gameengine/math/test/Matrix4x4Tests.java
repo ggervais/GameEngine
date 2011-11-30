@@ -1,8 +1,8 @@
 package com.ggervais.gameengine.math.test;
 
-import com.ggervais.gameengine.math.Matrix4x4;
-import com.ggervais.gameengine.math.Point3D;
+import com.ggervais.gameengine.math.*;
 
+import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -174,7 +174,67 @@ public class Matrix4x4Tests extends TestCase {
 		assertTrue(result.getElement(4, 3) == 0);
 		assertTrue(result.getElement(4, 4) == 2);
 	}
+
+    public void testExtractRotation() {
+
+        RotationMatrix baseRotationMatrix = RotationMatrix.createFromXYZ((float) Math.toRadians(60), (float) Math.toRadians(70), (float) Math.toRadians(80));
+        Point3D originalPoint = new Point3D(1, 2, 3);
+
+        Point3D firstTransformedPoint = baseRotationMatrix.mult(originalPoint);
+
+        Transformation transformation = new Transformation();
+        transformation.setScale(10, 20, 30);
+        transformation.setRotation((float) Math.toRadians(60), (float) Math.toRadians(70), (float) Math.toRadians(80));
+        transformation.setTranslation(45, 46, 47);
+        Matrix4x4 matrix = transformation.getMatrix();
+
+        RotationMatrix extractedRotationMatrix = matrix.extractRotationMatrix();
+
+        Point3D secondTransformedPoint = extractedRotationMatrix.mult(originalPoint);
+
+        for (int i = 0; i < 3; i++) {
+            firstTransformedPoint.set(i, (float) Math.round(firstTransformedPoint.get(i) * 1000f) / 1000f);
+            secondTransformedPoint.set(i, (float) Math.round(secondTransformedPoint.get(i) * 1000f) / 1000f);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            assertEquals(firstTransformedPoint.get(i), secondTransformedPoint.get(i));
+        }
+    }
 	
+    public void testExtractScale() {
+        Transformation transformation = new Transformation();
+        transformation.setScale(10, 20, 30);
+        transformation.setRotation((float) Math.toRadians(60), (float) Math.toRadians(70), (float) Math.toRadians(80));
+        Matrix4x4 matrix = transformation.getMatrix();
+
+        ScaleMatrix extractedScaleMatrix = matrix.extractScaleMatrix();
+        float sx = extractedScaleMatrix.getElement(1, 1);
+        float sy = extractedScaleMatrix.getElement(2, 2);
+        float sz = extractedScaleMatrix.getElement(3, 3);
+
+        assertEquals(10, Math.round(sx));
+        assertEquals(20, Math.round(sy));
+        assertEquals(30, Math.round(sz));
+    }
+
+    public void testExtractTranslation() {
+        Transformation transformation = new Transformation();
+        transformation.setScale(10, 20, 30);
+        transformation.setRotation((float) Math.toRadians(60), (float) Math.toRadians(70), (float) Math.toRadians(80));
+        transformation.setTranslation(45, 46, 47);
+        Matrix4x4 matrix = transformation.getMatrix();
+
+        TranslationMatrix extractedRotationMatrix = matrix.extractTranslationMatrix();
+        float tx = extractedRotationMatrix.getElement(1, 4);
+        float ty = extractedRotationMatrix.getElement(2, 4);
+        float tz = extractedRotationMatrix.getElement(3, 4);
+
+        assertEquals(45, Math.round(tx));
+        assertEquals(46, Math.round(ty));
+        assertEquals(47, Math.round(tz));
+    }
+
 	public static Test suite() {
 		return new TestSuite(Matrix4x4Tests.class);
 	}

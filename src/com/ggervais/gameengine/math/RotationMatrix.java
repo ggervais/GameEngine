@@ -166,4 +166,30 @@ public class RotationMatrix extends Matrix4x4 {
 		mult(pitchMatrix);
 		mult(rollMatrix);
 	}
+
+    public static RotationMatrix createFromQuaternion(Quaternion originalQuaternion) {
+
+        Quaternion quaternion = originalQuaternion.normalized();
+
+        float x = quaternion.x();
+        float y = quaternion.y();
+        float z = quaternion.z();
+        float w = quaternion.w();
+
+        RotationMatrix matrix = new RotationMatrix();
+
+        matrix.setElement(1, 1, (1 - 2*(y*y) - 2*(z*z)));
+        matrix.setElement(1, 2, (2*x*y - 2*z*w));
+        matrix.setElement(1, 3, (2*x*z + 2*y*w));
+
+        matrix.setElement(2, 1, (2*x*y + 2*z*w));
+        matrix.setElement(2, 2, (1 - 2*(x*x) - 2*(z*z)));
+        matrix.setElement(2, 3, (2*y*z - 2*x*w));
+
+        matrix.setElement(3, 1, (2*x*z - 2*y*w));
+        matrix.setElement(3, 2, (2*y*z + 2*x*w));
+        matrix.setElement(3, 3, (1 - 2*(x*x) - 2*(y*y)));
+
+        return matrix;
+    }
 }

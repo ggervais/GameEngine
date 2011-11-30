@@ -7,11 +7,10 @@ import com.ggervais.gameengine.geometry.skinning.AnimationSet;
 import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.geometry.skinning.SkinWeights;
 import com.ggervais.gameengine.input.InputController;
-import com.ggervais.gameengine.math.Matrix4x4;
-import com.ggervais.gameengine.math.Point3D;
-import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
+import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -107,6 +106,7 @@ public class MeshGeometry extends Geometry {
             Bone bone = this.boneHierarchyRoot.findByName(weights.getBoneName());
             Matrix4x4 finalMatrixForCurrentKey = bone.getFinalMatrix();
             Matrix4x4 finalMatrixForNextKey = bone.getNextFinalMatrix();
+
             if (bone != null) {
 
                 for (int index : weights.getIndicesWeights().keySet()) {
