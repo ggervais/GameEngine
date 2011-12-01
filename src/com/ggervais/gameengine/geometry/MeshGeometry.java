@@ -1,4 +1,4 @@
-package com.ggervais.gameengine.geometry;
+package com.ggervais.gameengine.geometry;           
 
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
@@ -106,12 +106,14 @@ public class MeshGeometry extends Geometry {
             Bone bone = this.boneHierarchyRoot.findByName(weights.getBoneName());
             Matrix4x4 finalMatrixForCurrentKey = bone.getFinalMatrix();
             Matrix4x4 finalMatrixForNextKey = bone.getNextFinalMatrix();
-
+            /*
             Transformation boneTransformation = new Transformation();
 
             RotationMatrix currentRotationMatrix = finalMatrixForCurrentKey.extractRotationMatrix();
             RotationMatrix nextRotationMatrix = finalMatrixForNextKey.extractRotationMatrix();
+
             Quaternion qa = Quaternion.createFromRotationMatrix(currentRotationMatrix);
+
             Quaternion qb = Quaternion.createFromRotationMatrix(nextRotationMatrix);
             Quaternion qm = Quaternion.slerp(qa, qb, ratio);
             RotationMatrix rotationMatrix = RotationMatrix.createFromQuaternion(qm);
@@ -132,7 +134,7 @@ public class MeshGeometry extends Geometry {
             boneTransformation.setTranslation(tm.x(), tm.y(), tm.z());
 
             Matrix4x4 finalMatrix = boneTransformation.getMatrix();
-
+*/
             if (bone != null) {
 
                 for (int index : weights.getIndicesWeights().keySet()) {
@@ -148,8 +150,8 @@ public class MeshGeometry extends Geometry {
                     Vertex originalVertex = this.vertexBuffer.getVertex(index);
                     Vector3D originalPositionAsVector = Point3D.sub(originalVertex.getPosition(), Point3D.zero());
 
-                    Vector3D multipliedPosition = finalMatrix.mult(originalPositionAsVector);
-                    Vector3D weightedPosition = multipliedPosition.multiplied(weight);
+                    //Vector3D multipliedPosition = finalMatrix.mult(originalPositionAsVector);
+                    //Vector3D weightedPosition = multipliedPosition.multiplied(weight);
 
                     Vector3D multipliedCurrentPosition = finalMatrixForCurrentKey.mult(originalPositionAsVector);
                     Vector3D weightedCurrentPosition = multipliedCurrentPosition.multiplied(weight);
@@ -157,7 +159,7 @@ public class MeshGeometry extends Geometry {
                     Vector3D multipliedNextPosition = finalMatrixForNextKey.mult(originalPositionAsVector);
                     Vector3D weightedNextPosition = multipliedNextPosition.multiplied(weight);
 
-                    weightedPosition = Vector3D.add(weightedCurrentPosition, Vector3D.sub(weightedNextPosition, weightedCurrentPosition).multiplied(ratio));
+                    Vector3D weightedPosition = Vector3D.add(weightedCurrentPosition, Vector3D.sub(weightedNextPosition, weightedCurrentPosition).multiplied(ratio));
 
                     vertex.getPosition().add(weightedPosition);
                 }

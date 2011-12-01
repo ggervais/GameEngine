@@ -1,6 +1,11 @@
 package com.ggervais.gameengine.math;
 
+import org.apache.log4j.Logger;
+
 public class Quaternion {
+
+    private static final Logger log = Logger.getLogger(Quaternion.class);
+
     private float x;
     private float y;
     private float z;
@@ -128,6 +133,7 @@ public class Quaternion {
             float halfTheta = (float) Math.acos(cosHalfTheta);
             float sinHalfTheta = (float) Math.sqrt(1 - cosHalfTheta*cosHalfTheta);
             if (Math.abs(sinHalfTheta) < 0.001f) {
+                log.info("Special case where abs(sinHalfTheta) < 0.001f");
                 qm.x(qa.x()*0.5f + qb.x()*0.5f);
                 qm.y(qa.y()*0.5f + qb.y()*0.5f);
                 qm.z(qa.z()*0.5f + qb.z()*0.5f);
@@ -141,7 +147,11 @@ public class Quaternion {
                 qm.w(qa.w() * ratioA + qb.w() * ratioB);
             }
         }
-
+        
         return qm;
+    }
+
+    public String toString() {
+        return "{" + x() + ", " + y() + ", " + z() + ", " + w() + "}";
     }
 }
