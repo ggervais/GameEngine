@@ -28,4 +28,14 @@ public class TranslationMatrix extends Matrix4x4 {
 	public void setTranslationZ(float dz) {
 		setElement(3, 4, dz);
 	}
+
+    public Point3D getTranslation() {
+        Point3D point = new Point3D();
+
+        point.x(getElement(1, 4));
+        point.y(getElement(2, 4));
+        point.z(getElement(3, 4));
+
+        return point;
+    }
 }

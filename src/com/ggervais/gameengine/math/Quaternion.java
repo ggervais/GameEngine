@@ -110,4 +110,38 @@ public class Quaternion {
         quaternion.normalize();
         return quaternion;
     }
+
+    public static Quaternion slerp(Quaternion firstQuaternion, Quaternion secondQuaternion, float ratio) {
+        Quaternion qa = firstQuaternion.normalized();
+        Quaternion qb = secondQuaternion.normalized();
+        float t = MathUtils.clamp(ratio, 0, 1);
+
+        Quaternion qm = new Quaternion();
+
+        float cosHalfTheta = qa.x()*qb.x() + qa.y()*qb.y() + qa.z()*qb.z() + qa.w()*qb.w();
+        if (Math.abs(cosHalfTheta) >= 1.0f) {
+            qm.x(qa.x());
+            qm.y(qa.y());
+            qm.z(qa.z());
+            qm.w(qa.w());
+        } else {
+            float halfTheta = (float) Math.acos(cosHalfTheta);
+            float sinHalfTheta = (float) Math.sqrt(1 - cosHalfTheta*cosHalfTheta);
+            if (Math.abs(sinHalfTheta) < 0.001f) {
+                qm.x(qa.x()*0.5f + qb.x()*0.5f);
+                qm.y(qa.y()*0.5f + qb.y()*0.5f);
+                qm.z(qa.z()*0.5f + qb.z()*0.5f);
+                qm.w(qa.w()*0.5f + qb.w()*0.5f);
+            } else {
+                float ratioA = (float) Math.sin((1 - t) * halfTheta) / sinHalfTheta;
+                float ratioB = (float) Math.sin(t * halfTheta) / sinHalfTheta;
+                qm.x(qa.x() * ratioA + qb.x() * ratioB);
+                qm.y(qa.y() * ratioA + qb.y() * ratioB);
+                qm.z(qa.z() * ratioA + qb.z() * ratioB);
+                qm.w(qa.w() * ratioA + qb.w() * ratioB);
+            }
+        }
+
+        return qm;
+    }
 }

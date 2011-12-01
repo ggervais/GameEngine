@@ -107,6 +107,32 @@ public class MeshGeometry extends Geometry {
             Matrix4x4 finalMatrixForCurrentKey = bone.getFinalMatrix();
             Matrix4x4 finalMatrixForNextKey = bone.getNextFinalMatrix();
 
+            Transformation boneTransformation = new Transformation();
+
+            RotationMatrix currentRotationMatrix = finalMatrixForCurrentKey.extractRotationMatrix();
+            RotationMatrix nextRotationMatrix = finalMatrixForNextKey.extractRotationMatrix();
+            Quaternion qa = Quaternion.createFromRotationMatrix(currentRotationMatrix);
+            Quaternion qb = Quaternion.createFromRotationMatrix(nextRotationMatrix);
+            Quaternion qm = Quaternion.slerp(qa, qb, ratio);
+            RotationMatrix rotationMatrix = RotationMatrix.createFromQuaternion(qm);
+            boneTransformation.setRotationMatrix(rotationMatrix);
+
+            ScaleMatrix currentScaleMatrix = finalMatrixForCurrentKey.extractScaleMatrix();
+            ScaleMatrix nextScaleMatrix = finalMatrixForNextKey.extractScaleMatrix();
+            Point3D sa = currentScaleMatrix.getScale();
+            Point3D sb = nextScaleMatrix.getScale();
+            Point3D sm = Point3D.lerp(sa, sb, ratio);
+            boneTransformation.setScale(sm.x(), sm.y(), sm.z());
+
+            TranslationMatrix currentTranslationMatrix = finalMatrixForCurrentKey.extractTranslationMatrix();
+            TranslationMatrix nextTranslationMatrix = finalMatrixForNextKey.extractTranslationMatrix();
+            Point3D ta = currentTranslationMatrix.getTranslation();
+            Point3D tb = nextTranslationMatrix.getTranslation();
+            Point3D tm = Point3D.lerp(ta, tb, ratio);
+            boneTransformation.setTranslation(tm.x(), tm.y(), tm.z());
+
+            Matrix4x4 finalMatrix = boneTransformation.getMatrix();
+
             if (bone != null) {
 
                 for (int index : weights.getIndicesWeights().keySet()) {
@@ -122,13 +148,16 @@ public class MeshGeometry extends Geometry {
                     Vertex originalVertex = this.vertexBuffer.getVertex(index);
                     Vector3D originalPositionAsVector = Point3D.sub(originalVertex.getPosition(), Point3D.zero());
 
+                    Vector3D multipliedPosition = finalMatrix.mult(originalPositionAsVector);
+                    Vector3D weightedPosition = multipliedPosition.multiplied(weight);
+
                     Vector3D multipliedCurrentPosition = finalMatrixForCurrentKey.mult(originalPositionAsVector);
                     Vector3D weightedCurrentPosition = multipliedCurrentPosition.multiplied(weight);
 
                     Vector3D multipliedNextPosition = finalMatrixForNextKey.mult(originalPositionAsVector);
                     Vector3D weightedNextPosition = multipliedNextPosition.multiplied(weight);
 
-                    Vector3D weightedPosition = Vector3D.add(weightedCurrentPosition, Vector3D.sub(weightedNextPosition, weightedCurrentPosition).multiplied(ratio));
+                    weightedPosition = Vector3D.add(weightedCurrentPosition, Vector3D.sub(weightedNextPosition, weightedCurrentPosition).multiplied(ratio));
 
                     vertex.getPosition().add(weightedPosition);
                 }
