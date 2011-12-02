@@ -122,7 +122,7 @@ Frame RootFrame {
           }
         }
       }
-  }  // End of the Bone Bone 
+  }
       Frame Plane {
 
         FrameTransformMatrix {
@@ -6326,7 +6326,9 @@ Mesh {
     1.0;
     1.0; 1.0; 1.0;;
     0.0; 0.0; 0.0;;
-  TextureFilename {    "cochon.blendPlane.tga";  }
+  TextureFilename {
+    "cochon.jpg";
+    }
   }
     }
   MeshNormals {

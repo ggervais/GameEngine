@@ -2,10 +2,7 @@ package com.ggervais.gameengine.geometry;
 
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
-import com.ggervais.gameengine.geometry.skinning.Animation;
-import com.ggervais.gameengine.geometry.skinning.AnimationSet;
-import com.ggervais.gameengine.geometry.skinning.Bone;
-import com.ggervais.gameengine.geometry.skinning.SkinWeights;
+import com.ggervais.gameengine.geometry.skinning.*;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
@@ -96,8 +93,9 @@ public class MeshGeometry extends Geometry {
         float ratio = (currentTime - this.lastUpdate) / DELAY;
 
         this.boneHierarchyRoot.updateMatrices();
-        this.skinnedVertexBuffer = this.vertexBuffer.copy();
-
+        if (this.skinnedVertexBuffer == null) {
+            this.skinnedVertexBuffer = this.vertexBuffer.copy();
+        }
         Map<Integer, Boolean> vertexVisited = new HashMap<Integer, Boolean>();
         for (int i = 0; i < this.skinnedVertexBuffer.getRealSize(); i++) {
             vertexVisited.put(i, false);
@@ -170,6 +168,14 @@ public class MeshGeometry extends Geometry {
         this.useSkinnedVersion = true;
     }
 
+    public VertexBuffer getOriginalVertexBuffer() {
+        return this.vertexBuffer;
+    }
+
+    public VertexBuffer getSkinnedVertexBuffer() {
+        return this.skinnedVertexBuffer;
+    }
+    
     @Override
     public VertexBuffer getVertexBuffer() {
         if (this.useSkinnedVersion) {
@@ -177,5 +183,22 @@ public class MeshGeometry extends Geometry {
         } else {
             return this.vertexBuffer;
         }
+    }
+    
+    public List<AnimationKey> getAnimationKeysForBoneAndAnimationSet(Bone bone, int animationSetIndex) {
+        List<AnimationKey> list = new ArrayList<AnimationKey>();
+        if (animationSetIndex >= 0 && animationSetIndex < this.animationSets.size()) {
+            AnimationSet animationSet = this.animationSets.get(animationSetIndex);
+            for (int i = 0; i < animationSet.getNbAnimations(); i++) {
+                Animation animation = animationSet.getAnimation(i);
+                if (animation.getBoneName().equals(bone.getName())) {
+                    for (int j = 0; j < animation.getNbAnimationKeys(); j++) {
+                        list.add(animation.getAnimationKey(j));
+                    }
+                    break;
+                }
+            }
+        }
+        return list;
     }
 }

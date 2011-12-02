@@ -45,9 +45,11 @@ public class ParticleController extends MotionController {
 
     @Override
     public void setControlledObject(Spatial controlledObject) {
-        super.setControlledObject(controlledObject);
         if (controlledObject != null) {
             if (controlledObject instanceof ParticlesGeometry) {
+
+                super.setControlledObject(controlledObject);
+
                 this.isInitialized = false;
                 this.controlledSpatialObject = controlledObject;
                 this.particleVelocities.clear();
@@ -79,7 +81,7 @@ public class ParticleController extends MotionController {
                 }
 
             } else {
-                throw new IllegalArgumentException("Controller object for a ParticleController should be of type ParticlesGeometry.");
+                throw new IllegalArgumentException("Controlled object for a ParticleController should be of type ParticlesGeometry.");
             }
         }
     }

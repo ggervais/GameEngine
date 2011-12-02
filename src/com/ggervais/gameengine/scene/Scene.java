@@ -359,24 +359,11 @@ public class Scene extends Observable {
             }
         }
 
-        /*Spatial bouncyThing = ObjFileLoader.loadFile("assets/models/bouncy_thing.obj", this);
-        Transformation bouncyThingTransformation = new Transformation();
-        bouncyThingTransformation.setScale(0.1f);
-        bouncyThing.setLocalTransformation(bouncyThingTransformation);
-        sceneGraphRoot.addChild(bouncyThing);
-
-        this.sceneGraphRoot.addLight(light2);*/
-
 
         Spatial warrior = XFileLoader.loadFile("assets/models/warrior.x");
         Transformation warriorTransformation = new Transformation();
         warriorTransformation.setScale(0.1f);
-        //warriorTransformation.setRotation(-fortyFiveDegrees * 2, -fortyFiveDegrees * 2, 0);
         warrior.setLocalTransformation(warriorTransformation);
-        Effect warriorEffect = warrior.getEffect();
-        /*if (warriorEffect != null) {
-            warriorEffect.addTexture(texWarrior);
-        }*/
         warrior.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(warrior);
 
@@ -385,21 +372,24 @@ public class Scene extends Observable {
         cylinderTransformation.setScale(0.1f);
         cylinderTransformation.setTranslation(10, 0, 0);
         cylinder.setLocalTransformation(cylinderTransformation);
-        Effect cylinderEffect = cylinder.getEffect();
-        /*if (cylinderEffect != null) {
-            cylinderEffect.addTexture(texCylinder);
-        }*/
         cylinder.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(cylinder);
 
-        /*this.sceneGraphRoot.addChild(sphereGeometry);
+        Spatial cochDanse = XFileLoader.loadFile("assets/models/cochdanse.x");
+        Transformation cochDanseTransformation = new Transformation();
+        cochDanseTransformation.setScale(0.1f);
+        cochDanse.setLocalTransformation(cochDanseTransformation);
+        cochDanse.addGlobalState(lightingOff);
+        this.sceneGraphRoot.addChild(cochDanse);
+
+
+        this.sceneGraphRoot.addChild(sphereGeometry);
         //this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
         this.sceneGraphRoot.addChild(spaceship);
-        this.sceneGraphRoot.addChild(immobileCube);  */
-
+        this.sceneGraphRoot.addChild(immobileCube);
 
         /*Effect ef = new Effect();
         ef.addTexture(texGuillaume);
@@ -420,13 +410,13 @@ public class Scene extends Observable {
         anotherCube.setEffect(ef2);
         this.sceneGraphRoot.addChild(anotherCube);          */
 
-        /*gCube1.addController(controller);
+        gCube1.addController(controller);
         gCube3.addController(new AlphaController(gCube3, System.currentTimeMillis(), 5000, 0, 1));
         fireParticles.addController(fireController);
         smokeParticles.addController(smokeController);
         bezierCube.addController(bezierCurveController);
         sphereGeometry.addController(sphereController);
-        spaceship.addController(new InputControlledController());*/
+        spaceship.addController(new InputControlledController());
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
 		this.camera = new FreeFlyCamera();

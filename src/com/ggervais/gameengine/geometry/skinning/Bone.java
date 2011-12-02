@@ -14,6 +14,7 @@ public class Bone {
     private Matrix4x4 transformMatrix;
     private Matrix4x4 combinedMatrix;
     private Matrix4x4 nextCombinedMatrix;
+    private Matrix4x4 rawCombinedMatrix;
     private Matrix4x4 skinOffsetMatrix;
     private List<Integer> vertexIndices;
     private List<Float> weights;
@@ -32,6 +33,7 @@ public class Bone {
         this.combinedMatrix = Matrix4x4.createIdentity();
         this.nextCombinedMatrix = Matrix4x4.createIdentity();
         this.skinOffsetMatrix = Matrix4x4.createIdentity();
+        this.rawCombinedMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
         this.nextAnimationKey = 1;
     }
@@ -45,6 +47,7 @@ public class Bone {
         this.combinedMatrix = Matrix4x4.createIdentity();
         this.nextCombinedMatrix = Matrix4x4.createIdentity();
         this.skinOffsetMatrix = Matrix4x4.createIdentity();
+        this.rawCombinedMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
         this.nextAnimationKey = 1;
     }
@@ -58,6 +61,7 @@ public class Bone {
         this.weights = new ArrayList<Float>();
         this.combinedMatrix = Matrix4x4.createIdentity();
         this.nextCombinedMatrix = Matrix4x4.createIdentity();
+        this.rawCombinedMatrix = Matrix4x4.createIdentity();
         this.currentAnimationKey = 0;
         this.nextAnimationKey = 1;
     }
@@ -299,10 +303,14 @@ public class Bone {
         }
 
         Matrix4x4 currentParentMatrix = Matrix4x4.createIdentity();
+        Matrix4x4 rawParentCombinedMatrix = Matrix4x4.createIdentity();
         if (this.parent != null) {
             currentParentMatrix = this.parent.getCombinedMatrix();
+            rawParentCombinedMatrix = this.parent.getRawCombinedMatrix();
         }
         this.combinedMatrix = Matrix4x4.mult(currentParentMatrix, currentTransformMatrixToUse);
+        this.rawCombinedMatrix = Matrix4x4.mult(rawParentCombinedMatrix, this.transformMatrix);
+
 
 
         Matrix4x4 nextParentMatrix = Matrix4x4.createIdentity();
@@ -326,5 +334,9 @@ public class Bone {
 
     public Matrix4x4 getNextFinalMatrix() {
         return Matrix4x4.mult(this.nextCombinedMatrix, this.skinOffsetMatrix);
+    }
+
+    public Matrix4x4 getRawCombinedMatrix() {
+        return this.rawCombinedMatrix;
     }
 }
