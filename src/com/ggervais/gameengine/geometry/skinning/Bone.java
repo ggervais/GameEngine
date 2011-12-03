@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.geometry.skinning;
 
+import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.Matrix4x4;
 import org.apache.log4j.Logger;
 
@@ -285,6 +286,42 @@ public class Bone {
         return this.combinedMatrix;
     }
 
+    public void updateMatrices(AnimationSet animationSet, float cycleDuration, float currentTimeInAnimationSet) {
+        Matrix4x4 transformMatrixToUse = this.transformMatrix;
+        Matrix4x4 nextTransformMatrixToUse = this.transformMatrix;
+
+
+        if (animationSet != null) {
+            float ratio = MathUtils.clamp((currentTimeInAnimationSet + 0f) / cycleDuration, 0f, 1f);
+            for (int i = 0; i < animationSet.getNbAnimations(); i++) {
+                Animation animation = animationSet.getAnimation(i);
+                if (animation.getBoneName() != null && animation.getBoneName().length() > 0 && animation.getBoneName().equals(this.name)) {
+
+                    int keyIndex = MathUtils.clamp((int) Math.floor(ratio * animation.getNbAnimationKeys()), 0, animation.getNbAnimationKeys() - 1);
+                    int nextKeyIndex = (keyIndex < animation.getNbAnimationKeys() - 1 ? keyIndex + 1 : 0);
+
+                    transformMatrixToUse = animation.getAnimationKey(keyIndex).getTransformMatrix();
+                    nextTransformMatrixToUse = animation.getAnimationKey(nextKeyIndex).getTransformMatrix();
+                    break;
+                }
+            }
+        }
+
+        Matrix4x4 parentMatrix = Matrix4x4.createIdentity();
+        Matrix4x4 nextParentMatrix = Matrix4x4.createIdentity();
+        if (this.parent != null) {
+            parentMatrix = this.parent.getCombinedMatrix();
+            nextParentMatrix = this.parent.getNextCombinedMatrix();
+
+        }
+        this.combinedMatrix = Matrix4x4.mult(parentMatrix, transformMatrixToUse);
+        this.nextCombinedMatrix = Matrix4x4.mult(nextParentMatrix, nextTransformMatrixToUse);
+
+        for (Bone child : this.children) {
+            child.updateMatrices(animationSet, cycleDuration, currentTimeInAnimationSet);
+        }
+    }
+    
     public void updateMatrices() {
 
         Matrix4x4 currentTransformMatrixToUse = this.transformMatrix;

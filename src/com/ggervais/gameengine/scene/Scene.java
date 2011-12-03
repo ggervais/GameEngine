@@ -365,6 +365,7 @@ public class Scene extends Observable {
         warriorTransformation.setScale(0.1f);
         warrior.setLocalTransformation(warriorTransformation);
         warrior.addGlobalState(lightingOff);
+        warrior.addController(new AnimationController());
         this.sceneGraphRoot.addChild(warrior);
 
         Spatial cylinder = XFileLoader.loadFile("assets/models/bouncy_thing.x");
@@ -373,23 +374,26 @@ public class Scene extends Observable {
         cylinderTransformation.setTranslation(10, 0, 0);
         cylinder.setLocalTransformation(cylinderTransformation);
         cylinder.addGlobalState(lightingOff);
+        cylinder.addController(new AnimationController(5000));
         this.sceneGraphRoot.addChild(cylinder);
 
         Spatial cochDanse = XFileLoader.loadFile("assets/models/cochdanse.x");
         Transformation cochDanseTransformation = new Transformation();
+        cochDanseTransformation.setRotation((float) Math.toRadians(90), 0, 0);
         cochDanseTransformation.setScale(0.1f);
         cochDanse.setLocalTransformation(cochDanseTransformation);
         cochDanse.addGlobalState(lightingOff);
+        cochDanse.addController(new AnimationController(5000, true));
         this.sceneGraphRoot.addChild(cochDanse);
 
 
-        this.sceneGraphRoot.addChild(sphereGeometry);
+        //this.sceneGraphRoot.addChild(sphereGeometry);
         //this.sceneGraphRoot.addChild(gCube1);
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
-        this.sceneGraphRoot.addChild(spaceship);
-        this.sceneGraphRoot.addChild(immobileCube);
+        //this.sceneGraphRoot.addChild(spaceship);
+        //this.sceneGraphRoot.addChild(immobileCube);
 
         /*Effect ef = new Effect();
         ef.addTexture(texGuillaume);
@@ -416,7 +420,7 @@ public class Scene extends Observable {
         smokeParticles.addController(smokeController);
         bezierCube.addController(bezierCurveController);
         sphereGeometry.addController(sphereController);
-        spaceship.addController(new InputControlledController());
+        //spaceship.addController(new InputControlledController());
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
 		this.camera = new FreeFlyCamera();

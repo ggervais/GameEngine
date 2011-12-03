@@ -47,11 +47,19 @@ public class MeshGeometry extends Geometry {
         this.animationSets.add(animationSet);
     }
 
+    public void initializeSkinningIfNecessary() {
+        if (this.skinnedVertexBuffer == null) {
+            this.skinnedVertexBuffer = this.vertexBuffer.copy();
+            this.useSkinnedVersion = true;
+        }
+    }
+
     @Override
     public void updateGeometryState(long currentTime, InputController inputController, boolean isInitiator) {
         super.updateGeometryState(currentTime, inputController, isInitiator);
+        initializeSkinningIfNecessary();
 
-        if (this.boneHierarchyRoot == null) {
+        /*if (this.boneHierarchyRoot == null) {
             return;
         }
 
@@ -93,9 +101,11 @@ public class MeshGeometry extends Geometry {
         float ratio = (currentTime - this.lastUpdate) / DELAY;
 
         this.boneHierarchyRoot.updateMatrices();
-        if (this.skinnedVertexBuffer == null) {
-            this.skinnedVertexBuffer = this.vertexBuffer.copy();
-        }
+        */
+        //if (this.skinnedVertexBuffer == null) {
+        //    this.skinnedVertexBuffer = this.vertexBuffer.copy();
+        //}
+        /*
         Map<Integer, Boolean> vertexVisited = new HashMap<Integer, Boolean>();
         for (int i = 0; i < this.skinnedVertexBuffer.getRealSize(); i++) {
             vertexVisited.put(i, false);
@@ -132,7 +142,7 @@ public class MeshGeometry extends Geometry {
             boneTransformation.setTranslation(tm.x(), tm.y(), tm.z());
 
             Matrix4x4 finalMatrix = boneTransformation.getMatrix();
-*/
+*/        /*
             if (bone != null) {
 
                 for (int index : weights.getIndicesWeights().keySet()) {
@@ -166,6 +176,8 @@ public class MeshGeometry extends Geometry {
             }
         }
         this.useSkinnedVersion = true;
+        */
+        //this.useSkinnedVersion = true;
     }
 
     public VertexBuffer getOriginalVertexBuffer() {
@@ -200,5 +212,19 @@ public class MeshGeometry extends Geometry {
             }
         }
         return list;
+    }
+    
+    public int nbAnimationSets() {
+        return this.animationSets.size();
+    }
+    
+    public AnimationSet getAnimationSet(int index) {
+        AnimationSet set = null;
+        
+        if (index >= 0 && index < this.animationSets.size()) {
+            set = this.animationSets.get(index);
+        }
+        
+        return set;
     }
 }
