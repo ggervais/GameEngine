@@ -12,6 +12,7 @@ import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
 import com.ggervais.gameengine.timing.Controller;
+import net.java.games.input.Component;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class AnimationController extends Controller {
     private long lastCycleTime;
     private int currentAnimationSet;
     private boolean interpolate;
+    private boolean isPreviousNDown;
 
     public AnimationController(float cycleDuration, boolean interpolate) {
         this.cycleDuration = cycleDuration;
         this.lastCycleTime = 0;
         this.currentAnimationSet = 0;
         this.interpolate = interpolate;
+        this.isPreviousNDown = false;
     }
 
     public AnimationController(float cycleDuration) {
@@ -65,18 +68,27 @@ public class AnimationController extends Controller {
             this.lastCycleTime = adjustedTime;
         }
 
+        boolean isNDown = inputController.isKeyDown(Component.Identifier.Key.N);
+
         long dt = adjustedTime - this.lastCycleTime;
-        if (dt > this.cycleDuration) {
+        if (dt > this.cycleDuration || (this.isPreviousNDown && !isNDown)) {
+
             // Cycle animation set.
+            int nbAnimationSet = geometry.nbAnimationSets();
+            this.currentAnimationSet = (this.currentAnimationSet < nbAnimationSet - 1 ? this.currentAnimationSet + 1 : 0);
+
             this.lastCycleTime = adjustedTime;
             dt = 0;
         }
-        
+        this.isPreviousNDown = isNDown;
+
+
         float ratio = MathUtils.clamp(dt / this.cycleDuration, 0, 1);
 
         Point3D[] intermediatePositions = new Point3D[geometry.getOriginalVertexBuffer().getRealSize()];
 
         float timeElapsedInAnimationSet = ratio * this.cycleDuration;
+
         rootBone.updateMatrices(geometry.getAnimationSet(this.currentAnimationSet), this.cycleDuration, timeElapsedInAnimationSet);
         List<SkinWeights> weightsList = geometry.getSkinWeightsList();
         for (SkinWeights weights : weightsList) {
@@ -89,12 +101,11 @@ public class AnimationController extends Controller {
             }
 
             int animationKeyIndex = (int) Math.floor(ratio * animationKeys.size());
-            int nextAnimationKeyIndex = (animationKeyIndex < animationKeys.size() - 1 ? animationKeyIndex + 1 : 0);
 
             float timeForEachKey = this.cycleDuration / animationKeys.size();
             float timeAtStartOfKey = timeForEachKey * animationKeyIndex;
             float t = (timeElapsedInAnimationSet - timeAtStartOfKey) / timeForEachKey;
-
+            
             Matrix4x4 transformA = affectedBone.getFinalMatrix();
             Matrix4x4 transformB = affectedBone.getNextFinalMatrix();
             
