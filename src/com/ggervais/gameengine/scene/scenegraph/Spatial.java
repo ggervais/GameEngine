@@ -226,9 +226,9 @@ public abstract class Spatial {
         }
 
         if (!culled) {
-            renderer.setWorldTransformations(this.localTransform);
+            //renderer.setWorldTransformations(this.localTransform);
             draw(renderer);
-            renderer.restoreWorldTransformations();
+            //renderer.restoreWorldTransformations();
         }/* else {
             Spatial parent = getTopParent();
             if (parent == this) {

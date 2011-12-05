@@ -72,7 +72,7 @@ public abstract class SceneRenderer implements Observer {
     public void drawGeometry(Geometry geometry) {
         setState(geometry.getStates());
 
-        //setWorldTransformations(geometry.getWorldTransformation());
+        setWorldTransformations(geometry.getWorldTransformation());
 
         if (geometry.getEffect() != null) {
             enableTextures(geometry.getEffect());
@@ -84,7 +84,7 @@ public abstract class SceneRenderer implements Observer {
             disableTextures(geometry.getEffect());
         }
 
-        //restoreWorldTransformations();
+        restoreWorldTransformations();
 
         // Bounding box is already in world space, so we must restore the previous world transformations
         // before drawing it.
