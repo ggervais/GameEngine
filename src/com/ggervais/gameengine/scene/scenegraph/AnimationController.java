@@ -126,7 +126,6 @@ public class AnimationController extends Controller {
                     Vector3D vb = transformB.mult(v).multiplied(weight);
                     
                     Vector3D interpolated = Vector3D.lerp(va, vb, t);
-                    //Vector3D.add(va, Vector3D.sub((interpolate ? vb : va), va).multiplied(t));
                     intermediatePositions[index].add(interpolated);
                 }
             }
@@ -165,6 +164,6 @@ public class AnimationController extends Controller {
 
             geometry.setBoundingBox(new BoundingBox(interpolatedMinCorner, interpolatedMaxCorner));
         }
-        
+
     }
 }
