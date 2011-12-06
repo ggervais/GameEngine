@@ -184,6 +184,8 @@ public class XFileLoader extends GeometryLoader {
             loadedGeometry = new MeshGeometry();
         }
 
+        loadedGeometry.computeBoundingBoxes();
+
         return loadedGeometry;
     }
 

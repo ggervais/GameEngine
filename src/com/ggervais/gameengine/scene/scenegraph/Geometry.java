@@ -28,7 +28,7 @@ public abstract class Geometry extends Spatial {
 
     protected List<SkinWeights> skinWeightsList;
 
-    private BoundingBox modelBoundingBox;
+    protected BoundingBox modelBoundingBox;
     private boolean isGeometryDirty;
 
     private Map<GlobalStateType, GlobalState> globalStates;
@@ -158,9 +158,6 @@ public abstract class Geometry extends Spatial {
 
     private void computeBoundingBox(Matrix4x4 transform) {
 
-
-        // TODO fix precision
-
         float minX = Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
         float minZ = Float.MAX_VALUE;
@@ -187,6 +184,33 @@ public abstract class Geometry extends Spatial {
         BoundingBox box = new BoundingBox(minCorner, maxCorner);
 
         this.modelBoundingBox = box;
+    }
+    
+    public static BoundingBox computeBoundingBox(List<Point3D> points) {
+
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float minZ = Float.MAX_VALUE;
+
+        float maxX = (-Float.MAX_VALUE);
+        float maxY = (-Float.MAX_VALUE);
+        float maxZ = (-Float.MAX_VALUE);
+        
+        for (Point3D point : points) {
+            
+            minX = Math.min(point.x(), minX);
+            minY = Math.min(point.y(), minY);
+            minZ = Math.min(point.z(), minZ);
+            maxX = Math.max(point.x(), maxX);
+            maxY = Math.max(point.y(), maxY);
+            maxZ = Math.max(point.z(), maxZ);
+        }
+        
+        Point3D minCorner = new Point3D(minX, minY, minZ);
+        Point3D maxCorner = new Point3D(maxX, maxY, maxZ);
+
+        return new BoundingBox(minCorner, maxCorner);
+        
     }
 
     protected abstract void generateTextureCoords(Effect effect);

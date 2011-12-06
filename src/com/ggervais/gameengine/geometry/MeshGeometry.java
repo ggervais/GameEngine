@@ -5,37 +5,28 @@ import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
 import com.ggervais.gameengine.geometry.skinning.*;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.*;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // This class represents a base geometry (a mesh).
 public class MeshGeometry extends Geometry {
 
-    private static final float DELAY = 50f;
     private VertexBuffer skinnedVertexBuffer;
     private boolean useSkinnedVersion;
     private List<AnimationSet> animationSets;
+    private Map<AnimationSet, List<BoundingBox>> boundingBoxes;
     private static final Logger log = Logger.getLogger(MeshGeometry.class);
-    private long lastUpdate;
-    private long lastChangeTime;
-    private int currentAnimationSet;
-    private float currentAnimationSetDuration;
 
     public MeshGeometry() {
         super();
         this.useSkinnedVersion = false;
         this.animationSets = new ArrayList<AnimationSet>();
-        this.lastUpdate = 0;
-        this.lastChangeTime = 0;
-        this.currentAnimationSet = -1;
-        this.currentAnimationSetDuration = 5000f;
+        this.boundingBoxes = new HashMap<AnimationSet, List<BoundingBox>>();
     }
 
     @Override
@@ -52,132 +43,6 @@ public class MeshGeometry extends Geometry {
             this.skinnedVertexBuffer = this.vertexBuffer.copy();
             this.useSkinnedVersion = true;
         }
-    }
-
-    @Override
-    public void updateGeometryState(long currentTime, InputController inputController, boolean isInitiator) {
-        super.updateGeometryState(currentTime, inputController, isInitiator);
-        initializeSkinningIfNecessary();
-
-        /*if (this.boneHierarchyRoot == null) {
-            return;
-        }
-
-        if (this.lastUpdate == 0) {
-            this.lastUpdate = currentTime;
-        }
-
-        if (this.lastChangeTime == 0) {
-            this.lastChangeTime = currentTime;
-        }
-
-        if (this.currentAnimationSet == -1) {
-            this.currentAnimationSet = 0;
-        }
-
-        if (this.animationSets.size() > 0) {
-
-            if (currentTime - this.lastUpdate >= DELAY) {
-                this.boneHierarchyRoot.incrementCurrentAnimationKey();
-                this.lastUpdate = currentTime;
-            }
-
-            if (currentTime - this.lastChangeTime >= this.currentAnimationSetDuration * 3 && this.animationSets.size() > 1) {
-                if (this.currentAnimationSet < this.animationSets.size() - 1) {
-                    this.currentAnimationSet++;
-                } else {
-                    this.currentAnimationSet = 0;
-                }
-                AnimationSet animationSet = this.animationSets.get(this.currentAnimationSet);
-                if (animationSet.getNbAnimations() > 0) {
-                    Animation firstAnimation = animationSet.getAnimation(0);
-                    int nbAnimationKeys = firstAnimation.getNbAnimationKeys();
-                    this.currentAnimationSetDuration = nbAnimationKeys * DELAY;
-                }
-                this.boneHierarchyRoot.setCurrentAnimationSet(animationSet);
-                this.lastChangeTime = currentTime;
-            }
-        }
-        float ratio = (currentTime - this.lastUpdate) / DELAY;
-
-        this.boneHierarchyRoot.updateMatrices();
-        */
-        //if (this.skinnedVertexBuffer == null) {
-        //    this.skinnedVertexBuffer = this.vertexBuffer.copy();
-        //}
-        /*
-        Map<Integer, Boolean> vertexVisited = new HashMap<Integer, Boolean>();
-        for (int i = 0; i < this.skinnedVertexBuffer.getRealSize(); i++) {
-            vertexVisited.put(i, false);
-        }
-        for (SkinWeights weights : this.skinWeightsList) {
-            Bone bone = this.boneHierarchyRoot.findByName(weights.getBoneName());
-            Matrix4x4 finalMatrixForCurrentKey = bone.getFinalMatrix();
-            Matrix4x4 finalMatrixForNextKey = bone.getNextFinalMatrix();
-            /*
-            Transformation boneTransformation = new Transformation();
-
-            RotationMatrix currentRotationMatrix = finalMatrixForCurrentKey.extractRotationMatrix();
-            RotationMatrix nextRotationMatrix = finalMatrixForNextKey.extractRotationMatrix();
-
-            Quaternion qa = Quaternion.createFromRotationMatrix(currentRotationMatrix);
-
-            Quaternion qb = Quaternion.createFromRotationMatrix(nextRotationMatrix);
-            Quaternion qm = Quaternion.slerp(qa, qb, ratio);
-            RotationMatrix rotationMatrix = RotationMatrix.createFromQuaternion(qm);
-            boneTransformation.setRotationMatrix(rotationMatrix);
-
-            ScaleMatrix currentScaleMatrix = finalMatrixForCurrentKey.extractScaleMatrix();
-            ScaleMatrix nextScaleMatrix = finalMatrixForNextKey.extractScaleMatrix();
-            Point3D sa = currentScaleMatrix.getScale();
-            Point3D sb = nextScaleMatrix.getScale();
-            Point3D sm = Point3D.lerp(sa, sb, ratio);
-            boneTransformation.setScale(sm.x(), sm.y(), sm.z());
-
-            TranslationMatrix currentTranslationMatrix = finalMatrixForCurrentKey.extractTranslationMatrix();
-            TranslationMatrix nextTranslationMatrix = finalMatrixForNextKey.extractTranslationMatrix();
-            Point3D ta = currentTranslationMatrix.getTranslation();
-            Point3D tb = nextTranslationMatrix.getTranslation();
-            Point3D tm = Point3D.lerp(ta, tb, ratio);
-            boneTransformation.setTranslation(tm.x(), tm.y(), tm.z());
-
-            Matrix4x4 finalMatrix = boneTransformation.getMatrix();
-*/        /*
-            if (bone != null) {
-
-                for (int index : weights.getIndicesWeights().keySet()) {
-
-                    float weight = weights.getIndicesWeights().get(index);
-
-                    Vertex vertex = this.skinnedVertexBuffer.getVertex(index);
-                    if (!vertexVisited.get(index)) {
-                        vertex.setPosition(Point3D.zero());
-                        vertexVisited.put(index, true);
-                    }
-
-                    Vertex originalVertex = this.vertexBuffer.getVertex(index);
-                    Vector3D originalPositionAsVector = Point3D.sub(originalVertex.getPosition(), Point3D.zero());
-
-                    //Vector3D multipliedPosition = finalMatrix.mult(originalPositionAsVector);
-                    //Vector3D weightedPosition = multipliedPosition.multiplied(weight);
-
-                    Vector3D multipliedCurrentPosition = finalMatrixForCurrentKey.mult(originalPositionAsVector);
-                    Vector3D weightedCurrentPosition = multipliedCurrentPosition.multiplied(weight);
-
-                    Vector3D multipliedNextPosition = finalMatrixForNextKey.mult(originalPositionAsVector);
-                    Vector3D weightedNextPosition = multipliedNextPosition.multiplied(weight);
-
-                    Vector3D weightedPosition = Vector3D.add(weightedCurrentPosition, Vector3D.sub(weightedNextPosition, weightedCurrentPosition).multiplied(ratio));
-
-                    vertex.getPosition().add(weightedPosition);
-                }
-            } else {
-                log.info("Bone not found!");
-            }
-        }
-        this.useSkinnedVersion = true;
-        */
-        //this.useSkinnedVersion = true;
     }
 
     public VertexBuffer getOriginalVertexBuffer() {
@@ -226,5 +91,80 @@ public class MeshGeometry extends Geometry {
         }
         
         return set;
+    }
+    
+    public void computeBoundingBoxes() {
+
+        // Compute bounding boxes for each animation set.
+        for (AnimationSet animationSet : this.animationSets) {
+
+            // Find maximum number of keys throughout the bone animations.
+            // Normally, it should be the same for all animations.
+            int maxNumberOfKeys = 0;
+            log.info("Processing animation set = " + animationSet.getName());
+            for (int i = 0; i < animationSet.getNbAnimations(); i++) {
+                maxNumberOfKeys = Math.max(animationSet.getAnimation(i).getNbAnimationKeys(), maxNumberOfKeys);
+                log.info("Number of keys = " + animationSet.getAnimation(i).getNbAnimationKeys());
+            }
+
+            this.boundingBoxes.put(animationSet, new ArrayList<BoundingBox>());
+            
+            // Step through each key and compute a bounding box for each.
+            // This assumes that keys are shared throughout the animation set.
+            for (int i = 0; i < maxNumberOfKeys; i++) {
+                this.boneHierarchyRoot.updateMatrices(animationSet, maxNumberOfKeys, i);
+
+                Point3D[] intermediatePositions = new Point3D[this.vertexBuffer.getRealSize()];
+
+                for (SkinWeights weights : this.skinWeightsList) {
+
+                    String boneName = weights.getBoneName();
+                    Bone bone = this.boneHierarchyRoot.findByName(boneName);
+
+                    if (bone != null) {
+                        Matrix4x4 matrix = bone.getFinalMatrix();
+                        Map<Integer, Float> indicesWeights = weights.getIndicesWeights();
+
+                        for (int index : weights.getIndicesWeights().keySet()) {
+                            float weight = indicesWeights.get(index);
+                            if (intermediatePositions[index] == null) {
+                                intermediatePositions[index] = Point3D.zero();
+                            }
+                            Point3D originalPosition = this.vertexBuffer.getVertex(index).getPosition();
+                            Vector3D v = Point3D.sub(originalPosition, Point3D.zero());
+
+                            if (originalPosition != null) {
+                                intermediatePositions[index].add(matrix.mult(v).multiplied(weight));
+                            }
+                        }
+                    }
+                }
+
+                // Fill in the blanks.
+                for (int v = 0; v < this.vertexBuffer.getRealSize(); v++) {
+                    Point3D intermediatePosition = intermediatePositions[v];
+                    Vertex vertex = this.vertexBuffer.getVertex(v);
+                    if (vertex != null) {
+                        if (intermediatePosition == null) {
+                            Vertex originalVertex = this.vertexBuffer.getVertex(v);
+                            if (originalVertex != null) {
+                                intermediatePositions[v] = originalVertex.getPosition();
+                            }
+                        }
+                    }
+                }
+
+                BoundingBox boundingBoxForKey = Geometry.computeBoundingBox(Arrays.asList(intermediatePositions));
+                this.boundingBoxes.get(animationSet).add(boundingBoxForKey);
+            }
+        }
+    }
+
+    public Map<AnimationSet, List<BoundingBox>> getBoundingBoxes() {
+        return boundingBoxes;
+    }
+
+    public void setBoundingBox(BoundingBox boundingBox) {
+        this.modelBoundingBox = boundingBox;
     }
 }

@@ -167,4 +167,10 @@ public class Vector3D {
             case 2: z(value); break;
         }
     }
+
+    public static Vector3D lerp(Vector3D firstVector, Vector3D secondVector, float ratio) {
+        float t = MathUtils.clamp(ratio, 0, 1);
+        Vector3D diff = Vector3D.sub(secondVector, firstVector);
+        return Vector3D.add(firstVector, diff.multiplied(t));
+    }
 }

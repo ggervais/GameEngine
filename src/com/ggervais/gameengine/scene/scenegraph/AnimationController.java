@@ -4,6 +4,7 @@ import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
 import com.ggervais.gameengine.geometry.skinning.AnimationKey;
+import com.ggervais.gameengine.geometry.skinning.AnimationSet;
 import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.geometry.skinning.SkinWeights;
 import com.ggervais.gameengine.input.InputController;
@@ -11,6 +12,7 @@ import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.Matrix4x4;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.timing.Controller;
 import net.java.games.input.Component;
 import org.apache.log4j.Logger;
@@ -123,7 +125,8 @@ public class AnimationController extends Controller {
                     Vector3D va = transformA.mult(v).multiplied(weight);
                     Vector3D vb = transformB.mult(v).multiplied(weight);
                     
-                    Vector3D interpolated = Vector3D.add(va, Vector3D.sub((interpolate ? vb : va), va).multiplied(t));
+                    Vector3D interpolated = Vector3D.lerp(va, vb, t);
+                    //Vector3D.add(va, Vector3D.sub((interpolate ? vb : va), va).multiplied(t));
                     intermediatePositions[index].add(interpolated);
                 }
             }
@@ -144,5 +147,24 @@ public class AnimationController extends Controller {
                 }
             }
         }
+
+        AnimationSet animationSet = geometry.getAnimationSet(this.currentAnimationSet);
+        List<BoundingBox> boundingBoxes = geometry.getBoundingBoxes().get(animationSet);
+        if (boundingBoxes != null) {
+            float exactIndex = ratio * (boundingBoxes.size() - 1);
+            int boundingBoxIndex = (int) Math.floor(exactIndex);
+            
+            float t = exactIndex - (boundingBoxIndex + 0f);
+
+            int nextBoundingBoxIndex = (boundingBoxIndex < boundingBoxes.size() - 1 ? boundingBoxIndex + 1 : 0);
+            BoundingBox boundingBox = boundingBoxes.get(boundingBoxIndex);
+            BoundingBox nextBoundingBox = boundingBoxes.get(nextBoundingBoxIndex);
+            
+            Point3D interpolatedMinCorner = Point3D.lerp(boundingBox.getMinCorner(), nextBoundingBox.getMinCorner(), t);
+            Point3D interpolatedMaxCorner = Point3D.lerp(boundingBox.getMaxCorner(), nextBoundingBox.getMaxCorner(), t);
+
+            geometry.setBoundingBox(new BoundingBox(interpolatedMinCorner, interpolatedMaxCorner));
+        }
+        
     }
 }
