@@ -5,9 +5,7 @@ import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.math.Vector3D;
 
 import java.awt.Color;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class Effect {
     private Color color;
@@ -16,7 +14,7 @@ public class Effect {
     private List<Vector3D> textureMaxBounds;
     private static final Random random = new Random();
     private List<Color> colors;
-    private List<List<TextureCoords>> textureCoordinates;
+    private List<Map<Integer, List<TextureCoords>>> textureCoordinates;
 
     public Effect() {
         this.color = Color.WHITE;
@@ -24,7 +22,7 @@ public class Effect {
         this.textureMinBounds = new ArrayList<Vector3D>();
         this.textureMaxBounds = new ArrayList<Vector3D>();
         this.colors = new ArrayList<Color>();
-        this.textureCoordinates = new ArrayList<List<TextureCoords>>();
+        this.textureCoordinates = new ArrayList<Map<Integer, List<TextureCoords>>>();
     }
 
     public void setColor(Color color) {
@@ -63,7 +61,7 @@ public class Effect {
         this.textureMinBounds.add(texture.getMinBounds(index));
         this.textureMaxBounds.add(texture.getMaxBounds(index));
 
-        this.textureCoordinates.add(new ArrayList<TextureCoords>());
+        this.textureCoordinates.add(new HashMap<Integer, List<TextureCoords>>());
     }
 
     public Vector3D getMinBoundsForTexture(int index) {
@@ -82,16 +80,31 @@ public class Effect {
         }
     }
 
-    public void removeTextureCoordinates(int textureId, TextureCoords coords) {
-        textureCoordinates.get(textureId).remove(coords);
+    public void removeTextureCoordinates(int textureId, int nbVerticesPerFace, TextureCoords coords) {
+        if (textureCoordinates.get(textureId).containsKey(nbVerticesPerFace)) {
+            textureCoordinates.get(textureId).get(nbVerticesPerFace).remove(coords);
+        }
     }
 
-    public void removeTextureCoordinates(int textureId, int index) {
-        textureCoordinates.get(textureId).remove(index);
+    public void removeTextureCoordinates(int textureId, int nbVerticesPerFace, int index) {
+        if (textureCoordinates.get(textureId).containsKey(nbVerticesPerFace)) {
+            textureCoordinates.get(textureId).get(nbVerticesPerFace).remove(index);
+        }
     }
 
     public int getNbTextureCoords(int textureId) {
-        return textureCoordinates.get(textureId).size();
+        int sum = 0;
+        for (int nbVerticesPerFace : textureCoordinates.get(textureId).keySet()) {
+            sum += this.textureCoordinates.get(textureId).get(nbVerticesPerFace).size();
+        }
+        return sum;
+    }
+
+    public int getNbTextureCoords(int textureId, int nbVerticesPerFace) {
+        if (textureCoordinates.get(textureId).containsKey(nbVerticesPerFace)) {
+            return this.textureCoordinates.get(textureId).get(nbVerticesPerFace).size();
+        }
+        return 0;
     }
 
 
@@ -125,34 +138,51 @@ public class Effect {
         }
     }
 
-    public TextureCoords getTextureCoords(int textureIndex, int index) {
-        List<TextureCoords> array = this.textureCoordinates.get(textureIndex);
-        if (array != null) {
-            if (index >= 0 && index < array.size()) {
-                return array.get(index);
-            }
+    public TextureCoords getTextureCoords(int textureIndex, int nbVerticesPerFace,  int index) {
+        if (this.textureCoordinates.get(textureIndex).containsKey(nbVerticesPerFace)) {
+
+            List<TextureCoords> array = this.textureCoordinates.get(textureIndex).get(nbVerticesPerFace);
+            if (array != null) {
+                if (index >= 0 && index < array.size()) {
+                    return array.get(index);
+                }
+        }
         }
         return null;
     }
 
-    public void clearTextureCoordinates(int i) {
-        List<TextureCoords> array = this.textureCoordinates.get(i);
-        if (array != null) {
-            array.clear();
+    public void clearTextureCoordinates(int textureIndex, int nbVerticesPerFace) {
+        if (textureIndex >= 0 && textureIndex <= this.textureCoordinates.size() - 1) {
+            if (this.textureCoordinates.get(textureIndex).containsKey(nbVerticesPerFace)) {
+                List<TextureCoords> array = this.textureCoordinates.get(textureIndex).get(nbVerticesPerFace);
+                if (array != null) {
+                    array.clear();
+                }
+            }
         }
     }
 
-    public void addTextureCoordinates(int i, TextureCoords coords) {
-        List<TextureCoords> array = this.textureCoordinates.get(i);
+    public void addTextureCoordinates(int i, int nbVerticesPerFace, TextureCoords coords) {
+        if (i > this.textureCoordinates.size() - 1) {
+            this.textureCoordinates.add(new HashMap<Integer, List<TextureCoords>>());
+        }
+
+        if (!this.textureCoordinates.get(i).containsKey(nbVerticesPerFace)) {
+            this.textureCoordinates.get(i).put(nbVerticesPerFace, new ArrayList<TextureCoords>());
+        }
+
+        List<TextureCoords> array = this.textureCoordinates.get(i).get(nbVerticesPerFace);
         if (array != null) {
             array.add(coords);
         }
     }
 
-    public void addTextureCoordinates(int textureIndex, int i, TextureCoords coords) {
-        List<TextureCoords> array = this.textureCoordinates.get(textureIndex);
-        if (array != null) {
-            array.add(i, coords);
+    public void addTextureCoordinates(int textureIndex, int nbVerticesPerFace, int i, TextureCoords coords) {
+        if (this.textureCoordinates.get(textureIndex).containsKey(nbVerticesPerFace)) {
+            List<TextureCoords> array = this.textureCoordinates.get(textureIndex).get(nbVerticesPerFace);
+            if (array != null) {
+                array.add(i, coords);
+            }
         }
     }
 }

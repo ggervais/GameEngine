@@ -179,22 +179,21 @@ public class Game {
         this.isPreviousSpaceDown = isSpaceDown;
         this.isPreviousEscapeDown = isEscapeDown;
 
+        this.scene.update(currentTime);
+        Node root = this.scene.getSceneGraphRoot();
+        
+        root.updateGeometryState(currentTime, this.inputController, true);
+        root.updateRenderState();
+
+        pickCheck(root, this.scene.getPickingRay(this.scene.getCamera()));
 
         if (this.isControlled) {
             this.inputController.centerMouse();
-            this.scene.getCamera().update(inputController, this.scene.getSceneGraphRoot());
+            this.scene.getCamera().update(currentTime, inputController, this.scene.getSceneGraphRoot());
             setBlankCursor();
         } else {
             setDefaultCursor();
         }
-
-        this.scene.update(currentTime);
-        Node root = this.scene.getSceneGraphRoot();
-        
-        root.updateGeometryState(currentTime, true);
-        root.updateRenderState();
-
-        pickCheck(root, this.scene.getPickingRay(this.scene.getCamera()));
 	}
 	
 	private void mainLoop() {

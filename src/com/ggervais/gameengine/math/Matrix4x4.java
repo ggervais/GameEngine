@@ -380,11 +380,12 @@ public class Matrix4x4 {
                   - a13*a21*a34*a42 - a13*a22*a31*a44 - a13*a24*a32*a41
                   - a14*a21*a32*a43 - a14*a22*a33*a41 - a14*a23*a31*a42;
 
+        Matrix4x4 inverse = new Matrix4x4();
+
         if (det == 0) {
             return null;
         }
 
-        Matrix4x4 inverse = new Matrix4x4();
 
         float b11 = a22*a33*a44 + a23*a34*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 - a24*a33*a42;
         float b12 = a12*a34*a43 + a13*a32*a44 + a14*a33*a42 - a12*a33*a44 - a13*a34*a42 - a14*a32*a43;
@@ -446,29 +447,46 @@ public class Matrix4x4 {
         return inverse;
     }
 
-    public static void main(String[] args) {
-        Matrix4x4 testMatrix = new Matrix4x4();
-        testMatrix.setElement(1, 1, 2);
-        testMatrix.setElement(1, 2, 3);
-        testMatrix.setElement(1, 3, 4);
-        testMatrix.setElement(1, 4, 5);
+    public TranslationMatrix extractTranslationMatrix() {
+        float tx = getElement(1, 4);
+        float ty = getElement(2, 4);
+        float tz = getElement(3, 4);
+        return new TranslationMatrix(tx, ty, tz);
+    }
 
-        testMatrix.setElement(2, 1, 0);
-        testMatrix.setElement(2, 2, -1);
-        testMatrix.setElement(2, 3, 2);
-        testMatrix.setElement(2, 4, 1);
+    public ScaleMatrix extractScaleMatrix() {
+        Vector3D firstColumn = new Vector3D(getElement(1, 1), getElement(2, 1), getElement(3, 1));
+        Vector3D secondColumn = new Vector3D(getElement(1, 2), getElement(2, 2), getElement(3, 2));
+        Vector3D thirdColumn = new Vector3D(getElement(1, 3), getElement(2, 3), getElement(3, 3));
 
-        testMatrix.setElement(3, 1, 0);
-        testMatrix.setElement(3, 2, 0);
-        testMatrix.setElement(3, 3, 2);
-        testMatrix.setElement(3, 4, 4);
+        float sx = firstColumn.length();
+        float sy = secondColumn.length();
+        float sz = thirdColumn.length();
 
-        testMatrix.setElement(4, 1, 0);
-        testMatrix.setElement(4, 2, 3);
-        testMatrix.setElement(4, 3, -6);
-        testMatrix.setElement(4, 4, 0);
+        return new ScaleMatrix(sx, sy, sz);
+    }
 
-        log.info(testMatrix.inverse());
+    public RotationMatrix extractRotationMatrix() {
+
+        Vector3D firstColumn = new Vector3D(getElement(1, 1), getElement(2, 1), getElement(3, 1)).normalized();
+        Vector3D secondColumn = new Vector3D(getElement(1, 2), getElement(2, 2), getElement(3, 2)).normalized();
+        Vector3D thirdColumn = new Vector3D(getElement(1, 3), getElement(2, 3), getElement(3, 3)).normalized();
+
+        RotationMatrix matrix = new RotationMatrix();
+
+        matrix.setElement(1, 1, firstColumn.x());
+        matrix.setElement(2, 1, firstColumn.y());
+        matrix.setElement(3, 1, firstColumn.z());
+
+        matrix.setElement(1, 2, secondColumn.x());
+        matrix.setElement(2, 2, secondColumn.y());
+        matrix.setElement(3, 2, secondColumn.z());
+
+        matrix.setElement(1, 3, thirdColumn.x());
+        matrix.setElement(2, 3, thirdColumn.y());
+        matrix.setElement(3, 3, thirdColumn.z());
+
+        return matrix;
     }
 
     public float[] getElements() {

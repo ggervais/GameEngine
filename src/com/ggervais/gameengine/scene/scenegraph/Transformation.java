@@ -69,6 +69,10 @@ public class Transformation {
         updateWorldMatrix();
     }
 
+    public void setScale(float scale) {
+        setScale(scale, scale, scale);
+    }
+
     public void setScale(float x, float y, float z) {
         this.scaleMatrix.setElement(1, 1, x);
         this.scaleMatrix.setElement(2, 2, y);

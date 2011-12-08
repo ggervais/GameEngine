@@ -22,12 +22,14 @@ public class Marker extends Model {
 		this.vertexBuffer.addVertex(new Vertex(new Point3D(0, 0, 0), Color.BLUE, 0, 0));
 		this.vertexBuffer.addVertex(new Vertex(new Point3D(0, 0, 1), Color.BLUE, 0, 0));
 		
-		this.indexBuffer.addIndex(0);
-		this.indexBuffer.addIndex(1);
-		this.indexBuffer.addIndex(2);
-		this.indexBuffer.addIndex(3);
-		this.indexBuffer.addIndex(4);
-		this.indexBuffer.addIndex(5);
+		this.indexBuffer.addIndex(2, 0);
+		this.indexBuffer.addIndex(2, 1);
+
+		this.indexBuffer.addIndex(2, 2);
+		this.indexBuffer.addIndex(2, 3);
+
+		this.indexBuffer.addIndex(2, 4);
+		this.indexBuffer.addIndex(2, 5);
 	}
 	
 }

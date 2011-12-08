@@ -45,4 +45,13 @@ public class Vertex {
 	public float getTextureV() {
 		return textureV;
 	}
+
+    public Vertex copy() {
+        Vertex vertexCopy = new Vertex();
+        vertexCopy.setColor(this.color);
+        vertexCopy.setTextureU(this.textureU);
+        vertexCopy.setTextureV(this.textureV);
+        vertexCopy.setPosition(this.position.copy());
+        return vertexCopy;
+    }
 }

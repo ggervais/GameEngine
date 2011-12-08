@@ -31,14 +31,14 @@ public class ArrowGeometry extends Geometry {
         this.vertexBuffer.addVertex(vertex3);
         this.vertexBuffer.addVertex(vertex4);
 
-        this.indexBuffer.addIndex(0);
-        this.indexBuffer.addIndex(1);
+        this.indexBuffer.addIndex(2, 0);
+        this.indexBuffer.addIndex(2, 1);
 
-        this.indexBuffer.addIndex(1);
-        this.indexBuffer.addIndex(2);
+        this.indexBuffer.addIndex(2, 1);
+        this.indexBuffer.addIndex(2, 2);
 
-        this.indexBuffer.addIndex(1);
-        this.indexBuffer.addIndex(4);
+        this.indexBuffer.addIndex(2, 1);
+        this.indexBuffer.addIndex(2, 4);
 	}
 
 }

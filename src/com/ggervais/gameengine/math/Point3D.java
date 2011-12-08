@@ -104,4 +104,10 @@ public class Point3D {
             case 2: z(value); break;
         }
     }
+
+    public static Point3D lerp(Point3D firstPoint, Point3D secondPoint, float ratio) {
+        float t = MathUtils.clamp(ratio, 0, 1);
+        Vector3D diff = secondPoint.sub(firstPoint);
+        return Point3D.add(firstPoint, diff.multiplied(t));
+    }
 }

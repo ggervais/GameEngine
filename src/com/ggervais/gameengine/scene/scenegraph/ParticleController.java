@@ -2,6 +2,7 @@ package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.ParticlesGeometry;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.Point3D;
@@ -44,9 +45,11 @@ public class ParticleController extends MotionController {
 
     @Override
     public void setControlledObject(Spatial controlledObject) {
-        super.setControlledObject(controlledObject);
         if (controlledObject != null) {
             if (controlledObject instanceof ParticlesGeometry) {
+
+                super.setControlledObject(controlledObject);
+
                 this.isInitialized = false;
                 this.controlledSpatialObject = controlledObject;
                 this.particleVelocities.clear();
@@ -78,7 +81,7 @@ public class ParticleController extends MotionController {
                 }
 
             } else {
-                throw new IllegalArgumentException("Controller object for a ParticleController should be of type ParticlesGeometry.");
+                throw new IllegalArgumentException("Controlled object for a ParticleController should be of type ParticlesGeometry.");
             }
         }
     }
@@ -92,10 +95,10 @@ public class ParticleController extends MotionController {
     }
 
     @Override
-    public void doUpdate(long currentTime) {
+    public void doUpdate(long currentTime, InputController inputController) {
 
         // This updates particle system's motion (inherited from MotionController).
-        super.doUpdate(currentTime);
+        super.doUpdate(currentTime, inputController);
 
         if (!isInitialized) {
             initializeTimes(currentTime);
@@ -178,9 +181,9 @@ public class ParticleController extends MotionController {
 
                 // Texture coordinates must be changed, too.
                 for (int textureIndex = 0; textureIndex < this.getControlledObject().getEffect().nbTextures(); textureIndex++) {
-                    for (int i = 0; i < 4; i++) {
-                        this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, index * 4);
-                        this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, new TextureCoords(0, 0));
+                    for (int i = 0; i < 6; i++) {
+                        this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, 3, index * 6);
+                        this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, 3, new TextureCoords(0, 0));
                     }
                 }
 
@@ -252,13 +255,16 @@ public class ParticleController extends MotionController {
                 float tu4 = 1;
                 float tv4 = 0;
 
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
-                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 0, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 3, 0, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 3, 0, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 3, 0, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
 
-                for (int i = 0; i < 4; i++) {
-                    this.controlledSpatialObject.getEffect().removeTextureCoordinates(textureIndex, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex) - 1);
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 3, 0, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 3, 0, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
+                this.controlledSpatialObject.getEffect().addTextureCoordinates(textureIndex, 3, 0, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
+
+                for (int i = 0; i < 6; i++) {
+                    this.controlledSpatialObject.getEffect().removeTextureCoordinates(textureIndex, 3, this.controlledSpatialObject.getEffect().getNbTextureCoords(textureIndex, 3) - 1);
                 }
             }
 

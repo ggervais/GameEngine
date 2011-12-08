@@ -18,6 +18,7 @@ import javax.media.opengl.glu.GLU;
 import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.Quad;
 import com.ggervais.gameengine.geometry.primitives.*;
+import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.particle.Particle;
@@ -31,6 +32,7 @@ import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
 import com.ggervais.gameengine.scene.Camera;
 import com.ggervais.gameengine.scene.DisplayableEntity;
+import com.ggervais.gameengine.scene.FreeFlyCamera;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.scene.scenegraph.*;
@@ -38,6 +40,7 @@ import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
+import com.jogamp.opengl.util.gl2.GLUT;
 import org.apache.log4j.Logger;
 
 public class GLRenderer extends SceneRenderer implements GLEventListener {
@@ -45,6 +48,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private static final Logger log = Logger.getLogger(GLRenderer.class);
 
 	private GLU glu;
+    private GLUT glut;
     private GL2 gl;
     private int nbLights;
     private static final int MAX_LIGHTS = 8;
@@ -58,6 +62,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		super(scene, canvas);
 		canvas.addGLEventListener(this);
 		this.glu = new GLU();
+        this.glut = new GLUT();
         this.nbLights = 0;
 	}
 
@@ -232,73 +237,82 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void drawElements(Geometry geometry) {
-        int nbVerticesPerFace = geometry.getNbVerticesPerFace();
+        //int nbVerticesPerFace = geometry.getNbVerticesPerFace();
 		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
 
-		switch(nbVerticesPerFace) {
-			case 1:
-				glPrimitiveType = GL2.GL_POINTS;
-				break;
-			case 2:
-				glPrimitiveType = GL2.GL_LINES;
-				break;
-			case 3:
-				glPrimitiveType = GL2.GL_TRIANGLES;
-				break;
-			case 4:
-				glPrimitiveType = GL2.GL_QUADS;
-				break;
-		}
-        Effect effect = geometry.getEffect();
+		Effect effect = geometry.getEffect();
         Texture texture = null;
 
-		gl.glBegin(glPrimitiveType);
-            VertexBuffer vertexBuffer = geometry.getVertexBuffer();
-            IndexBuffer indexBuffer = geometry.getIndexBuffer();
-            TextureBuffer textureBuffer = geometry.getTextureBuffer();
-			for(int i = 0; i < indexBuffer.size(); i++) {
-                int index = indexBuffer.getIndex(i);
-		        if (index < vertexBuffer.size()) {
 
-                    Vertex vertex = vertexBuffer.getVertex(index);
-                    Point3D vertexPosition = vertex.getPosition();
-                    Vector3D normal = geometry.getNormal(index);
+        VertexBuffer vertexBuffer = geometry.getVertexBuffer();
+        IndexBuffer indexBuffer = geometry.getIndexBuffer();
+        TextureBuffer textureBuffer = geometry.getTextureBuffer();
 
-                    if (effect != null) {
-                        Color color = effect.getColor(index);
-                        gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-                    }
+        List<Integer> subIndicesKeys = indexBuffer.getNbVerticesList();
 
-                    if (effect != null) {
-                        for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
-                            TextureCoords coords = null;
-                            try {
-                                coords = effect.getTextureCoords(textureIndex, index);
-                                //coords = textureBuffer.getCoords(index);
-                            } catch (Exception e) {
+        for (int nbVerticesPerFace : subIndicesKeys) {
+            List<Integer> subIndexBuffer = indexBuffer.getSubIndexBuffer(nbVerticesPerFace);
 
-                            }
+            switch(nbVerticesPerFace) {
+                case 1:
+                    glPrimitiveType = GL2.GL_POINTS;
+                    break;
+                case 2:
+                    glPrimitiveType = GL2.GL_LINES;
+                    break;
+                case 3:
+                    glPrimitiveType = GL2.GL_TRIANGLES;
+                    break;
+                case 4:
+                    glPrimitiveType = GL2.GL_QUADS;
+                    break;
+            }
 
-                            if (coords != null) {
-                                float tu = coords.getTextureU();
-                                float tv = coords.getTextureV();
+            gl.glBegin(glPrimitiveType);
+                for(int i = 0; i < subIndexBuffer.size(); i++) {
+                    int index = subIndexBuffer.get(i);
+                    if (index < vertexBuffer.size()) {
 
-                                //tu = minBounds.x() + tu * w;
-                                //tv = minBounds.y() + tv * h;
-                                gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
-                                //gl.glTexCoord2f(tu, tv);
+                        Vertex vertex = vertexBuffer.getVertex(index);
+                        Point3D vertexPosition = vertex.getPosition();
+                        Vector3D normal = geometry.getNormal(index);
+
+                        if (effect != null) {
+                            Color color = effect.getColor(index);
+                            gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+                        }
+
+                        if (effect != null) {
+                            for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
+                                TextureCoords coords = null;
+                                try {
+                                    coords = effect.getTextureCoords(textureIndex, nbVerticesPerFace, i); // i refers to loop index for the sub index buffer.
+                                    //coords = textureBuffer.getCoords(index);
+                                } catch (Exception e) {
+
+                                }
+
+                                if (coords != null) {
+                                    float tu = coords.getTextureU();
+                                    float tv = coords.getTextureV();
+
+                                    //tu = minBounds.x() + tu * w;
+                                    //tv = minBounds.y() + tv * h;
+                                    gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
+                                    //gl.glTexCoord2f(tu, tv);
+                                }
                             }
                         }
-                    }
 
-                    if (normal != null) {
-                        gl.glNormal3f(normal.x(), normal.y(), normal.z());
-                    }
+                        if (normal != null) {
+                            gl.glNormal3f(normal.x(), normal.y(), normal.z());
+                        }
 
-                    gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
+                        gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
+                    }
                 }
-			}
-		gl.glEnd();
+            gl.glEnd();
+        }
 
         /*gl.glBegin(GL.GL_LINES);
         gl.glColor4f(1f, 1f, 1f, 1f);
@@ -576,9 +590,26 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         controlPoints.add(new Point3D(2.5f, 2.5f, -10));
         controlPoints.add(new Point3D(4f, -8f, -15));
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
-        gl.glEnable(GL2.GL_LIGHTING);
 
-        OpenGLUtils.drawBoundingBox(gl, this.scene.getCamera().getCameraGeometry().getBoundingBox(),  false);
+
+        //OpenGLUtils.drawBoundingBox(gl, this.scene.getCamera().getCameraGeometry().getBoundingBox(), false);
+
+
+        BoundingBox boundingBox = new BoundingBox(new Point3D(-1.1010036f, -1332.267f, -10.783917f), new Point3D(57.401665f, 36.188408f, 23.829382f));
+        List<Point3D> points = new ArrayList<Point3D>();
+        points.add(new Point3D(57.817886f, -0.7727107f, 19.195755f));
+        points.add(new Point3D(57.81893f, -0.7727107f, 19.195305f));
+        points.add(new Point3D(57.81784f, -0.7735305f, 19.195644f));
+        points.add(new Point3D(57.818886f, -0.7735305f, 19.195194f));
+        points.add(new Point3D(-833.4447f, 552.6644f, -610.42487f));
+        points.add(new Point3D(215.01859f, 552.6644f, -1060.647f));
+        points.add(new Point3D(-880.35486f, -267.18738f, -719.6679f));
+        points.add(new Point3D(168.10837f, -267.18738f, -1169.89f));
+
+        //OpenGLUtils.drawBoundingBox(gl, boundingBox, true);
+        //OpenGLUtils.drawViewFustrumPoints(gl, points);
+
+        gl.glEnable(GL2.GL_LIGHTING);
 
         gl.glFlush();
     }

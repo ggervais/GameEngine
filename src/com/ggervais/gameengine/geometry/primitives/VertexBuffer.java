@@ -48,4 +48,12 @@ public class VertexBuffer {
         this.vertices.clear();
         resetNbVertices();
     }
+
+    public VertexBuffer copy() {
+        VertexBuffer vertexBufferCopy = new VertexBuffer();
+        for (Vertex vertex : this.vertices) {
+            vertexBufferCopy.addVertex(vertex.copy());
+        }
+        return vertexBufferCopy;
+    }
 }

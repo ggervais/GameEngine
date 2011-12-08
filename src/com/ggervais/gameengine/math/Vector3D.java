@@ -1,5 +1,7 @@
 package com.ggervais.gameengine.math;
 
+import java.util.Vector;
+
 public class Vector3D {
 	private float x;
 	private float y;
@@ -83,6 +85,9 @@ public class Vector3D {
 	
 	public Vector3D normalized() {
 		float length = length();
+        if (length == 0) {
+            return Vector3D.zero();
+        }
 		return new Vector3D(x() / length, y() / length, z() / length);
 	}
 	
@@ -161,5 +166,11 @@ public class Vector3D {
             case 1: y(value); break;
             case 2: z(value); break;
         }
+    }
+
+    public static Vector3D lerp(Vector3D firstVector, Vector3D secondVector, float ratio) {
+        float t = MathUtils.clamp(ratio, 0, 1);
+        Vector3D diff = Vector3D.sub(secondVector, firstVector);
+        return Vector3D.add(firstVector, diff.multiplied(t));
     }
 }

@@ -75,11 +75,15 @@ public class Viewport {
         Matrix4x4 modelViewMultipliedByProjection = Matrix4x4.mult(projectionMatrix, modelViewMatrix);
         Matrix4x4 inverse = modelViewMultipliedByProjection.inverse();
 
-        result = inverse.mult(normalizedCoordinates);
-        result.w(1.0f / result.w());
-        result.x(result.x() * result.w());
-        result.y(result.y() * result.w());
-        result.z(result.z() * result.w());
+        if (inverse != null) {
+            result = inverse.mult(normalizedCoordinates);
+            result.w(1.0f / result.w());
+            result.x(result.x() * result.w());
+            result.y(result.y() * result.w());
+            result.z(result.z() * result.w());
+        } else {
+            System.out.println("No inverse found!");
+        }
 
         return result;
     }

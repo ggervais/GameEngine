@@ -1,5 +1,7 @@
 package com.ggervais.gameengine.timing;
 
+import com.ggervais.gameengine.input.InputController;
+import com.ggervais.gameengine.input.InputSensitive;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 
 public abstract class Controller {
@@ -37,7 +39,7 @@ public abstract class Controller {
         this.controlledSpatialObject = object;
     }
 
-    public void update(long currentTime) {
+    public void update(long currentTime, InputController inputController) {
         if (this.paused) {
             return;
         }
@@ -48,7 +50,7 @@ public abstract class Controller {
         if (this.startTime == 0) {
             this.startTime = currentTime;
         }
-        doUpdate(currentTime);
+        doUpdate(currentTime, inputController);
         this.lastUpdateTime = currentTime;
     }
 
@@ -56,7 +58,7 @@ public abstract class Controller {
         return this.controlledSpatialObject;
     }
 
-    public abstract void doUpdate(long currentTime);
+    public abstract void doUpdate(long currentTime, InputController inputController);
 
     public void pause(long currentTime) {
         this.paused = true;

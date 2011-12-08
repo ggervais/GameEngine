@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.timing.Controller;
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ public class AlphaController extends Controller {
     }
 
     @Override
-    public void doUpdate(long currentTime) {
+    public void doUpdate(long currentTime, InputController inputController) {
 
         float diffInMs = (float) (currentTime - this.lastUpdateTime);
         this.currentAlpha += diffInMs * this.stepInMs;

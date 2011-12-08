@@ -7,9 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.Model;
@@ -50,8 +48,8 @@ public class ObjFileLoader extends GeometryLoader {
             FileInputStream in = new FileInputStream("assets/models/" + file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            String line = reader.readLine();
-            while(line != null) {
+            String line;
+            while((line = reader.readLine()) != null) {
                 if (line.equals("")) {
                     continue;
                 }
@@ -69,8 +67,9 @@ public class ObjFileLoader extends GeometryLoader {
                     }
                 }
 
-                line = reader.readLine();
+
             }
+            reader.close();
 
             if (material.getName().length() == 0) {
                 material.setName(filename);
@@ -96,9 +95,9 @@ public class ObjFileLoader extends GeometryLoader {
 		try {
 			FileInputStream in = new FileInputStream("assets/models/" + file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			
-			String line = reader.readLine();
-			while(line != null) {
+
+            String line;
+			while((line = reader.readLine()) != null) {
 				if (line.equals("")) {
 					continue;
 				}
@@ -111,9 +110,8 @@ public class ObjFileLoader extends GeometryLoader {
 						texture = TextureLoader.loadTexture("assets/textures/" + textureFilename);
 					}
 				}
-
-				line = reader.readLine();
 			}
+            reader.close();
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
 		} catch (IOException ioe) {
@@ -123,7 +121,7 @@ public class ObjFileLoader extends GeometryLoader {
 		return texture;
 	}
 	
-	public static Geometry loadFile(String filename, Scene scene) {
+	public static Geometry loadFile(String filename) {
 		File file = new File(filename);
 		
 		System.out.print("Loading " + filename + "... ");
@@ -136,7 +134,7 @@ public class ObjFileLoader extends GeometryLoader {
 
 		List<Vertex> vertices = new ArrayList<Vertex>();
 		List<TextureCoords> coordsList = new ArrayList<TextureCoords>();
-		List<Integer> textureCoordsIndices = new ArrayList<Integer>();
+		Map<Integer, List<Integer>> textureCoordsIndices = new HashMap<Integer, List<Integer>>();
 		try {
 			FileInputStream in = new FileInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -170,15 +168,29 @@ public class ObjFileLoader extends GeometryLoader {
 
                     geometry.getVertexBuffer().addVertex(vertex);
 
-				} else if (elementType.equals("f") && nbTokens == 4) {
-					String strV1 = tokenizer.nextToken();
-					String strV2 = tokenizer.nextToken();
-					String strV3 = tokenizer.nextToken();
-					
-					String[] v1Parts = strV1.split("/");
-					String[] v2Parts = strV2.split("/");
-					String[] v3Parts = strV3.split("/");
-					
+				} else if (elementType.equals("f") && nbTokens >= 4) {
+
+                    String[] indices = new String[nbTokens - 1];
+                    int i = 0;
+                    while(tokenizer.hasMoreTokens()) {
+                        indices[i] = tokenizer.nextToken();
+                        i++;
+                    }
+
+                    int nbVerticesPerFace = indices.length;
+					for (String strIndex : indices) {
+                        String[] parts = strIndex.split("/");
+                        int v = Integer.parseInt(parts[0]);
+                        if (parts.length >= 2) {
+                            int t = Integer.parseInt(parts[1]);
+                            if (!textureCoordsIndices.containsKey(nbVerticesPerFace)) {
+                                textureCoordsIndices.put(nbVerticesPerFace, new ArrayList<Integer>());
+                            }
+                            textureCoordsIndices.get(nbVerticesPerFace).add(t);
+                        }
+                        geometry.getIndexBuffer().addIndex(nbVerticesPerFace, v - 1);
+                    }
+					/*
 					int v1 = Integer.parseInt(v1Parts[0]);
 					int v2 = Integer.parseInt(v2Parts[0]);
 					int v3 = Integer.parseInt(v3Parts[0]);
@@ -210,16 +222,16 @@ public class ObjFileLoader extends GeometryLoader {
 
                     geometry.getIndexBuffer().addIndex(v1 - 1);
                     geometry.getIndexBuffer().addIndex(v2 - 1);
-                    geometry.getIndexBuffer().addIndex(v3 - 1);
+                    geometry.getIndexBuffer().addIndex(v3 - 1);*/
 
 				} else if (elementType.equals("vt") && (nbTokens == 3 || nbTokens == 4)) {
 					String strU = tokenizer.nextToken();
 					String strV = tokenizer.nextToken();
-					String strW = tokenizer.nextToken();
+					//String strW = tokenizer.nextToken();
 					
 					float u = Float.parseFloat(strU);
 					float v = Float.parseFloat(strV);
-					float w = Float.parseFloat(strW);
+					//float w = Float.parseFloat(strW);
 					
 					TextureCoords coords = new TextureCoords(u, 1 - v);
 					coordsList.add(coords);
@@ -235,10 +247,12 @@ public class ObjFileLoader extends GeometryLoader {
 				line = reader.readLine();
 			}
             Effect effect = new Effect();
-			for (Integer i : textureCoordsIndices) {
-				TextureCoords coords = coordsList.get(i - 1);
-                effect.addTextureCoordinates(0, coords);
-				model.getTextureBuffer().addCoords(coords);
+			for (int nbVerticesPerFace : textureCoordsIndices.keySet()) {
+                for (int i : textureCoordsIndices.get(nbVerticesPerFace)) {
+                    TextureCoords coords = coordsList.get(i - 1);
+                    effect.addTextureCoordinates(0, nbVerticesPerFace, coords);
+                    model.getTextureBuffer().addCoords(coords);
+                }
 			}
 			geometry.setEffect(effect);
 			reader.close();

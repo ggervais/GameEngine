@@ -27,9 +27,9 @@ public class TerrainFollowingFreeFlyCamera extends FreeFlyCamera {
 	}
 	
 	@Override
-	public void update(InputController inputController, Spatial sceneGraphRoot) {
+	public void update(long currentTime, InputController inputController, Spatial sceneGraphRoot) {
 
-        super.update(inputController, sceneGraphRoot);
+        super.update(currentTime, inputController, sceneGraphRoot);
 
         Point3D currentPosition = this.position.copy();
 

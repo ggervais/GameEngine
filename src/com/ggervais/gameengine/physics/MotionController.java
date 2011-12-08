@@ -1,12 +1,17 @@
 package com.ggervais.gameengine.physics;
 
+import com.ggervais.gameengine.geometry.SphereGeometry;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.MathUtils;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
+import com.ggervais.gameengine.physics.collision.Collision;
 import com.ggervais.gameengine.scene.scenegraph.Spatial;
 import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import com.ggervais.gameengine.timing.Controller;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 public class MotionController extends Controller {
     private Logger log = Logger.getLogger(MotionController.class);
@@ -14,6 +19,7 @@ public class MotionController extends Controller {
     private Vector3D initialVelocity; // In m/s
     private Transformation initialTransformation;
     private boolean rotateWhileMoving;
+    private boolean firstUpdateOccurred;
 
     public MotionController(Vector3D gravity, float speed, float theta, float phi) {
         this(gravity, Vector3D.createFromPolarCoordinates(speed, theta, phi), true);
@@ -32,6 +38,7 @@ public class MotionController extends Controller {
         this.initialVelocity = initialVelocity;
         this.initialTransformation = new Transformation();
         this.rotateWhileMoving = rotateWhileMoving;
+        this.firstUpdateOccurred = false;
     }
 
     @Override
@@ -56,19 +63,52 @@ public class MotionController extends Controller {
     }
 
     @Override
-    public void doUpdate(long currentTime) {
-        long dt = currentTime - this.startTime - this.pauseOffset;
+    public void doUpdate(long currentTime, InputController inputController) {
+        long dtTotal = currentTime - this.startTime - this.pauseOffset;
+        float dtTotalSeconds = dtTotal / 1000f;
+
+        long dt = currentTime - this.lastUpdateTime;
         float dtSeconds = dt / 1000f;
 
         // Newton's laws of motion.
-        Vector3D currentVelocity = Vector3D.add(this.initialVelocity, this.gravity.copy().multiplied(dtSeconds));
-        Vector3D currentTranslation = Vector3D.add(this.initialTransformation.getTranslation(), Vector3D.add(this.initialVelocity, currentVelocity).multiplied(0.5f * dtSeconds));
+        Vector3D currentVelocity = Vector3D.add(this.initialVelocity, this.gravity.copy().multiplied(dtTotalSeconds));
+
+        //Vector3D currentTranslation = Vector3D.add(this.initialTransformation.getTranslation(), Vector3D.add(this.initialVelocity, currentVelocity).multiplied(0.5f * dtSeconds));
+        Vector3D baseTranslation = this.controlledSpatialObject.getLocalTransformation().getTranslation();
+        Vector3D candidateTranslation = Vector3D.add(baseTranslation, currentVelocity.multiplied(dtSeconds));
+
+        if (this.firstUpdateOccurred && this.controlledSpatialObject.isCheckCollisionsWhenMoving()) {
+            Spatial root = this.controlledSpatialObject.getTopParent();
+            List<Collision> collisions = this.controlledSpatialObject.intersectsWithUnderlyingGeometry(root);
+            if (collisions.size() > 0) {
+                for (Collision collision : collisions) {
+                    if (collision.getFirst() == this.controlledSpatialObject && collision.getSecond() != this.controlledSpatialObject) {
+
+                        float minComponent = Float.MAX_VALUE;
+                        int minAxis = 0;
+
+                        for (int i = 0; i < 3; i++) {
+                            if (Math.abs(collision.getPenetrationVector().get(i)) < Math.abs(minComponent)) {
+                                minComponent = collision.getPenetrationVector().get(i);
+                                minAxis = i;
+                            }
+                        }
+
+                        if (collision.getPenetrationVector().get(minAxis) < Float.MAX_VALUE) {
+                            candidateTranslation.set(minAxis, candidateTranslation.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                            this.initialVelocity = Vector3D.zero();
+                        }
+                    }
+                }
+            }
+        }
+
         Vector3D normalizedRotation = currentVelocity.normalized();
 
         if (this.controlledSpatialObject != null) {
             Transformation transformation = this.controlledSpatialObject.getLocalTransformation();
             if (transformation != null) {
-                transformation.setTranslation(currentTranslation);
+                transformation.setTranslation(candidateTranslation);
 
                 RotationMatrix initialRotation = this.initialTransformation.getRotationMatrix();
 
@@ -85,6 +125,10 @@ public class MotionController extends Controller {
                     transformation.setRotationMatrix(tempMatrix);
                 }
             }
+        }
+
+        if (!this.firstUpdateOccurred) {
+            this.firstUpdateOccurred = true;
         }
     }
 }

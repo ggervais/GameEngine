@@ -61,13 +61,13 @@ public class CubeGeometry extends Geometry {
 
         int vertexCounter = 0;
         for (int i = 0; i < 6; i++) {
-            this.indexBuffer.addIndex(vertexCounter);
-            this.indexBuffer.addIndex(vertexCounter + 1);
-            this.indexBuffer.addIndex(vertexCounter + 2);
+            this.indexBuffer.addIndex(3, vertexCounter);
+            this.indexBuffer.addIndex(3, vertexCounter + 1);
+            this.indexBuffer.addIndex(3, vertexCounter + 2);
 
-            this.indexBuffer.addIndex(vertexCounter + 2);
-            this.indexBuffer.addIndex(vertexCounter + 3);
-            this.indexBuffer.addIndex(vertexCounter);
+            this.indexBuffer.addIndex(3, vertexCounter + 2);
+            this.indexBuffer.addIndex(3, vertexCounter + 3);
+            this.indexBuffer.addIndex(3, vertexCounter);
 
             vertexCounter += 4;
         }
@@ -91,12 +91,15 @@ public class CubeGeometry extends Geometry {
 		    TextureCoords texture01 = new TextureCoords(min.x() + 0 * w, min.y() + 1 * h);
 		    TextureCoords texture11 = new TextureCoords(min.x() + 1 * w, min.y() + 1 * h);
 
-            effect.clearTextureCoordinates(i);
+            effect.clearTextureCoordinates(i, 3);
             for (int j = 0; j <= 6; j++) {
-                effect.addTextureCoordinates(i, texture00);
-                effect.addTextureCoordinates(i, texture01);
-                effect.addTextureCoordinates(i, texture11);
-                effect.addTextureCoordinates(i, texture10);
+                effect.addTextureCoordinates(i, 3, texture00);
+                effect.addTextureCoordinates(i, 3, texture01);
+                effect.addTextureCoordinates(i, 3, texture11);
+
+                effect.addTextureCoordinates(i, 3, texture11);
+                effect.addTextureCoordinates(i, 3, texture10);
+                effect.addTextureCoordinates(i, 3, texture00);
             }
         }
     }

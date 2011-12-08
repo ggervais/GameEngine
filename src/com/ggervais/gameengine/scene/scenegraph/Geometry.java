@@ -1,6 +1,8 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
 import com.ggervais.gameengine.geometry.primitives.*;
+import com.ggervais.gameengine.geometry.skinning.Bone;
+import com.ggervais.gameengine.geometry.skinning.SkinWeights;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
@@ -22,8 +24,11 @@ public abstract class Geometry extends Spatial {
 	private List<Face> faces;
     protected int nbFaces;
     protected List<Vector3D> normals;
+    protected Bone boneHierarchyRoot;
 
-    private BoundingBox modelBoundingBox;
+    protected List<SkinWeights> skinWeightsList;
+
+    protected BoundingBox modelBoundingBox;
     private boolean isGeometryDirty;
 
     private Map<GlobalStateType, GlobalState> globalStates;
@@ -44,6 +49,7 @@ public abstract class Geometry extends Spatial {
         this.globalStates = new HashMap<GlobalStateType, GlobalState>();
         this.modelBoundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
         this.nbFaces = 0;
+        this.skinWeightsList = new ArrayList<SkinWeights>();
 	}
 
     public Vector3D getNormal(int index) {
@@ -152,9 +158,6 @@ public abstract class Geometry extends Spatial {
 
     private void computeBoundingBox(Matrix4x4 transform) {
 
-
-        // TODO fix precision
-
         float minX = Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
         float minZ = Float.MAX_VALUE;
@@ -163,8 +166,9 @@ public abstract class Geometry extends Spatial {
         float maxY = (-Float.MAX_VALUE);
         float maxZ = (-Float.MAX_VALUE);
 
-        for (int i = 0; i < this.vertexBuffer.size(); i++) {
-            Vertex vertex = this.vertexBuffer.getVertex(i);
+        VertexBuffer vertexBufferToUse = getVertexBuffer();
+        for (int i = 0; i < vertexBufferToUse.size(); i++) {
+            Vertex vertex = vertexBufferToUse.getVertex(i);
             Point3D position = transform.mult(vertex.getPosition());
 
             minX = Math.min(position.x(), minX);
@@ -180,6 +184,33 @@ public abstract class Geometry extends Spatial {
         BoundingBox box = new BoundingBox(minCorner, maxCorner);
 
         this.modelBoundingBox = box;
+    }
+    
+    public static BoundingBox computeBoundingBox(List<Point3D> points) {
+
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float minZ = Float.MAX_VALUE;
+
+        float maxX = (-Float.MAX_VALUE);
+        float maxY = (-Float.MAX_VALUE);
+        float maxZ = (-Float.MAX_VALUE);
+        
+        for (Point3D point : points) {
+            
+            minX = Math.min(point.x(), minX);
+            minY = Math.min(point.y(), minY);
+            minZ = Math.min(point.z(), minZ);
+            maxX = Math.max(point.x(), maxX);
+            maxY = Math.max(point.y(), maxY);
+            maxZ = Math.max(point.z(), maxZ);
+        }
+        
+        Point3D minCorner = new Point3D(minX, minY, minZ);
+        Point3D maxCorner = new Point3D(maxX, maxY, maxZ);
+
+        return new BoundingBox(minCorner, maxCorner);
+        
     }
 
     protected abstract void generateTextureCoords(Effect effect);
@@ -203,21 +234,23 @@ public abstract class Geometry extends Spatial {
     private void computeVertexNormals() throws UnsupportedOperationException {
         this.normals.clear();
 
-        if (this.nbVerticesPerFace != DEFAULT_NB_VERTICES_PER_FACE) {
-            throw new UnsupportedOperationException("Only " + DEFAULT_NB_VERTICES_PER_FACE + " vertices per face supported right now.");
+        if (!this.indexBuffer.hasSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE)) {
+            log.warn("Only " + DEFAULT_NB_VERTICES_PER_FACE + " vertices per face supported right now.");
+            return;
         }
 
-        int nbFaces = this.indexBuffer.size() / this.nbVerticesPerFace;
+        int nbFaces = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE).size() / DEFAULT_NB_VERTICES_PER_FACE;
 
         // for each vertex
         for (int i = 0; i < this.vertexBuffer.size(); i++) {
             Vector3D sumOfFaceNormals = Vector3D.zero();
             // for each face
-            for (int j = 0; j < this.indexBuffer.size(); j += this.nbVerticesPerFace) {
+            List<Integer> subIndexBuffer = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE);
+            for (int j = 0; j < subIndexBuffer.size(); j += DEFAULT_NB_VERTICES_PER_FACE) {
                 // j points to the current vertex index
-                int indexOfFirstVertexInFace = this.indexBuffer.getIndex(j);
-                int indexOfSecondVertexInFace = this.indexBuffer.getIndex(j + 1);
-                int indexOfThirdVertexInFace = this.indexBuffer.getIndex(j + 2);
+                int indexOfFirstVertexInFace = subIndexBuffer.get(j);
+                int indexOfSecondVertexInFace = subIndexBuffer.get(j + 1);
+                int indexOfThirdVertexInFace = subIndexBuffer.get(j + 2);
 
                 // if indexed vertex == current vertex
                 if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace) {
@@ -284,5 +317,21 @@ public abstract class Geometry extends Spatial {
 
     public Map<GlobalStateType, GlobalState> getStates() {
         return this.globalStates;
+    }
+
+    public Bone getBoneHierarchyRoot() {
+        return boneHierarchyRoot;
+    }
+
+    public void setBoneHierarchyRoot(Bone boneHierarchyRoot) {
+        this.boneHierarchyRoot = boneHierarchyRoot;
+    }
+
+    public List<SkinWeights> getSkinWeightsList() {
+        return skinWeightsList;
+    }
+
+    public void setSkinWeightsList(List<SkinWeights> skinWeights) {
+        this.skinWeightsList = skinWeights;
     }
 }

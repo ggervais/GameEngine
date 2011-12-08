@@ -28,4 +28,12 @@ public class ScaleMatrix extends Matrix4x4 {
 	public void setScaleZ(float sz) {
 		setElement(3, 3, sz);
 	}
+
+    public Point3D getScale() {
+        Point3D point = new Point3D();
+        point.x(getElement(1, 1));
+        point.y(getElement(2, 2));
+        point.z(getElement(3, 3));
+        return point;
+    }
 }

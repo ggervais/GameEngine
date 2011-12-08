@@ -1,5 +1,6 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.math.RotationMatrix;
 import com.ggervais.gameengine.math.Vector3D;
@@ -15,9 +16,9 @@ public class BillboardNode extends Node {
     }
 
     @Override
-    public void updateWorldData(long currentTime) {
+    public void updateWorldData(long currentTime, InputController inputController) {
         // First call will propagate parent's world transformation to current node.
-        super.updateWorldData(currentTime);
+        super.updateWorldData(currentTime, inputController);
 
         Vector3D translation = this.worldTransform.getTranslation();
         Point3D position = new Point3D(translation.x(), translation.y(), translation.z());
@@ -31,7 +32,7 @@ public class BillboardNode extends Node {
         // This call will update children.
         // TODO this is code duplication: remove it. Ideas: boolean flag.
         for (Spatial child : this.children) {
-            child.updateGeometryState(currentTime, false);
+            child.updateGeometryState(currentTime, inputController, false);
         }
     }
 }

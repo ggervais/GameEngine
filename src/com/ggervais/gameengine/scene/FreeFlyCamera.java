@@ -57,7 +57,7 @@ public class FreeFlyCamera extends Camera {
 	}
 	
 	@Override
-	public void update(InputController inputController, Spatial sceneGraphRoot) {
+	public void update(long currentTime, InputController inputController, Spatial sceneGraphRoot) {
 		
 		boolean isForwardKeyDown = false;
         boolean isBackwardKeyDown = false;
@@ -100,7 +100,10 @@ public class FreeFlyCamera extends Camera {
 		
 		clampPhi();
 
-        setDirection(new Vector3D((float) Math.cos(this.phi) * (float) Math.cos(this.theta), (float) Math.sin(this.theta), (float) Math.sin(this.phi) * (float) Math.cos(this.theta)).normalized());
+        float rotationX = (float) Math.cos(this.phi) * (float) Math.cos(this.theta);
+        float rotationY = (float) Math.sin(this.theta);
+        float rotationZ = (float) Math.sin(this.phi) * (float) Math.cos(this.theta);
+        setDirection(new Vector3D(rotationX, rotationY, rotationZ).normalized());
 
 		Vector3D cross = Vector3D.crossProduct(this.direction, this.up).normalized();
         this.right.x(cross.x());
@@ -119,7 +122,7 @@ public class FreeFlyCamera extends Camera {
         Point3D candidatePosition = oldPosition.copy();
         candidatePosition.add(velocity);
         cameraTransformation.setTranslation(Point3D.sub(candidatePosition, Point3D.zero()));
-        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), inputController, false);
 
         List<Collision> collisions = this.cameraGeometry.intersectsWithUnderlyingGeometry(sceneGraphRoot);
         for (Collision collision : collisions) {
@@ -135,14 +138,15 @@ public class FreeFlyCamera extends Camera {
                     }
                 }
 
-                candidatePosition.set(minAxis, candidatePosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
-                break;
+                if (collision.getPenetrationVector().get(minAxis) < Float.MAX_VALUE) {
+                    candidatePosition.set(minAxis, candidatePosition.get(minAxis) - collision.getPenetrationVector().get(minAxis));
+                }
             }
         }
         setPosition(candidatePosition);
 
         cameraTransformation.setTranslation(Point3D.sub(getPosition(), Point3D.zero()));
-        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), false);
+        this.cameraGeometry.updateGeometryState(System.currentTimeMillis(), inputController, false);
 
 		//log.warn("Position -> " + this.position + ", Direction -> " + this.direction + ", Right -> " + this.right + ", LookAt -> " + getLookAt());
 		
