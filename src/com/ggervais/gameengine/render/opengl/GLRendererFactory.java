@@ -4,7 +4,6 @@ import java.awt.Component;
 
 import javax.media.opengl.awt.GLCanvas;
 
-import com.ggervais.gameengine.render.DisplayFactory;
 import com.ggervais.gameengine.render.RendererFactory;
 import com.ggervais.gameengine.render.SceneRenderer;
 import com.ggervais.gameengine.scene.Scene;

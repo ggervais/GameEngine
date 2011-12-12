@@ -101,10 +101,8 @@ public class MeshGeometry extends Geometry {
             // Find maximum number of keys throughout the bone animations.
             // Normally, it should be the same for all animations.
             int maxNumberOfKeys = 0;
-            log.info("Processing animation set = " + animationSet.getName());
             for (int i = 0; i < animationSet.getNbAnimations(); i++) {
                 maxNumberOfKeys = Math.max(animationSet.getAnimation(i).getNbAnimationKeys(), maxNumberOfKeys);
-                log.info("Number of keys = " + animationSet.getAnimation(i).getNbAnimationKeys());
             }
 
             this.boundingBoxes.put(animationSet, new ArrayList<BoundingBox>());

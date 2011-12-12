@@ -6328,7 +6328,7 @@ Mesh {
     0.0; 0.0; 0.0;;
   TextureFilename {
     "cochon.jpg";
-    }
+  }
   }
     }
   MeshNormals {

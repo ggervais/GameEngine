@@ -132,11 +132,9 @@ public class Game {
             while(children.hasNext()) {
                 Spatial child = children.next();
                 if (child instanceof Geometry) {
-                    BoundingBox box = ((Geometry) child).getBoundingBox().copy();
-                    //box.transform(child.getWorldTransformation());
+                    BoundingBox box = child.getBoundingBox().copy();
                     Point3D intersect = box.intersects(ray);
                     if (intersect != null) {
-                        //log.info(child + " intersects with ray at " + intersect);
                         child.setPickedInCurrentUpdate(true);
                     } else {
                         child.setPickedInCurrentUpdate(false);
@@ -208,7 +206,6 @@ public class Game {
 			if (timeDifference > QUANTUM) {
                 update(currentTime);
                 try {
-                    //this.renderer.drawSceneGraph(this.scene.getSceneGraphRoot());
                     this.scene.render();
                 } catch (Exception e) {
                     log.error("And error occured: " + e.getMessage());

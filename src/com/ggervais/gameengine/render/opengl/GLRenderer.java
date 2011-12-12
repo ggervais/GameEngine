@@ -15,24 +15,17 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
 
-import com.ggervais.gameengine.geometry.Model;
-import com.ggervais.gameengine.geometry.Quad;
 import com.ggervais.gameengine.geometry.primitives.*;
-import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.material.Material;
 import com.ggervais.gameengine.math.*;
-import com.ggervais.gameengine.particle.Particle;
-import com.ggervais.gameengine.particle.ParticleEmitter;
-import com.ggervais.gameengine.particle.ParticleSubsystem;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
-import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
 import com.ggervais.gameengine.render.*;
+import com.ggervais.gameengine.render.shader.Program;
+import com.ggervais.gameengine.render.shader.Shader;
 import com.ggervais.gameengine.resource.Resource;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
 import com.ggervais.gameengine.scene.Camera;
-import com.ggervais.gameengine.scene.DisplayableEntity;
-import com.ggervais.gameengine.scene.FreeFlyCamera;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.scene.scenegraph.*;
@@ -53,7 +46,12 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private int nbLights;
     private static final int MAX_LIGHTS = 8;
     private static final int MAX_TEXTURES = 32;
-
+    
+    private Shader vertexShader;
+    private Shader fragmentShader;
+    private Program program;
+    private int textureUniformLocation;
+    
     private static final Random random = new Random();
 
     private static float particleLife = 1.0f;
@@ -64,131 +62,24 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		this.glu = new GLU();
         this.glut = new GLUT();
         this.nbLights = 0;
+        this.textureUniformLocation = -1;
 	}
 
     public void display(GLAutoDrawable glDrawable) {
         drawSceneGraph(this.scene.getSceneGraphRoot());
     }
 
-	public void display2(GLAutoDrawable glDrawable) {
-
-        //GL2 gl = glDrawable.getGL().getGL2();
-
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-        gl.glClearColor(0.53f, 0.81f, 0.98f, 1);
-        gl.glClearColor(0, 0, 0, 1);
-
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        Camera camera = this.scene.getCamera();
-        Point3D cameraPosition = camera.getPosition();
-        Point3D cameraLookAt = camera.getLookAt();
-        Vector3D cameraUp = camera.getUp();
-        
-        this.glu.gluLookAt(cameraPosition.x(), cameraPosition.y(), cameraPosition.z(), 
-        				   cameraLookAt.x(), cameraLookAt.y(), cameraLookAt.z(),
-        				   cameraUp.x(), cameraUp.y(), cameraUp.z());
-
-        List<DepthSortableEntity> items = new ArrayList<DepthSortableEntity>();
-
-        for (DisplayableEntity entity : this.scene.getEntities()) {
-            items.add(entity);
-        }
-
-        for (int i = 0; i < ParticleSubsystem.getInstance().nbEmitters(); i++) {
-            items.add(ParticleSubsystem.getInstance().getEmitter(i));
-        }
-
-        CameraDistanceComparator comparator = new CameraDistanceComparator(camera);
-        Collections.sort(items, comparator);
-
-        for (DepthSortableEntity dse : items) {
-            if (dse instanceof DisplayableEntity) {
-                DisplayableEntity entity = (DisplayableEntity) dse;
-
-                gl.glEnable(GL.GL_DEPTH_TEST);
-                gl.glEnable(GL.GL_CULL_FACE);
-                gl.glDepthFunc(GL.GL_LEQUAL);
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-
-                Texture texture = null;
-
-                if (entity.getMaterial() != null) {
-                    texture = entity.getMaterial().getTexture(0);
-                }
-
-
-                //OpenGLUtils.drawBoundingBox(gl, entity.getBoundingBox());
-
-                OpenGLUtils.drawModel(gl, entity.getModel(), texture, entity.getWorldMatrix());
-
-                BoundingSphere sphere = entity.getBoundingSphere();
-                Vector3D cameraRotation = camera.getDirection();
-
-                RotationMatrix rotation = RotationMatrix.createFromFacingPositions(sphere.getCenter(), cameraPosition, cameraUp);
-                //OpenGLUtils.drawCircle(gl, sphere.getCenter(), sphere.getRadius(), rotation);
-            } else if (dse instanceof ParticleEmitter) {
-                ParticleEmitter emitter = (ParticleEmitter) dse;
-
-
-                gl.glDisable(GL.GL_DEPTH_TEST);
-                gl.glDisable(GL.GL_CULL_FACE);
-
-                for (int p = 0; p < emitter.nbParticles(); p++) {
-                    Particle particle = emitter.getParticle(p);
-
-                    if (particle != null && !particle.isDead()) {
-                        Texture texture = particle.getTexture();
-                        float aspectRatio = (float) texture.getNbCellsHeight() / (float)texture.getNbCellsWidth();
-                        Model particleModel = new Quad(aspectRatio);
-                        DisplayableEntity entity = new DisplayableEntity(particleModel);
-                        entity.setPosition(particle.getPosition());
-
-                        float scale = particle.getScale();
-                        entity.setScale(new Vector3D(scale, scale, scale));
-
-                        RotationMatrix rotation = new RotationMatrix();
-                        if (particle.isBillboard()) {
-                            rotation = RotationMatrix.createFromFacingPositions(entity.getPosition(), cameraPosition, cameraUp);
-                        }
-                        //RotationMatrix stepperRotation = RotationMatrix.createFromYawPitchRoll(particle.getRotation().x(), particle.getRotation().y(), particle.getRotation().z());
-                        //rotation.mult(stepperRotation);
-
-                        RotationMatrix particleRotation = particle.getRotationMatrix();
-                        rotation.mult(particleRotation);
-
-                        if (particle.useAdditiveBlending()) {
-                            gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE);
-                        } else {
-                            gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-                        }
-
-                        OpenGLUtils.drawParticle(gl, particleModel, texture, particle.getTextureIndex(), particle.getColor(), entity.getWorldMatrix(rotation), particle.getAlpha());
-                    }
-                }
-            }
-        }
-
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glEnable(GL.GL_CULL_FACE);
-        gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-
-
-        OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
-        
-        gl.glFlush();
-	}
-
 	public void dispose(GLAutoDrawable glDrawable) {
 	}
 
 	public void init(GLAutoDrawable glDrawable) {
         log.info("Init");
-		//GL2 gl = glDrawable.getGL().getGL2();
-		this.gl = glDrawable.getGL().getGL2();
+
+        this.gl = glDrawable.getGL().getGL2();
+
+        this.shaderFactory = new GLShaderFactory(this.gl);
+        this.programFactory = new GLProgramFactory(this.gl);
+
         gl.glShadeModel(GLLightingFunc.GL_SMOOTH);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClearDepth(1.0f);
@@ -220,6 +111,30 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_NORMALIZE);
+
+        this.vertexShader = this.shaderFactory.buildVertexShader("shaders/vertex/hello-gl.v.glsl");
+        boolean vertexShaderCompilationSuccess = this.vertexShader.compile();
+        if (vertexShaderCompilationSuccess) {
+            log.info("Vertex shader compiled!");
+        }
+        
+        this.fragmentShader = this.shaderFactory.buildFragmentShader("shaders/fragment/hello-gl.f.glsl");
+        boolean fragmentShaderCompilationSuccess = this.fragmentShader.compile();
+        if (fragmentShaderCompilationSuccess) {
+            log.info("Fragment shader compiled!");
+        }
+
+        if (vertexShaderCompilationSuccess && fragmentShaderCompilationSuccess) {
+            this.program = this.programFactory.buildProgram(this.vertexShader, this.fragmentShader);
+            boolean programLinkSuccess = this.program.linkShaders();
+            if (programLinkSuccess) {
+                log.info("Program linked!");
+                boolean isProgram = gl.glIsProgram(this.program.getId());
+                log.info("Is program: " + isProgram);
+                this.textureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "texture");
+                log.info(this.textureUniformLocation);
+            }
+        }
 	}
 
     @Override
@@ -237,6 +152,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void drawElements(Geometry geometry) {
+        
+        gl.glUseProgram(this.program.getId());
+        
         //int nbVerticesPerFace = geometry.getNbVerticesPerFace();
 		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
 
@@ -287,7 +205,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                                 TextureCoords coords = null;
                                 try {
                                     coords = effect.getTextureCoords(textureIndex, nbVerticesPerFace, i); // i refers to loop index for the sub index buffer.
-                                    //coords = textureBuffer.getCoords(index);
                                 } catch (Exception e) {
 
                                 }
@@ -296,10 +213,13 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                                     float tu = coords.getTextureU();
                                     float tv = coords.getTextureV();
 
-                                    //tu = minBounds.x() + tu * w;
-                                    //tv = minBounds.y() + tv * h;
                                     gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
-                                    //gl.glTexCoord2f(tu, tv);
+                                }
+
+                                if (textureIndex == 0) {
+                                    gl.glActiveTexture(GL.GL_TEXTURE0 + textureIndex);
+                                    gl.glBindTexture(GL.GL_TEXTURE_2D, effect.getTexture(textureIndex).getId());
+                                    gl.glUniform1i(this.textureUniformLocation, textureIndex);
                                 }
                             }
                         }
@@ -326,6 +246,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
         gl.glEnd();*/
+        
+        gl.glUseProgram(0);
     }
 
     @Override
@@ -347,7 +269,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glEnable(GL.GL_BLEND);
             gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         }
-
     }
 
     @Override

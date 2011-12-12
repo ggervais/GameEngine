@@ -1,7 +1,8 @@
 package com.ggervais.gameengine.render.opengl;
 
 import com.ggervais.gameengine.render.shader.Shader;
-import com.ggervais.gameengine.render.shader.VertexType;
+import com.ggervais.gameengine.render.shader.ShaderType;
+import com.ggervais.gameengine.utils.FileUtils;
 import org.apache.log4j.Logger;
 
 import javax.media.opengl.GL2;
@@ -11,10 +12,10 @@ public class GLShader extends Shader {
 
     private static final Logger log = Logger.getLogger(GLShader.class);
 
-    public GLShader(GL2 gl, VertexType vertexType, String filename) {
-        super(vertexType, filename);
+    public GLShader(GL2 gl, ShaderType shaderType, String filename) {
+        super(shaderType, filename);
         this.gl = gl;
-        this.vertexType = vertexType;
+        this.shaderType = shaderType;
     }
 
     public void setGLContext(GL2 gl) {
@@ -23,7 +24,7 @@ public class GLShader extends Shader {
 
     private int getGLVertexType() {
         int glVertexType = GL2.GL_VERTEX_SHADER;
-        switch (this.vertexType) {
+        switch (this.shaderType) {
             case VERTEX_SHADER:
                 glVertexType = GL2.GL_VERTEX_SHADER;
                 break;
@@ -57,16 +58,23 @@ public class GLShader extends Shader {
     public boolean compile() {
         boolean success = true;
 
-        String[] filenames = new String[1];
-        filenames[0] = this.filename;
+        String shaderSource = "";
+        try {
+            shaderSource = FileUtils.getFileContents(filename);
+        } catch (Exception e) {
+            log.error("An exception occurred while reading shader source: " + e.getMessage());
+            return false;
+        }
+        String[] sources = new String[1];
+        sources[0] = shaderSource;
 
         int[] lengths = new int[1];
-        lengths[0] = filenames[0].length();
+        lengths[0] = sources[0].length();
 
         int glVertexType = getGLVertexType();
 
         this.id = gl.glCreateShader(glVertexType);
-        gl.glShaderSource(this.id, filenames.length, filenames, lengths, 0);
+        gl.glShaderSource(this.id, sources.length, sources, lengths, 0);
 
         gl.glCompileShader(this.id);
 

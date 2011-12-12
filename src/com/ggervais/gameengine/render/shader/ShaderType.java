@@ -1,5 +1,5 @@
 package com.ggervais.gameengine.render.shader;
 
-public enum VertexType {
+public enum ShaderType {
     VERTEX_SHADER, FRAGMENT_SHADER
 }

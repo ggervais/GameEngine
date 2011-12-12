@@ -19,8 +19,8 @@ public abstract class Program {
             throw new IllegalArgumentException("Shader object is null!");
         }
 
-        if (vertexShader.getVertexType() != VertexType.VERTEX_SHADER) {
-            throw new IllegalArgumentException("Shader must be a vertex shader. Type given: " + vertexShader.getVertexType());
+        if (vertexShader.getShaderType() != ShaderType.VERTEX_SHADER) {
+            throw new IllegalArgumentException("Shader must be a vertex shader. Type given: " + vertexShader.getShaderType());
         }
 
         this.vertexShader = vertexShader;
@@ -36,8 +36,8 @@ public abstract class Program {
             throw new IllegalArgumentException("Shader object is null!");
         }
 
-        if (fragmentShader.getVertexType() != VertexType.FRAGMENT_SHADER) {
-            throw new IllegalArgumentException("Shader must be a fragment shader. Type given: " + fragmentShader.getVertexType());
+        if (fragmentShader.getShaderType() != ShaderType.FRAGMENT_SHADER) {
+            throw new IllegalArgumentException("Shader must be a fragment shader. Type given: " + fragmentShader.getShaderType());
         }
 
         this.fragmentShader = fragmentShader;

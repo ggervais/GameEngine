@@ -1,14 +1,14 @@
 package com.ggervais.gameengine.render.shader;
 
 public abstract class Shader {
-    protected VertexType vertexType;
+    protected ShaderType shaderType;
     protected String filename;
     protected int id;
 
     public abstract boolean compile();
 
-    protected Shader(VertexType vertexType, String filename) {
-        this.vertexType = vertexType;
+    protected Shader(ShaderType shaderType, String filename) {
+        this.shaderType = shaderType;
         this.filename = filename;
     }
 
@@ -16,7 +16,7 @@ public abstract class Shader {
         return this.id;
     }
 
-    public VertexType getVertexType() {
-        return this.vertexType;
+    public ShaderType getShaderType() {
+        return this.shaderType;
     }
 }

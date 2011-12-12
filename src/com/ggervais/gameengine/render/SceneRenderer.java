@@ -7,6 +7,8 @@ import java.util.Observer;
 
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
+import com.ggervais.gameengine.render.shader.ProgramFactory;
+import com.ggervais.gameengine.render.shader.ShaderFactory;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.scene.scenegraph.*;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
@@ -16,6 +18,8 @@ public abstract class SceneRenderer implements Observer {
 	
 	protected Scene scene;
 	protected Component canvas;
+    protected ShaderFactory shaderFactory;
+    protected ProgramFactory programFactory;
 	
 	public SceneRenderer() {
 		
