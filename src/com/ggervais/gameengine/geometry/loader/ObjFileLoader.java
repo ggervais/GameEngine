@@ -11,7 +11,6 @@ import java.util.*;
 
 import com.ggervais.gameengine.geometry.MeshGeometry;
 import com.ggervais.gameengine.geometry.Model;
-import com.ggervais.gameengine.geometry.primitives.Face;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.material.Material;
@@ -19,7 +18,6 @@ import com.ggervais.gameengine.math.Point3D;
 import com.ggervais.gameengine.resource.ResourceSubsystem;
 import com.ggervais.gameengine.resource.ResourceType;
 import com.ggervais.gameengine.scene.DisplayableEntity;
-import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.material.texture.TextureLoader;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
@@ -132,41 +130,44 @@ public class ObjFileLoader extends GeometryLoader {
 
         Material material = null;
 
-		List<Vertex> vertices = new ArrayList<Vertex>();
+        List<Point3D> positions = new ArrayList<Point3D>();
 		List<TextureCoords> coordsList = new ArrayList<TextureCoords>();
-		Map<Integer, List<Integer>> textureCoordsIndices = new HashMap<Integer, List<Integer>>();
+		Map<Integer, List<IndexTexture>> indexTextures = new HashMap<Integer, List<IndexTexture>>();
+        Map<Integer, List<Integer>> textureCoordsIndices = new HashMap<Integer, List<Integer>>();
+        Map<Integer, Integer> coordsMap = new HashMap<Integer, Integer>();
+        Map<Integer, List<Integer>> coordsListMap = new HashMap<Integer, List<Integer>>();
 		try {
 			FileInputStream in = new FileInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			
+
 			String line = reader.readLine();
 			while(line != null) {
-				
+
 				StringTokenizer tokenizer = new StringTokenizer(line);
 				int nbTokens = tokenizer.countTokens();
-				
+
 				if (nbTokens <= 1) {
 					line = reader.readLine();
 					continue;
 				}
-				
+
 				String elementType = tokenizer.nextToken();
 				if (elementType.equals("v") && nbTokens >= 4) {
-					
+
 					String strX = tokenizer.nextToken();
 					String strY = tokenizer.nextToken();
 					String strZ = tokenizer.nextToken();
-					
+
 					float x = Float.parseFloat(strX);
 					float y = Float.parseFloat(strY);
 					float z = Float.parseFloat(strZ);
-					
+
 					Point3D position = new Point3D(x, y, z);
 					Vertex vertex = new Vertex(position, Color.WHITE, 0, 0);
-					vertices.add(vertex);
+					positions.add(position);
 					model.getVertexBuffer().addVertex(vertex);
 
-                    geometry.getVertexBuffer().addVertex(vertex);
+                    //geometry.getVertexBuffer().addVertex(vertex);
 
 				} else if (elementType.equals("f") && nbTokens >= 4) {
 
@@ -177,62 +178,60 @@ public class ObjFileLoader extends GeometryLoader {
                         i++;
                     }
 
+                    int[] indexArray = new int[nbTokens - 1];
                     int nbVerticesPerFace = indices.length;
-					for (String strIndex : indices) {
+
+                    if (!indexTextures.containsKey(nbVerticesPerFace)) {
+                        indexTextures.put(nbVerticesPerFace, new ArrayList<IndexTexture>());
+                    }
+                    
+					for (int index = 0; index < indices.length; index++) {
+                        String strIndex = indices[index];
                         String[] parts = strIndex.split("/");
-                        int v = Integer.parseInt(parts[0]);
+                        int v = Integer.parseInt(parts[0]) - 1;
                         if (parts.length >= 2) {
-                            int t = Integer.parseInt(parts[1]);
+                            int t = Integer.parseInt(parts[1]) - 1;
                             if (!textureCoordsIndices.containsKey(nbVerticesPerFace)) {
                                 textureCoordsIndices.put(nbVerticesPerFace, new ArrayList<Integer>());
                             }
                             textureCoordsIndices.get(nbVerticesPerFace).add(t);
+                            coordsMap.put(v, t);
+                            if (!coordsListMap.containsKey(v)) {
+                                coordsListMap.put(v, new ArrayList<Integer>());
+                            }
+                            if (!coordsListMap.get(v).contains(t)) {
+                                coordsListMap.get(v).add(t);
+                            }
+                            
+                            
+                            indexTextures.get(nbVerticesPerFace).add(new IndexTexture(v, t));
                         }
-                        geometry.getIndexBuffer().addIndex(nbVerticesPerFace, v - 1);
+                        indexArray[index] = v;
                     }
-					/*
-					int v1 = Integer.parseInt(v1Parts[0]);
-					int v2 = Integer.parseInt(v2Parts[0]);
-					int v3 = Integer.parseInt(v3Parts[0]);
-					
 
-					Face face = new Face();
-					face.addVertex(vertices.get(v1 - 1));
-					face.addVertex(vertices.get(v2 - 1));
-					face.addVertex(vertices.get(v3 - 1));
-					
-					
-					if (v1Parts.length >= 2 && v2Parts.length >= 2 && v3Parts.length >= 2) {
-						int t1 = Integer.parseInt(v1Parts[1]);
-						int t2 = Integer.parseInt(v2Parts[1]);
-						int t3 = Integer.parseInt(v3Parts[1]);
-						textureCoordsIndices.add(t1);
-						textureCoordsIndices.add(t2);
-						textureCoordsIndices.add(t3);
-						face.addTextureCoords(coordsList.get(t1 - 1));
-						face.addTextureCoords(coordsList.get(t2 - 1));
-						face.addTextureCoords(coordsList.get(t3 - 1));
-					}
-					
-					model.getIndexBuffer().addIndex(v1 - 1);
-					model.getIndexBuffer().addIndex(v2 - 1);
-					model.getIndexBuffer().addIndex(v3 - 1);
-					
-					model.getFaces().add(face);
-
-                    geometry.getIndexBuffer().addIndex(v1 - 1);
-                    geometry.getIndexBuffer().addIndex(v2 - 1);
-                    geometry.getIndexBuffer().addIndex(v3 - 1);*/
+                    /*
+                    if (indexArray.length == 3) {
+                        geometry.getIndexBuffer().addIndex(3, indexArray[0]);
+                        geometry.getIndexBuffer().addIndex(3, indexArray[1]);
+                        geometry.getIndexBuffer().addIndex(3, indexArray[2]);
+                    } else if (indexArray.length == 4) {
+                        geometry.getIndexBuffer().addIndex(4, indexArray[0]);
+                        geometry.getIndexBuffer().addIndex(4, indexArray[1]);
+                        geometry.getIndexBuffer().addIndex(4, indexArray[2]);
+                        geometry.getIndexBuffer().addIndex(4, indexArray[3]);
+                        //geometry.getIndexBuffer().addIndex(3, indexArray[3]);
+                        //geometry.getIndexBuffer().addIndex(3, indexArray[0]);
+                    }*/
 
 				} else if (elementType.equals("vt") && (nbTokens == 3 || nbTokens == 4)) {
 					String strU = tokenizer.nextToken();
 					String strV = tokenizer.nextToken();
 					//String strW = tokenizer.nextToken();
-					
+
 					float u = Float.parseFloat(strU);
 					float v = Float.parseFloat(strV);
 					//float w = Float.parseFloat(strW);
-					
+
 					TextureCoords coords = new TextureCoords(u, 1 - v);
 					coordsList.add(coords);
 				} else if (elementType.equals("mtllib") && nbTokens >= 2) {
@@ -243,17 +242,79 @@ public class ObjFileLoader extends GeometryLoader {
                     material = (Material) ResourceSubsystem.getInstance().findResourceByTypeAndName(ResourceType.MATERIAL, materialName);
 
                 }
-				
+
 				line = reader.readLine();
 			}
+
+            List<VertexDuplicationData> duplicationDatas = new ArrayList<VertexDuplicationData>();
+            List<Integer> keys = new ArrayList<Integer>(coordsListMap.keySet());
+            Collections.sort(keys);
+            int nbNewVertices = 0;
+            int nbProblematicVertices = 0;
+            int nbGoodVertices = 0;
+            for (Integer vertexIndex : keys) {
+                List<Integer> coordList = coordsListMap.get(vertexIndex);
+                if (coordList.size() > 1) {
+                    nbNewVertices += (coordList.size() - 1);
+                    VertexDuplicationData vdd = new VertexDuplicationData();
+                    
+                    vdd.setOriginalVertexIndex(vertexIndex);
+                    vdd.putReplacement(coordList.get(0), vertexIndex);
+                    
+                    for (int replacementIndex = 1; replacementIndex <= (coordList.size() - 1); replacementIndex++) {
+                        Point3D originalPosition = positions.get(vertexIndex);
+                        positions.add(originalPosition);
+                        vdd.putReplacement(coordList.get(replacementIndex), positions.size() - 1);
+                    }
+                    duplicationDatas.add(vdd);
+                    nbProblematicVertices++;
+                } else {
+                    nbGoodVertices++;
+                }
+            }
+
+            for (VertexDuplicationData vdd : duplicationDatas) {
+                for (int nbVerticesPerFace : indexTextures.keySet()) {
+                    List<IndexTexture> listOfIndexTextures = indexTextures.get(nbVerticesPerFace);
+                    for (IndexTexture indexTexture : listOfIndexTextures) {
+                        if (vdd.getOriginalVertexIndex() == indexTexture.vertexIndex) {
+                            indexTexture.vertexIndex = vdd.getReplacement(indexTexture.textureIndex);
+                        }
+                    }
+                }
+            }
+
+            log.info(nbProblematicVertices + " prob. vert., " + nbGoodVertices + ", we need to create " + nbNewVertices + "new vertices.");
+
+            for (Point3D position : positions) {
+                geometry.getVertexBuffer().addVertex(new Vertex(position, Color.WHITE, 0, 0));
+            }
+
             Effect effect = new Effect();
+            for (int nbVerticesPerFace : indexTextures.keySet()) {
+                List<IndexTexture> listOfIndexTextures = indexTextures.get(nbVerticesPerFace);
+                for (IndexTexture indexTexture : listOfIndexTextures) {
+                    geometry.getIndexBuffer().addIndex(nbVerticesPerFace, indexTexture.vertexIndex);
+                    effect.addTextureCoordinatesForVertex(0, indexTexture.vertexIndex, coordsList.get(indexTexture.textureIndex));
+                }
+            }
+
+            //Effect effect = new Effect();
 			for (int nbVerticesPerFace : textureCoordsIndices.keySet()) {
                 for (int i : textureCoordsIndices.get(nbVerticesPerFace)) {
-                    TextureCoords coords = coordsList.get(i - 1);
-                    effect.addTextureCoordinates(0, nbVerticesPerFace, coords);
+                    TextureCoords coords = coordsList.get(i);
+                    //effect.addTextureCoordinatesForVertex(0, nbVerticesPerFace, coords);
                     model.getTextureBuffer().addCoords(coords);
                 }
 			}
+
+            for (int vertexIndex : coordsMap.keySet()) {
+                TextureCoords coords = coordsList.get(coordsMap.get(vertexIndex));
+                //effect.addTextureCoordinatesForVertex(vertexIndex, coords);
+            }
+
+            log.info("Effect uses tex coords per vertices: " + effect.hasTexturesCoordsPerVertex());
+            log.info("Effect has nb. vertices: " + geometry.getVertexBuffer().getRealSize() + " and nb. tex. coords: " + effect.getNbTextureCoordinatesForVertex(0));
 			geometry.setEffect(effect);
 			reader.close();
 			in.close();

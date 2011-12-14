@@ -392,7 +392,7 @@ public class Scene extends Observable {
         fireNode.addGlobalState(lightingOff);
         this.sceneGraphRoot.addChild(fireNode);
         this.sceneGraphRoot.addChild(bezierCube);
-        //this.sceneGraphRoot.addChild(spaceship);
+        this.sceneGraphRoot.addChild(spaceship);
         //this.sceneGraphRoot.addChild(immobileCube);
 
         /*Effect ef = new Effect();

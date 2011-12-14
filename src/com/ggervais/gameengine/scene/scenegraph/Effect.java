@@ -15,6 +15,7 @@ public class Effect {
     private static final Random random = new Random();
     private List<Color> colors;
     private List<Map<Integer, List<TextureCoords>>> textureCoordinates;
+    private Map<Integer, Map<Integer, TextureCoords>> textureCoordinatesPerVertex;
 
     public Effect() {
         this.color = Color.WHITE;
@@ -23,6 +24,7 @@ public class Effect {
         this.textureMaxBounds = new ArrayList<Vector3D>();
         this.colors = new ArrayList<Color>();
         this.textureCoordinates = new ArrayList<Map<Integer, List<TextureCoords>>>();
+        this.textureCoordinatesPerVertex = new HashMap<Integer,  Map<Integer, TextureCoords>>();
     }
 
     public void setColor(Color color) {
@@ -183,6 +185,105 @@ public class Effect {
             if (array != null) {
                 array.add(i, coords);
             }
+        }
+    }
+    
+    public int getNbTextureCoordinatesForVertex(int textureIndex) {
+        int nb = 0;
+        
+        if (this.textureCoordinatesPerVertex.containsKey(textureIndex)) {
+            nb = this.textureCoordinatesPerVertex.get(textureIndex).keySet().size();
+        }
+        
+        return nb;
+    }
+    
+    public void addTextureCoordinatesForVertex(int textureIndex, int vertexIndex, TextureCoords coords) {
+        if (!this.textureCoordinatesPerVertex.containsKey(textureIndex)) {
+            this.textureCoordinatesPerVertex.put(textureIndex, new HashMap<Integer, TextureCoords>());
+        }
+        this.textureCoordinatesPerVertex.get(textureIndex).put(vertexIndex, coords);
+    }
+
+    public TextureCoords getTextureCoordsForVertex(int textureIndex, int vertexIndex) {
+        if (!this.textureCoordinatesPerVertex.containsKey(textureIndex)) {
+            this.textureCoordinatesPerVertex.put(textureIndex, new HashMap<Integer, TextureCoords>());
+        }
+        return this.textureCoordinatesPerVertex.get(textureIndex).get(vertexIndex);
+    }
+
+    public boolean hasTexturesCoordsPerVertex() {
+        
+        boolean mapIsInitialized = this.textureCoordinatesPerVertex.keySet().size() > 0;
+        boolean hasCoords = false;
+        
+        if (mapIsInitialized) {
+            for (int textureIndex : this.textureCoordinatesPerVertex.keySet()) {
+                if (this.textureCoordinatesPerVertex.get(textureIndex).keySet().size() > 0) {
+                    hasCoords = true;
+                    break;
+                }
+            }
+        }
+        
+        return hasCoords;
+    }
+    
+    public void removeTextureCoordinateForVertex(int textureIndex, int vertexIndex) {
+        if (!this.textureCoordinatesPerVertex.containsKey(textureIndex)) {
+            return;
+        }
+        
+        if (!this.textureCoordinatesPerVertex.get(textureIndex).containsKey(vertexIndex)) {
+            return;
+        }
+        
+        List<Integer> sortedIndices = new ArrayList<Integer>(this.textureCoordinatesPerVertex.get(textureIndex).keySet());
+        Collections.sort(sortedIndices);
+        for (int index : sortedIndices) {
+            if (index >= vertexIndex && this.textureCoordinatesPerVertex.get(textureIndex).containsKey(index + 1)) {
+                this.textureCoordinatesPerVertex.get(textureIndex).put(index, this.textureCoordinatesPerVertex.get(textureIndex).get(index + 1));
+            } else if (!this.textureCoordinatesPerVertex.get(textureIndex).containsKey(index + 1)) {
+                this.textureCoordinatesPerVertex.get(textureIndex).remove(index);
+            }
+        }
+    }
+
+    public void setTextureCoordinatesPerVertex(int textureIndex, int vertexIndex, TextureCoords coords) {
+        if (!this.textureCoordinatesPerVertex.containsKey(textureIndex)) {
+            return;
+        }
+
+        Map<Integer, TextureCoords> map = this.textureCoordinatesPerVertex.get(textureIndex);
+        List<Integer> sortedIndices = new ArrayList<Integer>(this.textureCoordinatesPerVertex.get(textureIndex).keySet());
+        Collections.sort(sortedIndices, new Comparator<Integer>() {
+            public int compare(Integer a, Integer b) {
+                return b.compareTo(a);
+            }
+        });
+        
+        for (int index : sortedIndices) {
+            if (index >= vertexIndex) {
+                map.put(index + 1, map.get(index));
+                map.remove(index);
+            }
+        }
+        map.put(vertexIndex, coords);
+    }
+    
+    public void removeTopTextureCoordinateForVertex(int textureIndex) {
+        if (!this.textureCoordinatesPerVertex.containsKey(textureIndex)) {
+            return;
+        }
+        Map<Integer, TextureCoords> map = this.textureCoordinatesPerVertex.get(textureIndex);
+        List<Integer> sortedIndices = new ArrayList<Integer>(this.textureCoordinatesPerVertex.get(textureIndex).keySet());
+        Collections.sort(sortedIndices, new Comparator<Integer>() {
+            public int compare(Integer a, Integer b) {
+                return b.compareTo(a);
+            }
+        });
+        if (sortedIndices.size() > 0) {
+            map.remove(sortedIndices.get(0));
         }
     }
 }

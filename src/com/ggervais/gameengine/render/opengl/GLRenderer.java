@@ -204,7 +204,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                             for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
                                 TextureCoords coords = null;
                                 try {
-                                    coords = effect.getTextureCoords(textureIndex, nbVerticesPerFace, i); // i refers to loop index for the sub index buffer.
+                                    if (effect.hasTexturesCoordsPerVertex()) {
+                                        coords = effect.getTextureCoordsForVertex(textureIndex, index);
+                                    } else {
+                                        coords = effect.getTextureCoords(textureIndex, nbVerticesPerFace, i); // i refers to loop index for the sub index buffer.
+                                    }
                                 } catch (Exception e) {
 
                                 }

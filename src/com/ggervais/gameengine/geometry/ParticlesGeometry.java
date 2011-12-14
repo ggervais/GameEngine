@@ -238,6 +238,11 @@ public class ParticlesGeometry extends Geometry {
                 float tv4 = 0;
 
 
+                effect.addTextureCoordinatesForVertex(0, j * 4 + 0, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
+                effect.addTextureCoordinatesForVertex(0, j * 4 + 1, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
+                effect.addTextureCoordinatesForVertex(0, j * 4 + 2, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));
+                effect.addTextureCoordinatesForVertex(0, j * 4 + 3, new TextureCoords(min.x() + tu4 * w, min.y() + tv4 * h));
+
                 effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu1 * w, min.y() + tv1 * h));
                 effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu2 * w, min.y() + tv2 * h));
                 effect.addTextureCoordinates(i, 3, new TextureCoords(min.x() + tu3 * w, min.y() + tv3 * h));

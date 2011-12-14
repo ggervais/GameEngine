@@ -642,15 +642,21 @@ public class XFileLoader extends GeometryLoader {
         if (createdMesh.getEffect() == null) {
             createdMesh.setEffect(new Effect());
         }
-        for (int nbVerticesPerFace : createdMesh.getIndexBuffer().getNbVerticesList()) {
+
+        for (int i = 0; i < coordsPerVertex.size(); i++) {
+            TextureCoords coords = coordsPerVertex.get(i);
+            createdMesh.getEffect().addTextureCoordinatesForVertex(0, i, coords);
+        }
+
+        /*for (int nbVerticesPerFace : createdMesh.getIndexBuffer().getNbVerticesList()) {
             createdMesh.getEffect().clearTextureCoordinates(0, nbVertices);
             for (int vertexIndex : createdMesh.getIndexBuffer().getSubIndexBuffer(nbVerticesPerFace)) {
                 TextureCoords coords = coordsPerVertex.get(vertexIndex);
                 if (coords != null) {
-                    createdMesh.getEffect().addTextureCoordinates(0, nbVerticesPerFace, coords);
+                    createdMesh.getEffect().addTextureCoordinatesForVertex(0, nbVerticesPerFace, coords);
                 }
             }
-        }
+        }*/
 
         skipToCorrespondingEndOfBlock(reader);
     }
