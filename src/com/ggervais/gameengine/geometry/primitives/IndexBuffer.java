@@ -4,10 +4,12 @@ import java.util.*;
 
 public class IndexBuffer {
 
+    private Map<Integer, Integer> ids; // From rendering engine (OpenGL, DirectX, etc.).
 	private Map<Integer, List<Integer>> indices;
 	
 	public IndexBuffer() {
 		this.indices = new HashMap<Integer, List<Integer>>();
+        this.ids = new HashMap<Integer, Integer>();
 	}
 	
 	public int size() {
@@ -43,5 +45,32 @@ public class IndexBuffer {
 
     public List<Integer> getSubIndexBuffer(int nbVertices) {
         return this.indices.get(nbVertices);
+    }
+    
+    public int getId(int nbVerticesPerFace) {
+        int id = -1;
+        if (this.ids.containsKey(nbVerticesPerFace)) {
+            id = this.ids.get(nbVerticesPerFace);
+        }
+        return id;
+    }
+    
+    public void setId(int nbVerticesPerFace, int id) {
+        this.ids.put(nbVerticesPerFace, id);
+    }
+
+    public int[] getIndexAsIntegerArray(int nbVerticesPerFace) {
+        int size = this.indices.get(nbVerticesPerFace).size();
+        int[] buffer = new int[size];
+        int i = 0;
+        for (int index : this.indices.get(nbVerticesPerFace)) {
+            buffer[i] = index;
+            i++;
+        }
+        return buffer;
+    }   
+    
+    public int getNbIndices(int nbVerticesPerFace) {
+        return this.indices.get(nbVerticesPerFace).size();
     }
 }

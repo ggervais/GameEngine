@@ -1,6 +1,8 @@
 package com.ggervais.gameengine.render.opengl;
 
 import java.awt.*;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -33,6 +35,7 @@ import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
 import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.gl2.GLUT;
 import org.apache.log4j.Logger;
 
@@ -51,6 +54,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private Shader fragmentShader;
     private Program program;
     private int textureUniformLocation;
+    private int positionAttributeLocation;
+    private int colorAttributeLocation;
     
     private static final Random random = new Random();
 
@@ -63,6 +68,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.glut = new GLUT();
         this.nbLights = 0;
         this.textureUniformLocation = -1;
+        this.positionAttributeLocation = -1;
+        this.colorAttributeLocation = -1;
 	}
 
     public void display(GLAutoDrawable glDrawable) {
@@ -132,7 +139,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 boolean isProgram = gl.glIsProgram(this.program.getId());
                 log.info("Is program: " + isProgram);
                 this.textureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "texture");
-                log.info(this.textureUniformLocation);
+                this.positionAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "position");
+                this.colorAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "color");
+                log.info("Texture uniform location: " + this.textureUniformLocation);
+                log.info("Position attribute location: " + this.positionAttributeLocation);
+                log.info("Color attribute location: " + this.colorAttributeLocation);
             }
         }
 	}
@@ -152,8 +163,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
     @Override
     public void drawElements(Geometry geometry) {
-        
-        gl.glUseProgram(this.program.getId());
+
+        if (this.program != null) {
+            gl.glUseProgram(this.program.getId());
+        }
         
         //int nbVerticesPerFace = geometry.getNbVerticesPerFace();
 		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
@@ -164,12 +177,26 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         VertexBuffer vertexBuffer = geometry.getVertexBuffer();
         IndexBuffer indexBuffer = geometry.getIndexBuffer();
-        TextureBuffer textureBuffer = geometry.getTextureBuffer();
+
+        if (vertexBuffer.getId() == -1) {
+            int id = generateGLVertexBuffer(vertexBuffer);
+            log.info("Generated id " + id + " for vertex buffer.");
+            vertexBuffer.setId(id);
+        } else {
+            fillVertexBufferData(vertexBuffer, vertexBuffer.getId());
+        }
 
         List<Integer> subIndicesKeys = indexBuffer.getNbVerticesList();
 
         for (int nbVerticesPerFace : subIndicesKeys) {
-            List<Integer> subIndexBuffer = indexBuffer.getSubIndexBuffer(nbVerticesPerFace);
+
+            if (indexBuffer.getId(nbVerticesPerFace) == -1) {
+                int id = generateGLIndexBuffer(indexBuffer, nbVerticesPerFace);
+                log.info("Generated id " + id + " for index buffer.");
+                indexBuffer.setId(nbVerticesPerFace,id);
+            } else {
+                fillIndexBufferData(indexBuffer, nbVerticesPerFace, indexBuffer.getId(nbVerticesPerFace));
+            }
 
             switch(nbVerticesPerFace) {
                 case 1:
@@ -186,6 +213,19 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                     break;
             }
 
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vertexBuffer.getId());
+            gl.glVertexAttribPointer(this.positionAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 8, 0);
+            gl.glVertexAttribPointer(this.colorAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 8, Buffers.SIZEOF_FLOAT * 4);
+            gl.glEnableVertexAttribArray(this.positionAttributeLocation);
+            gl.glEnableVertexAttribArray(this.colorAttributeLocation);
+
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getId(nbVerticesPerFace));
+            gl.glDrawElements(glPrimitiveType, indexBuffer.getNbIndices(nbVerticesPerFace), GL.GL_UNSIGNED_INT, 0);
+
+            gl.glDisableVertexAttribArray(this.colorAttributeLocation);
+            gl.glDisableVertexAttribArray(this.positionAttributeLocation);
+            
+            /*List<Integer> subIndexBuffer = indexBuffer.getSubIndexBuffer(nbVerticesPerFace);
             gl.glBegin(glPrimitiveType);
                 for(int i = 0; i < subIndexBuffer.size(); i++) {
                     int index = subIndexBuffer.get(i);
@@ -235,21 +275,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                         gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
                     }
                 }
-            gl.glEnd();
+            gl.glEnd(); */
+            
         }
-
-        /*gl.glBegin(GL.GL_LINES);
-        gl.glColor4f(1f, 1f, 1f, 1f);
-        for (int i = 0; i < vertexBuffer.size(); i++) {
-            Vector3D normal = geometry.getNormal(i);
-            if (normal != null) {
-                Point3D beginningOfNormal = vertexBuffer.getVertex(i).getPosition();
-                Point3D endOfNormal = Point3D.add(beginningOfNormal, normal.multiplied(0.5f));
-                gl.glVertex3f(beginningOfNormal.x(), beginningOfNormal.y(), beginningOfNormal.z());
-                gl.glVertex3f(endOfNormal.x(), endOfNormal.y(), endOfNormal.z());
-            }
-        }
-        gl.glEnd();*/
         
         gl.glUseProgram(0);
     }
@@ -380,7 +408,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.scene.setViewport(new Viewport(x, y, width, height));
         Matrix4x4 projectionMatrix = Matrix4x4.createFromFloatArray(projection, true);
         this.scene.setProjectionMatrix(projectionMatrix);
-        //DisplaySubsystem.getInstance().setViewport(new Viewport(x, y, width, height));
 	}
 
 	public void update(Observable o, Object arg) {
@@ -516,24 +543,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         controlPoints.add(new Point3D(4f, -8f, -15));
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
 
-
-        //OpenGLUtils.drawBoundingBox(gl, this.scene.getCamera().getCameraGeometry().getBoundingBox(), false);
-
-
-        BoundingBox boundingBox = new BoundingBox(new Point3D(-1.1010036f, -1332.267f, -10.783917f), new Point3D(57.401665f, 36.188408f, 23.829382f));
-        List<Point3D> points = new ArrayList<Point3D>();
-        points.add(new Point3D(57.817886f, -0.7727107f, 19.195755f));
-        points.add(new Point3D(57.81893f, -0.7727107f, 19.195305f));
-        points.add(new Point3D(57.81784f, -0.7735305f, 19.195644f));
-        points.add(new Point3D(57.818886f, -0.7735305f, 19.195194f));
-        points.add(new Point3D(-833.4447f, 552.6644f, -610.42487f));
-        points.add(new Point3D(215.01859f, 552.6644f, -1060.647f));
-        points.add(new Point3D(-880.35486f, -267.18738f, -719.6679f));
-        points.add(new Point3D(168.10837f, -267.18738f, -1169.89f));
-
-        //OpenGLUtils.drawBoundingBox(gl, boundingBox, true);
-        //OpenGLUtils.drawViewFustrumPoints(gl, points);
-
         gl.glEnable(GL2.GL_LIGHTING);
 
         gl.glFlush();
@@ -612,46 +621,49 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         }
     }
 
+    private int generateGLVertexBuffer(VertexBuffer vertexBuffer) {
+        int[] ids = new int[1];
+        ids[0] = -1;
 
-    public static void main(String[] args) {
-        //ProjectFloat glu = new ProjectFloat();
-        GLU glu = new GLU();
-        Viewport vp = new Viewport(0, 0, 100, 100);
-        int[] vpv = {0, 0, 100, 100};
-        Matrix4x4 modelView = new Matrix4x4();
-        Matrix4x4 projection = new Matrix4x4();
-        float[] result = new float[3];
+        gl.glGenBuffers(ids.length, ids, 0);
+        
+        int id = ids[0];
+        if (id != -1) {
+            fillVertexBufferData(vertexBuffer, id);
+        }
+        
+        return id;
+    }
 
-        projection.setElement(1, 1, 1.71f);
-        projection.setElement(2, 2, 2.41f);
-        projection.setElement(3, 3, -1f);
-        projection.setElement(3, 4, -0.002f);
-        projection.setElement(4, 3, -1f);
-        projection.setElement(4, 4, 0);
+    private void fillVertexBufferData(VertexBuffer vertexBuffer, int id) {
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, id);
+        float[] buffer = vertexBuffer.getPositionsAsFloatArray();
+        FloatBuffer floatBuffer = FloatBuffer.allocate(buffer.length);
+        floatBuffer.put(buffer);
+        floatBuffer.rewind();
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, GL2.GL_STREAM_DRAW);
+    }
 
-        modelView.setElement(1, 1, 0.7109f);
-        modelView.setElement(1, 2, 0);
-        modelView.setElement(1, 3, -0.7032f);
-        modelView.setElement(1, 4, -0.0007947f);
+    private int generateGLIndexBuffer(IndexBuffer indexBuffer, int nbVerticesPerFace) {
+        int[] ids = new int[1];
+        ids[0] = -1;
 
-        modelView.setElement(2, 1, -0.6785f);
-        modelView.setElement(2, 2, 0.26267f);
-        modelView.setElement(2, 3, -0.68594f);
-        modelView.setElement(2, 4, 0.0512f);
+        gl.glGenBuffers(ids.length, ids, 0);
 
-        modelView.setElement(3, 1, 0.1847f);
-        modelView.setElement(3, 2, 0.96488f);
-        modelView.setElement(3, 3, 0.1867f);
-        modelView.setElement(3, 4, -6.64967f);
+        int id = ids[0];
+        if (id != -1) {
+            fillIndexBufferData(indexBuffer, nbVerticesPerFace, id);
+        }
 
-        modelView.setElement(4, 1, 0);
-        modelView.setElement(4, 2, 0);
-        modelView.setElement(4, 3, 0);
-        modelView.setElement(4, 4, 1);
+        return id;
+    }
 
-        glu.gluUnProject(50, 50, 0, modelView.toColumnMajorArray(), 0, projection.toColumnMajorArray(), 0, vpv, 0, result, 0);
-
-        log.info("(" + result[0] + ", " + result[1] + ", " + result[2] + ")");
-        log.info(vp.unproject(new Point3D(50, 50, 0, 1), modelView, projection));
+    private void fillIndexBufferData(IndexBuffer indexBuffer, int nbVerticesPerFace, int id) {
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, id);
+        int[] buffer = indexBuffer.getIndexAsIntegerArray(nbVerticesPerFace);
+        IntBuffer intBuffer = IntBuffer.allocate(buffer.length);
+        intBuffer.put(buffer);
+        intBuffer.rewind();
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_INT, intBuffer, GL2.GL_STREAM_DRAW);
     }
 }
