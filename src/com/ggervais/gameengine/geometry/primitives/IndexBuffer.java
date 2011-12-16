@@ -59,18 +59,35 @@ public class IndexBuffer {
         this.ids.put(nbVerticesPerFace, id);
     }
 
-    public int[] getIndexAsIntegerArray(int nbVerticesPerFace) {
-        int size = this.indices.get(nbVerticesPerFace).size();
-        int[] buffer = new int[size];
-        int i = 0;
+    public int[] getIndexAsIntegerArray(int nbVerticesPerFace, int nbVertices) {
+
+        List<Integer> intermediateIndices = new ArrayList<Integer>();
         for (int index : this.indices.get(nbVerticesPerFace)) {
-            buffer[i] = index;
-            i++;
+            if (index < nbVertices) {
+                intermediateIndices.add(index);
+            }
+        }
+
+        int[] buffer = new int[intermediateIndices.size()];
+        int bufferIndex = 0;
+        for (int index : intermediateIndices) {
+            buffer[bufferIndex] = index;
+            bufferIndex++;
         }
         return buffer;
     }   
     
     public int getNbIndices(int nbVerticesPerFace) {
         return this.indices.get(nbVerticesPerFace).size();
+    }
+
+    public int getNbIndices(int nbVerticesPerFace, int nbVertices) {
+        int nbIndices = 0;
+        for (int index : this.indices.get(nbVerticesPerFace)) {
+            if (index < nbVertices) {
+                nbIndices++;
+            }
+        }
+        return nbIndices;
     }
 }

@@ -185,6 +185,10 @@ public class ParticleController extends MotionController {
                         this.getControlledObject().getEffect().removeTextureCoordinates(textureIndex, 3, index * 6);
                         this.getControlledObject().getEffect().addTextureCoordinates(textureIndex, 3, new TextureCoords(0, 0));
                     }
+                    
+                    for (int i = 0; i < 4; i++) {
+                        this.getControlledObject().getEffect().removeTextureCoordinateForVertex(textureIndex, index * 4);
+                    }
                 }
 
                 // Same thing.

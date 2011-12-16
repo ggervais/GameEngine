@@ -56,6 +56,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private int textureUniformLocation;
     private int positionAttributeLocation;
     private int colorAttributeLocation;
+    private int texCoordsAttributeLocation;
     
     private static final Random random = new Random();
 
@@ -70,6 +71,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.textureUniformLocation = -1;
         this.positionAttributeLocation = -1;
         this.colorAttributeLocation = -1;
+        this.texCoordsAttributeLocation = -1;
 	}
 
     public void display(GLAutoDrawable glDrawable) {
@@ -141,9 +143,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 this.textureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "texture");
                 this.positionAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "position");
                 this.colorAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "color");
+                this.texCoordsAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "texCoords");
                 log.info("Texture uniform location: " + this.textureUniformLocation);
                 log.info("Position attribute location: " + this.positionAttributeLocation);
                 log.info("Color attribute location: " + this.colorAttributeLocation);
+                log.info("TexCoords attribute location: " + this.texCoordsAttributeLocation);
             }
         }
 	}
@@ -178,6 +182,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         VertexBuffer vertexBuffer = geometry.getVertexBuffer();
         IndexBuffer indexBuffer = geometry.getIndexBuffer();
 
+        int nbVertices = vertexBuffer.size();
+        
         if (vertexBuffer.getId() == -1) {
             int id = generateGLVertexBuffer(vertexBuffer);
             log.info("Generated id " + id + " for vertex buffer.");
@@ -186,16 +192,25 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             fillVertexBufferData(vertexBuffer, vertexBuffer.getId());
         }
 
+        if (effect != null) {
+            if (effect.getId() == -1) {
+                int id = generateGLEffectBuffer(effect, nbVertices);
+                log.info("Generate id " + id + " for effect buffer");
+                effect.setId(id);
+            } else {
+                fillEffectBufferData(effect, nbVertices, effect.getId());
+            }
+        }
+        
         List<Integer> subIndicesKeys = indexBuffer.getNbVerticesList();
-
         for (int nbVerticesPerFace : subIndicesKeys) {
 
             if (indexBuffer.getId(nbVerticesPerFace) == -1) {
-                int id = generateGLIndexBuffer(indexBuffer, nbVerticesPerFace);
+                int id = generateGLIndexBuffer(indexBuffer, nbVerticesPerFace, nbVertices);
                 log.info("Generated id " + id + " for index buffer.");
                 indexBuffer.setId(nbVerticesPerFace,id);
             } else {
-                fillIndexBufferData(indexBuffer, nbVerticesPerFace, indexBuffer.getId(nbVerticesPerFace));
+                fillIndexBufferData(indexBuffer, nbVerticesPerFace, nbVertices, indexBuffer.getId(nbVerticesPerFace));
             }
 
             switch(nbVerticesPerFace) {
@@ -213,18 +228,30 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                     break;
             }
 
+            if (effect.getNbTextures() > 0) {
+                gl.glActiveTexture(GL.GL_TEXTURE0);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, effect.getTexture(0).getId());
+                gl.glUniform1i(this.textureUniformLocation, 0);
+            }
+
             gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vertexBuffer.getId());
-            gl.glVertexAttribPointer(this.positionAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 8, 0);
-            gl.glVertexAttribPointer(this.colorAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 8, Buffers.SIZEOF_FLOAT * 4);
+            gl.glVertexAttribPointer(this.positionAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 4, 0);
             gl.glEnableVertexAttribArray(this.positionAttributeLocation);
+            
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, effect.getId());
+            gl.glVertexAttribPointer(this.colorAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 6, 0);
+            gl.glVertexAttribPointer(this.texCoordsAttributeLocation, 2, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 6, Buffers.SIZEOF_FLOAT * 4);
             gl.glEnableVertexAttribArray(this.colorAttributeLocation);
+            gl.glEnableVertexAttribArray(this.texCoordsAttributeLocation);
 
+            
             gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getId(nbVerticesPerFace));
-            gl.glDrawElements(glPrimitiveType, indexBuffer.getNbIndices(nbVerticesPerFace), GL.GL_UNSIGNED_INT, 0);
+            gl.glDrawElements(glPrimitiveType, indexBuffer.getNbIndices(nbVerticesPerFace, nbVertices), GL.GL_UNSIGNED_INT, 0);
 
+            gl.glDisableVertexAttribArray(this.texCoordsAttributeLocation);
             gl.glDisableVertexAttribArray(this.colorAttributeLocation);
             gl.glDisableVertexAttribArray(this.positionAttributeLocation);
-            
+
             /*List<Integer> subIndexBuffer = indexBuffer.getSubIndexBuffer(nbVerticesPerFace);
             gl.glBegin(glPrimitiveType);
                 for(int i = 0; i < subIndexBuffer.size(); i++) {
@@ -644,7 +671,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, GL2.GL_STREAM_DRAW);
     }
 
-    private int generateGLIndexBuffer(IndexBuffer indexBuffer, int nbVerticesPerFace) {
+    private int generateGLIndexBuffer(IndexBuffer indexBuffer, int nbVerticesPerFace, int nbVertices) {
         int[] ids = new int[1];
         ids[0] = -1;
 
@@ -652,15 +679,38 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 
         int id = ids[0];
         if (id != -1) {
-            fillIndexBufferData(indexBuffer, nbVerticesPerFace, id);
+            fillIndexBufferData(indexBuffer, nbVerticesPerFace, nbVertices, id);
         }
 
         return id;
     }
 
-    private void fillIndexBufferData(IndexBuffer indexBuffer, int nbVerticesPerFace, int id) {
+    private int generateGLEffectBuffer(Effect effect, int nbVertices) {
+        int[] ids = new int[1];
+        ids[0] = -1;
+
+        gl.glGenBuffers(ids.length, ids, 0);
+
+        int id = ids[0];
+        if (id != -1) {
+            fillEffectBufferData(effect, nbVertices, id);
+        }
+
+        return id;
+    }
+    
+    private void fillEffectBufferData(Effect effect, int nbVertices, int id) {
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, id);
+        float[] buffer = effect.getEffectBufferAsFloatArray(nbVertices);
+        FloatBuffer floatBuffer = FloatBuffer.allocate(buffer.length);
+        floatBuffer.put(buffer);
+        floatBuffer.rewind();
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, GL2.GL_STREAM_DRAW);
+    }
+
+    private void fillIndexBufferData(IndexBuffer indexBuffer, int nbVerticesPerFace, int nbVertices, int id) {
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, id);
-        int[] buffer = indexBuffer.getIndexAsIntegerArray(nbVerticesPerFace);
+        int[] buffer = indexBuffer.getIndexAsIntegerArray(nbVerticesPerFace, nbVertices);
         IntBuffer intBuffer = IntBuffer.allocate(buffer.length);
         intBuffer.put(buffer);
         intBuffer.rewind();

@@ -2,10 +2,11 @@
 
 attribute vec4 position;
 attribute vec4 color;
-varying vec2 texCoords;
+attribute vec2 texCoords;
+varying vec2 fragTexCoords;
 
 void main(void) {
-    texCoords = gl_MultiTexCoord0.st;
+    fragTexCoords = texCoords;
     gl_FrontColor = color;
     gl_Position = gl_ModelViewProjectionMatrix * position;
 }

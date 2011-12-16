@@ -137,11 +137,6 @@ public class ParticlesGeometry extends Geometry {
         Vector3D rightPrime = transposedRotation.mult(right);
         Vector3D upPrime = transposedRotation.mult(up);
 
-        TextureCoords texture00 = new TextureCoords(0, 0);
-		TextureCoords texture10 = new TextureCoords(1, 0);
-		TextureCoords texture01 = new TextureCoords(0, 1);
-		TextureCoords texture11 = new TextureCoords(1, 1);
-
         int positionCounter = 0;
         for (int i = 0; i < positions.size(); i++) {
 
@@ -156,36 +151,15 @@ public class ParticlesGeometry extends Geometry {
             Point3D p3 = Point3D.sub(position, Vector3D.sub(upPrime, rightPrime).multiplied(halfSize));
             Point3D p4 = Point3D.add(position, Vector3D.add(upPrime, rightPrime).multiplied(halfSize));
 
-            /*p1 = new Point3D((-0.5f + position.x()) * size, (0.5f + position.y()) * size, position.z() * size);
-            p2 = new Point3D((-0.5f + position.x()) * size, (-0.5f + position.y()) * size , position.z() * size);
-            p3 = new Point3D((0.5f + position.x()) * size, (-0.5f + position.y()) * size, position.z() * size);
-            p4 = new Point3D((0.5f + position.x()) * size, (0.5f + position.y() * size), position.z() * size);*/
-
             Vertex vertex1 = this.vertexBuffer.getVertex(positionCounter);
             Vertex vertex2 = this.vertexBuffer.getVertex(positionCounter + 1);
             Vertex vertex3 = this.vertexBuffer.getVertex(positionCounter + 2);
             Vertex vertex4 = this.vertexBuffer.getVertex(positionCounter + 3);
 
-            TextureCoords tc1 = this.textureBuffer.getCoords(positionCounter);
-            TextureCoords tc2 = this.textureBuffer.getCoords(positionCounter + 1);
-            TextureCoords tc3 = this.textureBuffer.getCoords(positionCounter + 2);
-            TextureCoords tc4 = this.textureBuffer.getCoords(positionCounter + 3);
-
             vertex1.setPosition(p1);
-            //tc1.setTu(texture00.getTextureU());
-            //tc1.setTv(texture00.getTextureV());
-
             vertex2.setPosition(p2);
-            //tc2.setTu(texture01.getTextureU());
-            //tc2.setTv(texture01.getTextureV());
-
             vertex3.setPosition(p3);
-            //tc3.setTu(texture11.getTextureU());
-            //tc3.setTv(texture11.getTextureV());
-
             vertex4.setPosition(p4);
-            //tc4.setTu(texture10.getTextureU());
-            //tc4.setTv(texture10.getTextureV());
 
             positionCounter += 4;
         }

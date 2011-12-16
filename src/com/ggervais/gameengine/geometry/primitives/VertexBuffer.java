@@ -71,23 +71,18 @@ public class VertexBuffer {
     }
 
     public float[] getPositionsAsFloatArray() {
-        int size = this.vertices.size() * 8;
+        int size = this.vertices.size() * 4;
         float[] buffer = new float[size];
         
-        int i = 0;
+        int bufferIndex = 0;
         for (Vertex vertex : this.vertices) {
             Point3D position = vertex.getPosition();
-            buffer[i + 0] = position.x();
-            buffer[i + 1] = position.y();
-            buffer[i + 2] = position.z();
-            buffer[i + 3] = position.w();
-            
-            buffer[i + 4] = rand.nextFloat();
-            buffer[i + 5] = rand.nextFloat();
-            buffer[i + 6] = rand.nextFloat();
-            buffer[i + 7] = 1;
+            buffer[bufferIndex + 0] = position.x();
+            buffer[bufferIndex + 1] = position.y();
+            buffer[bufferIndex + 2] = position.z();
+            buffer[bufferIndex + 3] = position.w();
 
-            i += 8;
+            bufferIndex += 4;
         }
 
         return buffer;

@@ -16,6 +16,7 @@ public class Effect {
     private List<Color> colors;
     private List<Map<Integer, List<TextureCoords>>> textureCoordinates;
     private Map<Integer, Map<Integer, TextureCoords>> textureCoordinatesPerVertex;
+    private int id;
 
     public Effect() {
         this.color = Color.WHITE;
@@ -25,6 +26,7 @@ public class Effect {
         this.colors = new ArrayList<Color>();
         this.textureCoordinates = new ArrayList<Map<Integer, List<TextureCoords>>>();
         this.textureCoordinatesPerVertex = new HashMap<Integer,  Map<Integer, TextureCoords>>();
+        this.id = -1;
     }
 
     public void setColor(Color color) {
@@ -285,5 +287,65 @@ public class Effect {
         if (sortedIndices.size() > 0) {
             map.remove(sortedIndices.get(0));
         }
+    }
+    
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public float[] getEffectBufferAsFloatArray(int nbVertices) {
+
+        int size = nbVertices * 6;
+
+        Color baseColor = Color.WHITE;
+        if (this.color != null) {
+            baseColor = this.color;
+        }
+
+        TextureCoords baseCoords = new TextureCoords(0, 0);
+        
+        float[] buffer = new float[size];
+
+        int bufferIndex = 0;
+        for (int i = 0; i < nbVertices; i++) {
+            Color color = baseColor;
+            if (i < this.colors.size()) {
+                color = this.colors.get(i);
+            }
+            float r = color.getRed() / 255f;
+            float g = color.getGreen() / 255f;
+            float b = color.getBlue() / 255f;
+            float a = color.getAlpha() / 255f;
+            
+            TextureCoords coords = baseCoords;
+            if (this.textureCoordinatesPerVertex.containsKey(0)) {
+                Map<Integer, TextureCoords> coordsMap = this.textureCoordinatesPerVertex.get(0);
+                if (coordsMap.containsKey(i)) {
+                    coords = coordsMap.get(i);
+                }
+            }
+            float tu = coords.getTextureU();
+            float tv = coords.getTextureV();
+            
+            buffer[bufferIndex + 0] = r;
+            buffer[bufferIndex + 1] = g;
+            buffer[bufferIndex + 2] = b;
+            buffer[bufferIndex + 3] = a;
+
+            buffer[bufferIndex + 4] = tu;
+            buffer[bufferIndex + 5] = tv;
+
+            bufferIndex += 6;
+        }
+
+        return buffer;
+    }
+    
+    public int getNbTextures() {
+        return this.textures.size();
     }
 }
