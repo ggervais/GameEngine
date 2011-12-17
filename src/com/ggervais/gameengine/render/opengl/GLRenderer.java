@@ -49,16 +49,16 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private int nbLights;
     private static final int MAX_LIGHTS = 8;
     private static final int MAX_TEXTURES = 32;
-    
-    private Shader vertexShader;
-    private Shader fragmentShader;
+
     private Program program;
+    private int projectionMatrixUniformLocation;
+    private int modelViewMatrixUniformLocation;
     private int textureUniformLocation;
     private int positionAttributeLocation;
     private int colorAttributeLocation;
     private int texCoordsAttributeLocation;
     private int normalAttributeLocation;
-    
+
     private static final Random random = new Random();
 
     private static float particleLife = 1.0f;
@@ -69,6 +69,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		this.glu = new GLU();
         this.glut = new GLUT();
         this.nbLights = 0;
+        this.projectionMatrixUniformLocation = -1;
+        this.modelViewMatrixUniformLocation = -1;
         this.textureUniformLocation = -1;
         this.positionAttributeLocation = -1;
         this.colorAttributeLocation = -1;
@@ -123,30 +125,34 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_NORMALIZE);
 
-        this.vertexShader = this.shaderFactory.buildVertexShader("shaders/vertex/hello-gl.v.glsl");
-        boolean vertexShaderCompilationSuccess = this.vertexShader.compile();
+        Shader vertexShader = this.shaderFactory.buildVertexShader("shaders/vertex/hello-gl.v.glsl");
+        boolean vertexShaderCompilationSuccess = vertexShader.compile();
         if (vertexShaderCompilationSuccess) {
             log.info("Vertex shader compiled!");
         }
-        
-        this.fragmentShader = this.shaderFactory.buildFragmentShader("shaders/fragment/hello-gl.f.glsl");
-        boolean fragmentShaderCompilationSuccess = this.fragmentShader.compile();
+
+        Shader fragmentShader = this.shaderFactory.buildFragmentShader("shaders/fragment/hello-gl.f.glsl");
+        boolean fragmentShaderCompilationSuccess = fragmentShader.compile();
         if (fragmentShaderCompilationSuccess) {
             log.info("Fragment shader compiled!");
         }
 
         if (vertexShaderCompilationSuccess && fragmentShaderCompilationSuccess) {
-            this.program = this.programFactory.buildProgram(this.vertexShader, this.fragmentShader);
+            this.program = this.programFactory.buildProgram(vertexShader, fragmentShader);
             boolean programLinkSuccess = this.program.linkShaders();
             if (programLinkSuccess) {
                 log.info("Program linked!");
                 boolean isProgram = gl.glIsProgram(this.program.getId());
                 log.info("Is program: " + isProgram);
+                this.projectionMatrixUniformLocation = gl.glGetUniformLocation(this.program.getId(), "projectionMatrix");
+                this.modelViewMatrixUniformLocation = gl.glGetUniformLocation(this.program.getId(), "modelViewMatrix");
                 this.textureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "texture");
                 this.positionAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "position");
                 this.colorAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "color");
                 this.texCoordsAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "texCoords");
                 this.normalAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "normal");
+                log.info("Projection matrix uniform location: " + this.projectionMatrixUniformLocation);
+                log.info("Model view matrix uniform location: " + this.modelViewMatrixUniformLocation);
                 log.info("Texture uniform location: " + this.textureUniformLocation);
                 log.info("Position attribute location: " + this.positionAttributeLocation);
                 log.info("Color attribute location: " + this.colorAttributeLocation);
@@ -180,7 +186,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
 		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
 
 		Effect effect = geometry.getEffect();
-        Texture texture = null;
 
 
         VertexBuffer vertexBuffer = geometry.getVertexBuffer();
@@ -204,6 +209,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             }
         }
         
+        float[] projectionMatrix = new float[16];
+        float[] modelViewMatrix = new float[16];
+        gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projectionMatrix, 0);
+        gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelViewMatrix, 0);
+
         List<Integer> subIndicesKeys = indexBuffer.getNbVerticesList();
         for (int nbVerticesPerFace : subIndicesKeys) {
 
@@ -229,6 +239,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                     glPrimitiveType = GL2.GL_QUADS;
                     break;
             }
+
+            gl.glUniformMatrix4fv(this.projectionMatrixUniformLocation, 1, false, projectionMatrix, 0);
+            gl.glUniformMatrix4fv(this.modelViewMatrixUniformLocation, 1, false, modelViewMatrix, 0);
 
             if (effect.getNbTextures() > 0) {
                 gl.glActiveTexture(GL.GL_TEXTURE0);
@@ -317,7 +330,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void setLightingState(LightingState state) {
         if (state.isEnabled()) {
-            gl.glEnable(GL2.GL_LIGHTING);
+            gl.glDisable(GL2.GL_LIGHTING);
         } else {
             gl.glDisable(GL2.GL_LIGHTING);
         }

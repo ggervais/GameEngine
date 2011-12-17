@@ -337,6 +337,7 @@ public class Scene extends Observable {
         Geometry spaceship = ObjFileLoader.loadFile("assets/models/Spaceship.obj");
         Transformation spaceshipTransformation = new Transformation();
         spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
+        spaceshipTransformation.setTranslation(5, 0, 0);
         spaceship.setLocalTransformation(spaceshipTransformation);
         //spaceship.getEffect().addTexture(texSpaceship);
         spaceship.addGlobalState(lightingOff);
@@ -379,7 +380,8 @@ public class Scene extends Observable {
 
         Spatial cochDanse = XFileLoader.loadFile("assets/models/cochdanse.x");
         Transformation cochDanseTransformation = new Transformation();
-        cochDanseTransformation.setRotation((float) Math.toRadians(90), 0, 0);
+        cochDanseTransformation.setTranslation(-5, 0, 0);
+        cochDanseTransformation.setRotation((float) Math.toRadians(90), (float) Math.toRadians(180), 0);
         cochDanseTransformation.setScale(0.1f);
         cochDanse.setLocalTransformation(cochDanseTransformation);
         cochDanse.addGlobalState(lightingOff);
@@ -420,6 +422,7 @@ public class Scene extends Observable {
         smokeParticles.addController(smokeController);
         bezierCube.addController(bezierCurveController);
         sphereGeometry.addController(sphereController);
+        this.sceneGraphRoot.addChild(sphereGeometry);
         //spaceship.addController(new InputControlledController());
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);

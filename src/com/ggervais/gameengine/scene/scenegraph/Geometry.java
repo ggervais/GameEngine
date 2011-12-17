@@ -269,6 +269,36 @@ public abstract class Geometry extends Spatial {
                 }
             }
 
+            if (this.indexBuffer.hasSubIndexBuffer(4)) {
+
+                nbFaces += this.indexBuffer.getSubIndexBuffer(4).size() / 4;
+
+                subIndexBuffer = this.indexBuffer.getSubIndexBuffer(4);
+                for (int j = 0; j < subIndexBuffer.size(); j += 4) {
+                    // j points to the current vertex index
+                    int indexOfFirstVertexInFace = subIndexBuffer.get(j);
+                    int indexOfSecondVertexInFace = subIndexBuffer.get(j + 1);
+                    int indexOfThirdVertexInFace = subIndexBuffer.get(j + 2);
+                    int indexOfFourthVertexInFace = subIndexBuffer.get(j + 3);
+                    
+                    // if indexed vertex == current vertex
+                    if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace || i == indexOfFourthVertexInFace) {
+
+                        // get all vertices in face
+                        Vertex firstVertexInFace = this.vertexBuffer.getVertex(indexOfFirstVertexInFace);
+                        Vertex secondVertexInFace = this.vertexBuffer.getVertex(indexOfSecondVertexInFace);
+                        Vertex thirdVertexInFace = this.vertexBuffer.getVertex(indexOfThirdVertexInFace);
+
+                        // compute face normal and add it to the sum for current vertex
+                        Vector3D v1 = secondVertexInFace.getPosition().sub(firstVertexInFace.getPosition());
+                        Vector3D v2 = thirdVertexInFace.getPosition().sub(firstVertexInFace.getPosition());
+                        Vector3D faceNormal = v1.crossProduct(v2).normalized();
+
+                        sumOfFaceNormals.add(faceNormal);
+                    }
+                }
+            }
+
             // vertex normal is the average of face normals (sum over number of faces)
             Vector3D unweightedVertexNormal = Vector3D.zero();
             if (nbFaces > 0) {
