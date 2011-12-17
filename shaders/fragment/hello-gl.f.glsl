@@ -3,6 +3,7 @@
 uniform sampler2D texture;
 
 varying vec2 fragTexCoords;
+varying vec3 fragNormal;
 
 void main()
 {

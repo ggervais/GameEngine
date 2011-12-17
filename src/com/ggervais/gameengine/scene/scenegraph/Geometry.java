@@ -334,4 +334,74 @@ public abstract class Geometry extends Spatial {
     public void setSkinWeightsList(List<SkinWeights> skinWeights) {
         this.skinWeightsList = skinWeights;
     }
+    
+    
+    public float[] getVertexAttributesFloatArray() {
+
+        int nbVertices = getVertexBuffer().getRealSize();
+        int size = nbVertices * 7;
+        float[] buffer = new float[size];
+        
+        int bufferIndex = 0;
+        for (int i = 0; i < nbVertices; i++) {
+            Point3D position = Point3D.zero();
+            Vertex vertex = getVertexBuffer().getVertex(i);
+            if (vertex != null) {
+                position = vertex.getPosition();
+            }
+            
+            Vector3D normal = Vector3D.zero();
+            if (i < this.normals.size()) {
+                normal = this.normals.get(i);
+            }
+            
+            buffer[bufferIndex + 0] = position.x();
+            buffer[bufferIndex + 1] = position.y();
+            buffer[bufferIndex + 2] = position.z();
+            buffer[bufferIndex + 3] = position.w();
+            
+            buffer[bufferIndex + 4] = normal.x();
+            buffer[bufferIndex + 5] = normal.y();
+            buffer[bufferIndex + 6] = normal.z();
+
+            bufferIndex += 7;
+        }
+        
+        return buffer;
+    }
+
+    public int getNbIndices(int nbVerticesPerFace) {
+        int nbVertices = getVertexBuffer().size();
+        return this.indexBuffer.getNbIndices(nbVerticesPerFace, nbVertices);
+    }
+    
+    public int[] getIndexBufferIntegerArray(int nbVerticesPerFace) {
+
+        int nbVertices = getVertexBuffer().size();
+
+        List<Integer> intermediateIndices = new ArrayList<Integer>();
+        for (int index : this.indexBuffer.getSubIndexBuffer(nbVerticesPerFace)) {
+            if (index < nbVertices) {
+                intermediateIndices.add(index);
+            }
+        }
+
+        int[] buffer = new int[intermediateIndices.size()];
+        int bufferIndex = 0;
+        for (int index : intermediateIndices) {
+            buffer[bufferIndex] = index;
+            bufferIndex++;
+        }
+        
+        return buffer;
+    }
+
+    public float[] getEffectFloatArray() {
+        if (super.getEffect() != null) {
+            return super.getEffect().getEffectBufferAsFloatArray(getVertexBuffer().size());
+        } else {
+            return new float[0];
+        }
+                
+    }
 }

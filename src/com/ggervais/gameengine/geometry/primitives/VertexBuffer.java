@@ -69,22 +69,4 @@ public class VertexBuffer {
     public void setId(int id) {
         this.id = id;
     }
-
-    public float[] getPositionsAsFloatArray() {
-        int size = this.vertices.size() * 4;
-        float[] buffer = new float[size];
-        
-        int bufferIndex = 0;
-        for (Vertex vertex : this.vertices) {
-            Point3D position = vertex.getPosition();
-            buffer[bufferIndex + 0] = position.x();
-            buffer[bufferIndex + 1] = position.y();
-            buffer[bufferIndex + 2] = position.z();
-            buffer[bufferIndex + 3] = position.w();
-
-            bufferIndex += 4;
-        }
-
-        return buffer;
-    }
 }
