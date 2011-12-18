@@ -187,7 +187,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.depthRenderBufferId = rbIds[0];
 
         gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, this.depthRenderBufferId);
-        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_DEPTH_COMPONENT16, windowWidth, windowHeight);
+        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL2.GL_DEPTH_COMPONENT, windowWidth, windowHeight);
         gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, 0);
 
         int[] tIds = new int[1];
@@ -539,6 +539,18 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.scene.setViewport(new Viewport(x, y, width, height));
         Matrix4x4 projectionMatrix = Matrix4x4.createFromFloatArray(projection, true);
         this.scene.setProjectionMatrix(projectionMatrix);
+
+        gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, this.depthRenderBufferId);
+        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL2.GL_DEPTH_COMPONENT, width, height);
+        gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, 0);
+        
+        gl.glBindTexture(GL.GL_TEXTURE_2D, this.screenTextureId);
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, width, height, 0, GL.GL_RGBA, GL.GL_FLOAT, null);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 	}
 
 	public void update(Observable o, Object arg) {
@@ -561,8 +573,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     public void beginRendering() {
 
         // FBO setup
-        int[] fboAttachments = new int[1];
-        fboAttachments[0] = GL.GL_COLOR_ATTACHMENT0;
 
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, this.frameBufferId);

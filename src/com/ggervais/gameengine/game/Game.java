@@ -71,7 +71,8 @@ public class Game {
         setDefaultCursor();
 
 		Component canvas = this.renderer.getCanvas();
-		
+        log.info("Window size = " + WIDTH + "x" + HEIGHT);
+
 		this.frame.add(canvas);
 		
 	}
@@ -107,6 +108,7 @@ public class Game {
 		this.scene = new Scene();
         this.renderer = new GLRendererFactory().buildRenderer(this.scene);
         this.scene.init();
+        this.scene.getViewport().setBounds(0, 0, WIDTH, HEIGHT);
         this.isPreviousSpaceDown = false;
         this.isPreviousEscapeDown = false;
         this.isControlled = true;

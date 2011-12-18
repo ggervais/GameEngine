@@ -83,12 +83,4 @@ public class Frustum {
         log.info("Near plane width, height: " + nearPlaneWidth + " " + nearPlaneHeight + " " + nearTopLeft + " " + nearTopRight);
         log.info("Far plane width, height: " + farPlaneWidth + " " + farPlaneHeight + " " + farTopLeft + " " + farTopRight + " " + farBottomLeft + " " + farBottomRight);
     }
-
-    public static void main(String[] args) {
-        Frustum frustum = new Frustum();
-        Camera camera = new FreeFlyCamera();
-        camera.setDirection(new Vector3D(0, 1, -1));
-        Viewport viewport = new Viewport(0, 0, 1024, 768);
-        frustum.getPlanes(camera, viewport);
-    }
 }
