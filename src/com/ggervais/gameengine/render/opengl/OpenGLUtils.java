@@ -412,75 +412,7 @@ public class OpenGLUtils {
         gl.glPopMatrix();
     }
 
-    public static void drawParticle(GL2 gl, Model particleModel, Texture particleTexture, int textureIndex, Vector3D color, Matrix4x4 particleWorldMatrix, float alpha) {
-        // Life is between 0 and 1 (works like alpha!).
 
-        int nbVerticesPerFace = particleModel.getNbVerticesPerFace();
-		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
-
-		switch(nbVerticesPerFace) {
-			case 1:
-				glPrimitiveType = GL2.GL_POINTS;
-				break;
-			case 2:
-				glPrimitiveType = GL2.GL_LINES;
-				break;
-			case 3:
-				glPrimitiveType = GL2.GL_TRIANGLES;
-				break;
-			case 4:
-				glPrimitiveType = GL2.GL_QUADS;
-				break;
-		}
-
-		gl.glPushMatrix();
-
-		gl.glMultMatrixf(particleWorldMatrix.toColumnMajorArray(), 0);
-
-		if (particleTexture != null) {
-			gl.glBindTexture(GL.GL_TEXTURE_2D, particleTexture.getId());
-		}
-		gl.glBegin(glPrimitiveType);
-			for(int i = 0; i < particleModel.getFaces().size(); i++) {
-				Face face = particleModel.getFaces().get(i);
-
-				for (int vi = 0; vi < face.nbVertices(); vi++) {
-
-					Vertex vertex = face.getVertex(vi);
-					Point3D vertexPosition = vertex.getPosition();
-
-                    gl.glColor4f(color.x(), color.y(), color.z(), alpha);
-					if (particleTexture != null) {
-						if (face.nbTextureCoords() == face.nbVertices()) {
-							TextureCoords coords = face.getTextureCoords(vi);
-
-                            float tu = coords.getTextureU(); // Range between 0 and 1. 1.5 => 0.5, 2 => 1.
-                            float tv = coords.getTextureV(); // Range between 0 and 1. 1.5 => 0.5, 2 => 1.
-
-                            Vector3D minBounds = particleTexture.getMinBounds(textureIndex);
-                            Vector3D maxBounds = particleTexture.getMaxBounds(textureIndex);
-                            float w = maxBounds.x() - minBounds.x();
-                            float h = maxBounds.y() - minBounds.y();
-
-                            tu = minBounds.x() + tu * w;
-                            tv = minBounds.y() + tv * h;
-
-							gl.glTexCoord2f(tu, tv);
-						}
-                    }
-					gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
-				}
-			}
-		gl.glEnd();
-
-        gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
-
-		gl.glPopMatrix();
-
-
-    }
-
-	
 	public static int createTexture(GL2 gl, String filename) {
 		Texture texture = TextureLoader.loadTexture(filename);
 		int id = 0;

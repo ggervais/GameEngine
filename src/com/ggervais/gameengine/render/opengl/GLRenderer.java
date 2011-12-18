@@ -59,6 +59,17 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private int texCoordsAttributeLocation;
     private int normalAttributeLocation;
 
+    private int frameBufferId;
+    private int depthRenderBufferId;
+    private int screenVerticesId;
+
+    private int screenTextureId;
+    private Program postEffectProgram;
+    private int screenTextureUniformLocation;
+    private int fboVerticesPositionAttributeLocation;
+    private float[] fboVertices = {-1, -1, 1, -1, -1, 1, 1, 1};
+
+
     private static final Random random = new Random();
 
     private static float particleLife = 1.0f;
@@ -76,6 +87,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.colorAttributeLocation = -1;
         this.texCoordsAttributeLocation = -1;
         this.normalAttributeLocation = -1;
+        this.frameBufferId = -1;
+        this.screenTextureUniformLocation = -1;
+        this.fboVerticesPositionAttributeLocation = -1;
 	}
 
     public void display(GLAutoDrawable glDrawable) {
@@ -160,7 +174,85 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 log.info("Normal attribute location: " + this.normalAttributeLocation);
             }
         }
-	}
+
+        // FBO initialization.
+
+        int windowWidth = (int) this.scene.getViewport().getWidth();
+        int windowHeight = (int) this.scene.getViewport().getHeight();
+        log.info("Window width: " + windowWidth);
+        log.info("Window height: " + windowHeight);
+
+        int[] rbIds = new int[1];
+        gl.glGenRenderbuffers(1, rbIds, 0);
+        this.depthRenderBufferId = rbIds[0];
+
+        gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, this.depthRenderBufferId);
+        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_DEPTH_COMPONENT16, windowWidth, windowHeight);
+        gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, 0);
+
+        int[] tIds = new int[1];
+        gl.glGenTextures(1, tIds, 0);
+        this.screenTextureId = tIds[0];
+
+        gl.glBindTexture(GL.GL_TEXTURE_2D, this.screenTextureId);
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, windowWidth, windowHeight, 0, GL.GL_RGBA, GL.GL_FLOAT, null);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+	    gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+
+        int[] fboIds = new int[1];
+        gl.glGenFramebuffers(1, fboIds, 0);
+        this.frameBufferId = fboIds[0];
+
+        gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, this.frameBufferId);
+        gl.glFramebufferTexture2D(GL2.GL_DRAW_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, this.screenTextureId, 0);
+        gl.glFramebufferRenderbuffer(GL2.GL_DRAW_FRAMEBUFFER, GL.GL_DEPTH_ATTACHMENT, GL.GL_RENDERBUFFER, this.depthRenderBufferId);
+
+        int fboStatus = gl.glCheckFramebufferStatus(GL2.GL_DRAW_FRAMEBUFFER);
+        if (fboStatus == GL.GL_FRAMEBUFFER_COMPLETE) {
+            log.info("Framebuffer initialized!");
+        } else {
+            log.fatal("Could not create framebuffer!");
+        }
+
+        gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, 0);
+
+        int[] aIds = new int[1];
+        gl.glGenBuffers(1, aIds, 0);
+        this.screenVerticesId = aIds[0];
+
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.screenVerticesId);
+        FloatBuffer vertices = FloatBuffer.allocate(this.fboVertices.length);
+        vertices.put(this.fboVertices);
+        vertices.rewind();
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, this.fboVertices.length * Buffers.SIZEOF_FLOAT, vertices, GL.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+
+        Shader postEffectVertexShader = this.shaderFactory.buildVertexShader("shaders/vertex/post-proc-gl.v.glsl");
+        Shader postEffectFragmentShader = this.shaderFactory.buildFragmentShader("shaders/fragment/post-proc-gl.f.glsl");
+
+        boolean vertexCompile = postEffectVertexShader.compile();
+        if (vertexCompile) {
+            log.info("Post effect vertex shader compiled!");
+        }
+
+        boolean fragmentCompile = postEffectFragmentShader.compile();
+        if (fragmentCompile) {
+            log.info("Post effect fragment shader compiled!");
+        }
+
+        if (vertexCompile && fragmentCompile) {
+            this.postEffectProgram = this.programFactory.buildProgram(postEffectVertexShader, postEffectFragmentShader);
+            boolean programLink = this.postEffectProgram.linkShaders();
+            if (programLink) {
+                this.fboVerticesPositionAttributeLocation = gl.glGetAttribLocation(this.postEffectProgram.getId(), "v_coord");
+                this.screenTextureUniformLocation = gl.glGetUniformLocation(this.postEffectProgram.getId(), "texture");
+                log.info("Screen texture uniform location: " + this.screenTextureUniformLocation);
+            }
+        }
+    }
 
     @Override
     public void setWorldTransformations(Transformation worldTransformation) {
@@ -178,10 +270,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void drawElements(Geometry geometry) {
 
-        if (this.program != null) {
-            gl.glUseProgram(this.program.getId());
-        }
-        
         //int nbVerticesPerFace = geometry.getNbVerticesPerFace();
 		int glPrimitiveType = GL2.GL_TRIANGLES; // Defaults to triangles.
 
@@ -323,8 +411,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glEnd(); */
             
         }
-        
-        gl.glUseProgram(0);
     }
 
     @Override
@@ -474,7 +560,17 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void beginRendering() {
 
-        resetLights();
+        // FBO setup
+        int[] fboAttachments = new int[1];
+        fboAttachments[0] = GL.GL_COLOR_ATTACHMENT0;
+
+        gl.glActiveTexture(GL.GL_TEXTURE0);
+        gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, this.frameBufferId);
+
+        if (this.program != null) {
+            gl.glUseProgram(this.program.getId());
+        }
+
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
@@ -575,6 +671,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     @Override
     public void endRendering() {
 
+        gl.glUseProgram(0);
 
         gl.glDisable(GL2.GL_LIGHTING);
         OpenGLUtils.drawAxisGrid(gl, 50);
@@ -589,6 +686,31 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
 
         gl.glEnable(GL2.GL_LIGHTING);
+
+        // Unbind FBO
+        gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, 0);
+
+        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+        gl.glLoadIdentity();
+
+        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+        gl.glLoadIdentity();
+
+        gl.glClearColor(0, 0, 0, 1);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+        gl.glUseProgram(this.postEffectProgram.getId());
+        gl.glBindTexture(GL.GL_TEXTURE_2D, this.screenTextureId);
+        gl.glUniform1f(this.screenTextureUniformLocation, 0);
+
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.screenVerticesId);
+        gl.glVertexAttribPointer(this.fboVerticesPositionAttributeLocation, 2, GL.GL_FLOAT, false, 0, 0);
+        gl.glEnableVertexAttribArray(this.fboVerticesPositionAttributeLocation);
+
+        gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, 4);
+        gl.glDisableVertexAttribArray(this.fboVerticesPositionAttributeLocation);
+
+        gl.glUseProgram(0);
 
         gl.glFlush();
     }
