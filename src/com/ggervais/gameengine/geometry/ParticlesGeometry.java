@@ -35,6 +35,7 @@ public class ParticlesGeometry extends Geometry {
         generateEmptyVertices();
         this.nbActive = nbParticles;
         this.nbParticles = nbParticles;
+        setStreamed(true);
     }
 
     public void setSize(int i, float size) {

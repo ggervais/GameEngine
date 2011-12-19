@@ -26,6 +26,10 @@ public abstract class Geometry extends Spatial {
     protected List<Vector3D> normals;
     protected Bone boneHierarchyRoot;
 
+    private boolean recomputeBoundingBoxWhenGeometryIsDirty;
+    private boolean isStreamed;
+    private boolean normalsCalculated;
+
     protected List<SkinWeights> skinWeightsList;
 
     protected BoundingBox modelBoundingBox;
@@ -50,6 +54,9 @@ public abstract class Geometry extends Spatial {
         this.modelBoundingBox = new BoundingBox(Point3D.zero(), Point3D.zero());
         this.nbFaces = 0;
         this.skinWeightsList = new ArrayList<SkinWeights>();
+        this.isStreamed = false;
+        this.recomputeBoundingBoxWhenGeometryIsDirty = true;
+        this.normalsCalculated = false;
 	}
 
     public Vector3D getNormal(int index) {
@@ -61,6 +68,10 @@ public abstract class Geometry extends Spatial {
 
     public void setGeometryDirty(boolean dirty) {
         this.isGeometryDirty = dirty;
+    }
+
+    public boolean isGeometryDirty() {
+        return this.isGeometryDirty;
     }
 
     public void addFace(Face face) {
@@ -313,12 +324,15 @@ public abstract class Geometry extends Spatial {
 
         //this.isGeometryDirty = true;
         if (this.isGeometryDirty) {
-            computeBoundingBox(new Matrix4x4());
-
+            if (this.recomputeBoundingBoxWhenGeometryIsDirty) {
+                computeBoundingBox(new Matrix4x4());
+                this.isGeometryDirty = false;
+            }
             // This might not be the best place to recompute vertex normals, but it will do for now.
-            computeVertexNormals();
-
-            this.isGeometryDirty = false;
+            if (!this.normalsCalculated || this.recomputeBoundingBoxWhenGeometryIsDirty) {
+                computeVertexNormals();
+                this.normalsCalculated = true;
+            }
         }
 
         BoundingBox copyBox = this.modelBoundingBox.copy();
@@ -433,5 +447,21 @@ public abstract class Geometry extends Spatial {
             return new float[0];
         }
                 
+    }
+
+    public boolean isStreamed() {
+        return this.isStreamed;
+    }
+
+    protected void setStreamed(boolean isStreamed) {
+        this.isStreamed = isStreamed;
+    }
+
+    protected boolean getRecomputeBoundingBoxWhenGeometryIsDirty() {
+        return this.recomputeBoundingBoxWhenGeometryIsDirty;
+    }
+
+    protected void setRecomputeBoundingBoxWhenGeometryIsDirty(boolean value) {
+        this.recomputeBoundingBoxWhenGeometryIsDirty = value;
     }
 }

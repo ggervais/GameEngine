@@ -164,6 +164,6 @@ public class AnimationController extends Controller {
 
             geometry.setBoundingBox(new BoundingBox(interpolatedMinCorner, interpolatedMaxCorner));
         }
-
+        geometry.setGeometryDirty(true);
     }
 }

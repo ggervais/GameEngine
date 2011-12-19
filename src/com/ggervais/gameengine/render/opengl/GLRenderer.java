@@ -284,7 +284,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             log.info("Generated id " + id + " for vertex buffer.");
             vertexBuffer.setId(id);
         } else {
-            fillVertexBufferData(geometry, vertexBuffer.getId());
+            if (geometry.isGeometryDirty()) {
+                fillVertexBufferData(geometry, vertexBuffer.getId());
+            }
         }
 
         if (effect != null) {
@@ -293,7 +295,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 log.info("Generate id " + id + " for effect buffer");
                 effect.setId(id);
             } else {
-                fillEffectBufferData(geometry, effect.getId());
+                if (geometry.isGeometryDirty()) {
+                    fillEffectBufferData(geometry, effect.getId());
+                }
             }
         }
         
@@ -310,7 +314,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 log.info("Generated id " + id + " for index buffer.");
                 indexBuffer.setId(nbVerticesPerFace,id);
             } else {
-                fillIndexBufferData(geometry, nbVerticesPerFace, indexBuffer.getId(nbVerticesPerFace));
+                if (geometry.isGeometryDirty()) {
+                    fillIndexBufferData(geometry, nbVerticesPerFace, indexBuffer.getId(nbVerticesPerFace));
+                }
             }
 
             switch(nbVerticesPerFace) {
@@ -818,7 +824,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         FloatBuffer floatBuffer = FloatBuffer.allocate(buffer.length);
         floatBuffer.put(buffer);
         floatBuffer.rewind();
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, GL2.GL_STREAM_DRAW);
+        int renderHint = GL.GL_STATIC_DRAW;
+        if (geometry.isStreamed()) {
+            renderHint = GL2.GL_STREAM_DRAW;
+        }
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, renderHint);
     }
 
     private int generateGLIndexBuffer(Geometry geometry, int nbVerticesPerFace) {
@@ -855,7 +865,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         FloatBuffer floatBuffer = FloatBuffer.allocate(buffer.length);
         floatBuffer.put(buffer);
         floatBuffer.rewind();
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, GL2.GL_STREAM_DRAW);
+        int renderHint = GL.GL_STATIC_DRAW;
+        if (geometry.isStreamed()) {
+            renderHint = GL2.GL_STREAM_DRAW;
+        }
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_FLOAT, floatBuffer, renderHint);
     }
 
     private void fillIndexBufferData(Geometry geometry, int nbVerticesPerFace, int id) {
@@ -864,6 +878,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         IntBuffer intBuffer = IntBuffer.allocate(buffer.length);
         intBuffer.put(buffer);
         intBuffer.rewind();
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_INT, intBuffer, GL2.GL_STREAM_DRAW);
+        int renderHint = GL.GL_STATIC_DRAW;
+        if (geometry.isStreamed()) {
+            renderHint = GL2.GL_STREAM_DRAW;
+        }
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, buffer.length * Buffers.SIZEOF_INT, intBuffer, renderHint);
     }
 }

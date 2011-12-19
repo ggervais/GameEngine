@@ -27,6 +27,8 @@ public class MeshGeometry extends Geometry {
         this.useSkinnedVersion = false;
         this.animationSets = new ArrayList<AnimationSet>();
         this.boundingBoxes = new HashMap<AnimationSet, List<BoundingBox>>();
+        setStreamed(true);
+        setRecomputeBoundingBoxWhenGeometryIsDirty(false);
     }
 
     @Override
