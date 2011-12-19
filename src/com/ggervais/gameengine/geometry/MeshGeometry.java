@@ -20,6 +20,7 @@ public class MeshGeometry extends Geometry {
     private boolean useSkinnedVersion;
     private List<AnimationSet> animationSets;
     private Map<AnimationSet, List<BoundingBox>> boundingBoxes;
+    private Map<AnimationSet, List<List<Vector3D>>> vertexNormals;
     private static final Logger log = Logger.getLogger(MeshGeometry.class);
 
     public MeshGeometry() {
@@ -27,6 +28,7 @@ public class MeshGeometry extends Geometry {
         this.useSkinnedVersion = false;
         this.animationSets = new ArrayList<AnimationSet>();
         this.boundingBoxes = new HashMap<AnimationSet, List<BoundingBox>>();
+        this.vertexNormals = new HashMap<AnimationSet, List<List<Vector3D>>>();
         setStreamed(true);
         setRecomputeBoundingBoxWhenGeometryIsDirty(false);
     }
