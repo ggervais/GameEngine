@@ -242,6 +242,80 @@ public abstract class Geometry extends Spatial {
         super.setEffect(effect);
     }
 
+    public static List<Vector3D> computeVertexNormals(List<Point3D> points, IndexBuffer geometryIndexBuffer) {
+        List<Vector3D> vertexNormals = new ArrayList<Vector3D>();
+
+        int nbFaces = geometryIndexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE).size() / DEFAULT_NB_VERTICES_PER_FACE;
+
+        // for each vertex
+        for (int i = 0; i < points.size(); i++) {
+            Vector3D sumOfFaceNormals = Vector3D.zero();
+            // for each face
+            List<Integer> subIndexBuffer = geometryIndexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE);
+            for (int j = 0; j < subIndexBuffer.size(); j += DEFAULT_NB_VERTICES_PER_FACE) {
+                // j points to the current vertex index
+                int indexOfFirstVertexInFace = subIndexBuffer.get(j);
+                int indexOfSecondVertexInFace = subIndexBuffer.get(j + 1);
+                int indexOfThirdVertexInFace = subIndexBuffer.get(j + 2);
+
+                // if indexed vertex == current vertex
+                if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace) {
+
+                    // get all vertices in face
+                    Point3D firstVertexInFace = points.get(indexOfFirstVertexInFace);
+                    Point3D secondVertexInFace = points.get(indexOfSecondVertexInFace);
+                    Point3D thirdVertexInFace = points.get(indexOfThirdVertexInFace);
+
+                    // compute face normal and add it to the sum for current vertex
+                    Vector3D v1 = secondVertexInFace.sub(firstVertexInFace);
+                    Vector3D v2 = thirdVertexInFace.sub(firstVertexInFace);
+                    Vector3D faceNormal = v1.crossProduct(v2).normalized();
+
+                    sumOfFaceNormals.add(faceNormal);
+                }
+            }
+
+            if (geometryIndexBuffer.hasSubIndexBuffer(4)) {
+
+                nbFaces += geometryIndexBuffer.getSubIndexBuffer(4).size() / 4;
+
+                subIndexBuffer = geometryIndexBuffer.getSubIndexBuffer(4);
+                for (int j = 0; j < subIndexBuffer.size(); j += 4) {
+                    // j points to the current vertex index
+                    int indexOfFirstVertexInFace = subIndexBuffer.get(j);
+                    int indexOfSecondVertexInFace = subIndexBuffer.get(j + 1);
+                    int indexOfThirdVertexInFace = subIndexBuffer.get(j + 2);
+                    int indexOfFourthVertexInFace = subIndexBuffer.get(j + 3);
+
+                    // if indexed vertex == current vertex
+                    if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace || i == indexOfFourthVertexInFace) {
+
+                        // get all vertices in face
+                        Point3D firstVertexInFace = points.get(indexOfFirstVertexInFace);
+                        Point3D secondVertexInFace = points.get(indexOfSecondVertexInFace);
+                        Point3D thirdVertexInFace = points.get(indexOfThirdVertexInFace);
+
+                        // compute face normal and add it to the sum for current vertex
+                        Vector3D v1 = secondVertexInFace.sub(firstVertexInFace);
+                        Vector3D v2 = thirdVertexInFace.sub(firstVertexInFace);
+                        Vector3D faceNormal = v1.crossProduct(v2).normalized();
+
+                        sumOfFaceNormals.add(faceNormal);
+                    }
+                }
+            }
+
+            // vertex normal is the average of face normals (sum over number of faces)
+            Vector3D unweightedVertexNormal = Vector3D.zero();
+            if (nbFaces > 0) {
+                unweightedVertexNormal = sumOfFaceNormals.multiplied(1.0f / nbFaces).normalized();
+            }
+            vertexNormals.add(unweightedVertexNormal);
+        }
+
+        return vertexNormals;
+    }
+    
     private void computeVertexNormals() throws UnsupportedOperationException {
         this.normals.clear();
 
@@ -253,7 +327,7 @@ public abstract class Geometry extends Spatial {
         int nbFaces = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE).size() / DEFAULT_NB_VERTICES_PER_FACE;
 
         // for each vertex
-        for (int i = 0; i < this.vertexBuffer.size(); i++) {
+        for (int i = 0; i < getVertexBuffer().size(); i++) {
             Vector3D sumOfFaceNormals = Vector3D.zero();
             // for each face
             List<Integer> subIndexBuffer = this.indexBuffer.getSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE);
@@ -267,9 +341,9 @@ public abstract class Geometry extends Spatial {
                 if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace) {
 
                     // get all vertices in face
-                    Vertex firstVertexInFace = this.vertexBuffer.getVertex(indexOfFirstVertexInFace);
-                    Vertex secondVertexInFace = this.vertexBuffer.getVertex(indexOfSecondVertexInFace);
-                    Vertex thirdVertexInFace = this.vertexBuffer.getVertex(indexOfThirdVertexInFace);
+                    Vertex firstVertexInFace = getVertexBuffer().getVertex(indexOfFirstVertexInFace);
+                    Vertex secondVertexInFace = getVertexBuffer().getVertex(indexOfSecondVertexInFace);
+                    Vertex thirdVertexInFace = getVertexBuffer().getVertex(indexOfThirdVertexInFace);
 
                     // compute face normal and add it to the sum for current vertex
                     Vector3D v1 = secondVertexInFace.getPosition().sub(firstVertexInFace.getPosition());
@@ -296,9 +370,9 @@ public abstract class Geometry extends Spatial {
                     if (i == indexOfFirstVertexInFace || i == indexOfSecondVertexInFace || i == indexOfThirdVertexInFace || i == indexOfFourthVertexInFace) {
 
                         // get all vertices in face
-                        Vertex firstVertexInFace = this.vertexBuffer.getVertex(indexOfFirstVertexInFace);
-                        Vertex secondVertexInFace = this.vertexBuffer.getVertex(indexOfSecondVertexInFace);
-                        Vertex thirdVertexInFace = this.vertexBuffer.getVertex(indexOfThirdVertexInFace);
+                        Vertex firstVertexInFace = getVertexBuffer().getVertex(indexOfFirstVertexInFace);
+                        Vertex secondVertexInFace = getVertexBuffer().getVertex(indexOfSecondVertexInFace);
+                        Vertex thirdVertexInFace = getVertexBuffer().getVertex(indexOfThirdVertexInFace);
 
                         // compute face normal and add it to the sum for current vertex
                         Vector3D v1 = secondVertexInFace.getPosition().sub(firstVertexInFace.getPosition());
@@ -463,5 +537,9 @@ public abstract class Geometry extends Spatial {
 
     protected void setRecomputeBoundingBoxWhenGeometryIsDirty(boolean value) {
         this.recomputeBoundingBoxWhenGeometryIsDirty = value;
+    }
+    
+    public void setNormals(List<Vector3D> normals) {
+        this.normals = normals;
     }
 }

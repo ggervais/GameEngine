@@ -17,6 +17,7 @@ import com.ggervais.gameengine.timing.Controller;
 import net.java.games.input.Component;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -163,6 +164,29 @@ public class AnimationController extends Controller {
             Point3D interpolatedMaxCorner = Point3D.lerp(boundingBox.getMaxCorner(), nextBoundingBox.getMaxCorner(), t);
 
             geometry.setBoundingBox(new BoundingBox(interpolatedMinCorner, interpolatedMaxCorner));
+        }
+        
+        List<List<Vector3D>> vertexNormals = geometry.getVertexNormals(animationSet);
+        if (vertexNormals != null) {
+            float exactIndex = ratio * (vertexNormals.size() - 1);
+
+            int vertexNormalsIndex = (int) Math.floor(exactIndex);
+            int nextVertexNormalsIndex = (vertexNormalsIndex < vertexNormals.size() - 1 ? vertexNormalsIndex + 1 : 0);
+            
+            float t = exactIndex - (vertexNormalsIndex + 0f);
+
+            List<Vector3D> normals = vertexNormals.get(vertexNormalsIndex);
+            List<Vector3D> nextNormals = vertexNormals.get(nextVertexNormalsIndex);
+            
+            List<Vector3D> realNormals = new ArrayList<Vector3D>();
+            for (int i = 0; i < normals.size(); i++) {
+                Vector3D normal = normals.get(i);
+                Vector3D nextNormal = nextNormals.get(i);
+                Vector3D interpolatedNormal = Vector3D.lerp(normal, nextNormal, t);
+                realNormals.add(interpolatedNormal);
+            }
+
+            geometry.setNormals(realNormals);
         }
         geometry.setGeometryDirty(true);
     }

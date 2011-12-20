@@ -110,6 +110,7 @@ public class MeshGeometry extends Geometry {
             }
 
             this.boundingBoxes.put(animationSet, new ArrayList<BoundingBox>());
+            this.vertexNormals.put(animationSet, new ArrayList<List<Vector3D>>());
             
             // Step through each key and compute a bounding box for each.
             // This assumes that keys are shared throughout the animation set.
@@ -158,6 +159,11 @@ public class MeshGeometry extends Geometry {
 
                 BoundingBox boundingBoxForKey = Geometry.computeBoundingBox(Arrays.asList(intermediatePositions));
                 this.boundingBoxes.get(animationSet).add(boundingBoxForKey);
+
+                List<Vector3D> computedNormals = Geometry.computeVertexNormals(Arrays.asList(intermediatePositions), getIndexBuffer());
+                this.vertexNormals.get(animationSet).add(computedNormals);
+                
+                log.info(this.vertexNormals.get(animationSet).size() + " normal lists in animation set " + animationSet.getName());
             }
         }
     }
@@ -168,5 +174,9 @@ public class MeshGeometry extends Geometry {
 
     public void setBoundingBox(BoundingBox boundingBox) {
         this.modelBoundingBox = boundingBox;
+    }
+    
+    public List<List<Vector3D>> getVertexNormals(AnimationSet animationSet) {
+        return this.vertexNormals.get(animationSet);
     }
 }
