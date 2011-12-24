@@ -54,6 +54,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private int projectionMatrixUniformLocation;
     private int modelViewMatrixUniformLocation;
     private int textureUniformLocation;
+    private int useTextureUniformLocation;
     private int positionAttributeLocation;
     private int colorAttributeLocation;
     private int texCoordsAttributeLocation;
@@ -83,6 +84,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.projectionMatrixUniformLocation = -1;
         this.modelViewMatrixUniformLocation = -1;
         this.textureUniformLocation = -1;
+        this.useTextureUniformLocation = -1;
         this.positionAttributeLocation = -1;
         this.colorAttributeLocation = -1;
         this.texCoordsAttributeLocation = -1;
@@ -161,6 +163,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 this.projectionMatrixUniformLocation = gl.glGetUniformLocation(this.program.getId(), "projectionMatrix");
                 this.modelViewMatrixUniformLocation = gl.glGetUniformLocation(this.program.getId(), "modelViewMatrix");
                 this.textureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "texture");
+                this.useTextureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "useTexture");
                 this.positionAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "position");
                 this.colorAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "color");
                 this.texCoordsAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "texCoords");
@@ -284,7 +287,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             log.info("Generated id " + id + " for vertex buffer.");
             vertexBuffer.setId(id);
         } else {
-            if (geometry.isGeometryDirty()) {
+            if (geometry.isNeedsGeometryDataUpdate()) {
                 fillVertexBufferData(geometry, vertexBuffer.getId());
             }
         }
@@ -295,7 +298,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 log.info("Generate id " + id + " for effect buffer");
                 effect.setId(id);
             } else {
-                if (geometry.isGeometryDirty()) {
+                if (geometry.isNeedsGeometryDataUpdate()) {
                     fillEffectBufferData(geometry, effect.getId());
                 }
             }
@@ -314,7 +317,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 log.info("Generated id " + id + " for index buffer.");
                 indexBuffer.setId(nbVerticesPerFace,id);
             } else {
-                if (geometry.isGeometryDirty()) {
+                if (geometry.isNeedsGeometryDataUpdate()) {
                     fillIndexBufferData(geometry, nbVerticesPerFace, indexBuffer.getId(nbVerticesPerFace));
                 }
             }
@@ -340,7 +343,10 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             if (effect.getNbTextures() > 0) {
                 gl.glActiveTexture(GL.GL_TEXTURE0);
                 gl.glBindTexture(GL.GL_TEXTURE_2D, effect.getTexture(0).getId());
+                gl.glUniform1i(this.useTextureUniformLocation, 1);
                 gl.glUniform1i(this.textureUniformLocation, 0);
+            } else {
+                gl.glUniform1i(this.useTextureUniformLocation, 0);
             }
 
             gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vertexBuffer.getId());
@@ -417,6 +423,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glEnd(); */
             
         }
+
+        geometry.setNeedsGeometryDataUpdate(false);
     }
 
     @Override

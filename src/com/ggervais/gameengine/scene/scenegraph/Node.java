@@ -79,7 +79,7 @@ public class Node extends Spatial {
             }
         }
 
-        renderer.drawBoundingBox(this.boundingBox, isPickedInCurrentUpdate());
+        //renderer.drawBoundingBox(this.boundingBox, isPickedInCurrentUpdate());
     }
 
     public Object getChildrenLock() {

@@ -1,6 +1,6 @@
 package com.ggervais.gameengine.geometry.loader;
 
-import com.ggervais.gameengine.geometry.MeshGeometry;
+import com.ggervais.gameengine.geometry.SkinnedMeshGeometry;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.skinning.*;
@@ -45,11 +45,11 @@ public class XFileLoader extends GeometryLoader {
     private static final boolean COLUMN_MAJOR_MATRIX = true;
 
     // Right now, only text-based .x files are supported.
-    public static MeshGeometry loadFile(String filename) {
+    public static SkinnedMeshGeometry loadFile(String filename) {
 
         Bone rootBone = null;
         List<Material> materials = new ArrayList<Material>();
-        List<MeshGeometry> encounteredGeometries =  new ArrayList<MeshGeometry>();
+        List<SkinnedMeshGeometry> encounteredGeometries =  new ArrayList<SkinnedMeshGeometry>();
         List<AnimationSet> animationSets = new ArrayList<AnimationSet>();
         try {
             File file = new File(filename);
@@ -146,7 +146,7 @@ public class XFileLoader extends GeometryLoader {
         }
 
         Map<Integer, Float> weightSums = new HashMap<Integer, Float>();
-        for (MeshGeometry geometry : encounteredGeometries) {
+        for (SkinnedMeshGeometry geometry : encounteredGeometries) {
 
             if (animationSets.size() > 0) {
                 rootBone.setCurrentAnimationSet(animationSets.get(0));
@@ -179,9 +179,9 @@ public class XFileLoader extends GeometryLoader {
             }
         }
 
-        MeshGeometry loadedGeometry = encounteredGeometries.get(0);
+        SkinnedMeshGeometry loadedGeometry = encounteredGeometries.get(0);
         if (loadedGeometry == null) {
-            loadedGeometry = new MeshGeometry();
+            loadedGeometry = new SkinnedMeshGeometry();
         }
 
         loadedGeometry.computeBoundingBoxes();
@@ -354,8 +354,8 @@ public class XFileLoader extends GeometryLoader {
         return string;
     }
 
-    private static MeshGeometry handleMesh(BufferedReader reader, String name, Bone bone, List<Material> materials) throws IOException {
-        MeshGeometry createdMesh = new MeshGeometry();
+    private static SkinnedMeshGeometry handleMesh(BufferedReader reader, String name, Bone bone, List<Material> materials) throws IOException {
+        SkinnedMeshGeometry createdMesh = new SkinnedMeshGeometry();
 
         log.info("handling mesh " + name);
 
@@ -471,7 +471,7 @@ public class XFileLoader extends GeometryLoader {
         return createdMesh;
     }
 
-    private static void handleMeshMaterialList(BufferedReader reader, MeshGeometry createdMesh, List<Material> materials) throws IOException {
+    private static void handleMeshMaterialList(BufferedReader reader, SkinnedMeshGeometry createdMesh, List<Material> materials) throws IOException {
         int nbMaterials = readNextInteger(reader, ";");
         int nbIndices = readNextInteger(reader, ";");
 
@@ -619,7 +619,7 @@ public class XFileLoader extends GeometryLoader {
         return material;
     }
 
-    private static void handleTextureCoordinates(BufferedReader reader, MeshGeometry createdMesh) throws IOException {
+    private static void handleTextureCoordinates(BufferedReader reader, SkinnedMeshGeometry createdMesh) throws IOException {
         int nbVertices = readNextInteger(reader, ";");
         List<TextureCoords> coordsPerVertex = new ArrayList<TextureCoords>();
 
@@ -680,7 +680,7 @@ public class XFileLoader extends GeometryLoader {
         return finalString;
     }
 
-    private static void handleSkinWeights(BufferedReader reader, MeshGeometry createdMesh) throws IOException {
+    private static void handleSkinWeights(BufferedReader reader, SkinnedMeshGeometry createdMesh) throws IOException {
 
         String affectedBoneName = readNextString(reader, ";", true);
 
@@ -739,7 +739,7 @@ public class XFileLoader extends GeometryLoader {
 
     }
 
-    private static Bone handleFrame(BufferedReader reader, String name, List<MeshGeometry> geometries, List<Material> materials, int level) throws IOException {
+    private static Bone handleFrame(BufferedReader reader, String name, List<SkinnedMeshGeometry> geometries, List<Material> materials, int level) throws IOException {
 
         Bone bone = new Bone();
 
@@ -787,7 +787,7 @@ public class XFileLoader extends GeometryLoader {
                 if (!line.contains(Character.toString(XFileConstants.BEGIN_BLOCK))) {
                     skipToNextBeginningOfBlock(reader);
                 }
-                MeshGeometry meshGeometry = handleMesh(reader, meshName, bone, materials);
+                SkinnedMeshGeometry meshGeometry = handleMesh(reader, meshName, bone, materials);
                 geometries.add(meshGeometry);
                 continue;
             }

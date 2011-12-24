@@ -3,6 +3,7 @@ package com.ggervais.gameengine.scene.scenegraph;
 import com.ggervais.gameengine.geometry.primitives.*;
 import com.ggervais.gameengine.geometry.skinning.Bone;
 import com.ggervais.gameengine.geometry.skinning.SkinWeights;
+import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingSphere;
@@ -34,6 +35,7 @@ public abstract class Geometry extends Spatial {
 
     protected BoundingBox modelBoundingBox;
     private boolean isGeometryDirty;
+    private boolean needsGeometryDataUpdate;
 
     private Map<GlobalStateType, GlobalState> globalStates;
 
@@ -58,6 +60,14 @@ public abstract class Geometry extends Spatial {
         this.recomputeBoundingBoxWhenGeometryIsDirty = true;
         this.normalsCalculated = false;
 	}
+
+    public boolean isNeedsGeometryDataUpdate() {
+        return needsGeometryDataUpdate;
+    }
+
+    public void setNeedsGeometryDataUpdate(boolean needsGeometryDataUpdate) {
+        this.needsGeometryDataUpdate = needsGeometryDataUpdate;
+    }
 
     public Vector3D getNormal(int index) {
         if (index >= 0 && index < this.normals.size()) {
@@ -167,7 +177,7 @@ public abstract class Geometry extends Spatial {
         this.boundingSphere = sphere;
     }
 
-    private void computeBoundingBox(Matrix4x4 transform) {
+    protected void computeBoundingBox(Matrix4x4 transform) {
 
         float minX = Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
@@ -316,7 +326,7 @@ public abstract class Geometry extends Spatial {
         return vertexNormals;
     }
     
-    private void computeVertexNormals() throws UnsupportedOperationException {
+    protected void computeVertexNormals() throws UnsupportedOperationException {
         this.normals.clear();
 
         if (!this.indexBuffer.hasSubIndexBuffer(DEFAULT_NB_VERTICES_PER_FACE)) {
@@ -396,17 +406,16 @@ public abstract class Geometry extends Spatial {
     @Override
     public void updateWorldBound() {
 
-        //this.isGeometryDirty = true;
         if (this.isGeometryDirty) {
-            if (this.recomputeBoundingBoxWhenGeometryIsDirty) {
-                computeBoundingBox(new Matrix4x4());
-                this.isGeometryDirty = false;
-            }
+            computeBoundingBox(new Matrix4x4());
+            
             // This might not be the best place to recompute vertex normals, but it will do for now.
-            if (!this.normalsCalculated || this.recomputeBoundingBoxWhenGeometryIsDirty) {
+            if (!this.normalsCalculated) {
                 computeVertexNormals();
                 this.normalsCalculated = true;
             }
+            this.isGeometryDirty = false;
+            this.needsGeometryDataUpdate = true;
         }
 
         BoundingBox copyBox = this.modelBoundingBox.copy();

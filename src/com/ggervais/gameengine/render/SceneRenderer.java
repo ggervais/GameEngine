@@ -92,7 +92,7 @@ public abstract class SceneRenderer implements Observer {
 
         // Bounding box is already in world space, so we must restore the previous world transformations
         // before drawing it.
-        drawBoundingBox(geometry.getBoundingBox(), geometry.isPickedInCurrentUpdate());
+        //drawBoundingBox(geometry.getBoundingBox(), geometry.isPickedInCurrentUpdate());
 
         resetColor();
     }

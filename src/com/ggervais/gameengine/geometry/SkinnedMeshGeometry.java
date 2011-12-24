@@ -3,27 +3,25 @@ package com.ggervais.gameengine.geometry;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
 import com.ggervais.gameengine.geometry.skinning.*;
-import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.*;
 import com.ggervais.gameengine.physics.boundingvolumes.BoundingBox;
 import com.ggervais.gameengine.scene.scenegraph.Effect;
 import com.ggervais.gameengine.scene.scenegraph.Geometry;
-import com.ggervais.gameengine.scene.scenegraph.Transformation;
 import org.apache.log4j.Logger;
 
 import java.util.*;
 
 // This class represents a base geometry (a mesh).
-public class MeshGeometry extends Geometry {
+public class SkinnedMeshGeometry extends Geometry {
 
     private VertexBuffer skinnedVertexBuffer;
     private boolean useSkinnedVersion;
     private List<AnimationSet> animationSets;
     private Map<AnimationSet, List<BoundingBox>> boundingBoxes;
     private Map<AnimationSet, List<List<Vector3D>>> vertexNormals;
-    private static final Logger log = Logger.getLogger(MeshGeometry.class);
+    private static final Logger log = Logger.getLogger(SkinnedMeshGeometry.class);
 
-    public MeshGeometry() {
+    public SkinnedMeshGeometry() {
         super();
         this.useSkinnedVersion = false;
         this.animationSets = new ArrayList<AnimationSet>();
@@ -178,5 +176,19 @@ public class MeshGeometry extends Geometry {
     
     public List<List<Vector3D>> getVertexNormals(AnimationSet animationSet) {
         return this.vertexNormals.get(animationSet);
+    }
+
+    @Override
+    protected void computeBoundingBox(Matrix4x4 transform) {
+        if (this.boundingBoxes.size() == 0) {
+            super.computeBoundingBox(transform);
+        }
+    }
+
+    @Override
+    protected void computeVertexNormals() throws UnsupportedOperationException {
+        if (this.vertexNormals.size() == 0) {
+            super.computeVertexNormals();
+        }
     }
 }

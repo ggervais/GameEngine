@@ -1,8 +1,5 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
-import com.ggervais.gameengine.geometry.MeshGeometry;
-import com.ggervais.gameengine.geometry.ParticlesGeometry;
-import com.ggervais.gameengine.geometry.SphereGeometry;
 import com.ggervais.gameengine.input.InputController;
 import com.ggervais.gameengine.math.Plane;
 import com.ggervais.gameengine.math.Point3D;

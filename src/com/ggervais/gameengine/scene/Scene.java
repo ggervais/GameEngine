@@ -334,9 +334,9 @@ public class Scene extends Observable {
         MotionController sphereController = new MotionController(Vector3D.zero(), 1, 0, 0);
 
 
-        Geometry spaceship = ObjFileLoader.loadFile("assets/models/Spaceship.obj");
+        Geometry spaceship = ObjFileLoader.loadFile("assets/models/suzanne.obj");
         Transformation spaceshipTransformation = new Transformation();
-        spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
+        //spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
         spaceshipTransformation.setTranslation(5, 0, 0);
         spaceship.setLocalTransformation(spaceshipTransformation);
         //spaceship.getEffect().addTexture(texSpaceship);

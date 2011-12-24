@@ -1,6 +1,6 @@
 package com.ggervais.gameengine.scene.scenegraph;
 
-import com.ggervais.gameengine.geometry.MeshGeometry;
+import com.ggervais.gameengine.geometry.SkinnedMeshGeometry;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
 import com.ggervais.gameengine.geometry.primitives.VertexBuffer;
 import com.ggervais.gameengine.geometry.skinning.AnimationKey;
@@ -50,10 +50,10 @@ public class AnimationController extends Controller {
     @Override
     public void setControlledObject(Spatial controlledObject) {
         if (controlledObject != null) {
-            if (controlledObject instanceof MeshGeometry) {
+            if (controlledObject instanceof SkinnedMeshGeometry) {
                 super.setControlledObject(controlledObject);
             } else {
-                throw new IllegalArgumentException("Controlled object for an AnimationController should be of type MeshGeometry.");
+                throw new IllegalArgumentException("Controlled object for an AnimationController should be of type SkinnedMeshGeometry.");
             }
         }
     }
@@ -63,7 +63,7 @@ public class AnimationController extends Controller {
 
         long adjustedTime = currentTime - this.pauseOffset;
 
-        MeshGeometry geometry = (MeshGeometry) this.controlledSpatialObject;
+        SkinnedMeshGeometry geometry = (SkinnedMeshGeometry) this.controlledSpatialObject;
         geometry.initializeSkinningIfNecessary();
         Bone rootBone = geometry.getBoneHierarchyRoot();
 

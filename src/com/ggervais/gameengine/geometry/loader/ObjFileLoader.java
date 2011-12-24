@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-import com.ggervais.gameengine.geometry.MeshGeometry;
+import com.ggervais.gameengine.geometry.SkinnedMeshGeometry;
 import com.ggervais.gameengine.geometry.Model;
 import com.ggervais.gameengine.geometry.primitives.TextureCoords;
 import com.ggervais.gameengine.geometry.primitives.Vertex;
@@ -125,7 +125,8 @@ public class ObjFileLoader extends GeometryLoader {
 		System.out.print("Loading " + filename + "... ");
 		
 		Model model = new Model();
-        MeshGeometry geometry = new MeshGeometry();
+        SkinnedMeshGeometry geometry = new SkinnedMeshGeometry();
+        geometry.setGeometryDirty(true);
 		Texture texture = null;
 
         Material material = null;
@@ -136,6 +137,8 @@ public class ObjFileLoader extends GeometryLoader {
         Map<Integer, List<Integer>> textureCoordsIndices = new HashMap<Integer, List<Integer>>();
         Map<Integer, Integer> coordsMap = new HashMap<Integer, Integer>();
         Map<Integer, List<Integer>> coordsListMap = new HashMap<Integer, List<Integer>>();
+        Map<Integer, List<Integer>> rawIndexMap = new HashMap<Integer, List<Integer>>();
+
 		try {
 			FileInputStream in = new FileInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -206,6 +209,12 @@ public class ObjFileLoader extends GeometryLoader {
                             
                             indexTextures.get(nbVerticesPerFace).add(new IndexTexture(v, t));
                         }
+
+                        if (!rawIndexMap.containsKey(nbVerticesPerFace)) {
+                            rawIndexMap.put(nbVerticesPerFace, new ArrayList<Integer>());
+                        }
+                        rawIndexMap.get(nbVerticesPerFace).add(v);
+
                         indexArray[index] = v;
                     }
 
@@ -291,11 +300,23 @@ public class ObjFileLoader extends GeometryLoader {
             }
 
             Effect effect = new Effect();
+            int sum = 0;
             for (int nbVerticesPerFace : indexTextures.keySet()) {
-                List<IndexTexture> listOfIndexTextures = indexTextures.get(nbVerticesPerFace);
-                for (IndexTexture indexTexture : listOfIndexTextures) {
-                    geometry.getIndexBuffer().addIndex(nbVerticesPerFace, indexTexture.vertexIndex);
-                    effect.addTextureCoordinatesForVertex(0, indexTexture.vertexIndex, coordsList.get(indexTexture.textureIndex));
+                sum += indexTextures.get(nbVerticesPerFace).size();
+            }
+            if (sum > 0) {
+                for (int nbVerticesPerFace : indexTextures.keySet()) {
+                    List<IndexTexture> listOfIndexTextures = indexTextures.get(nbVerticesPerFace);
+                    for (IndexTexture indexTexture : listOfIndexTextures) {
+                        geometry.getIndexBuffer().addIndex(nbVerticesPerFace, indexTexture.vertexIndex);
+                        effect.addTextureCoordinatesForVertex(0, indexTexture.vertexIndex, coordsList.get(indexTexture.textureIndex));
+                    }
+                }
+            } else {
+                for (int nbVerticesPerFace : rawIndexMap.keySet()) {
+                    for (int index : rawIndexMap.get(nbVerticesPerFace)) {
+                        geometry.getIndexBuffer().addIndex(nbVerticesPerFace, index);
+                    }
                 }
             }
 
