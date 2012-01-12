@@ -1,6 +1,6 @@
 This is a toy game engine I am working on since spring 2011. It's in Java and uses OpenGL via the JOGL set of libraries.
 
-Currently, to run it, IntelliJ must be installed, and the "GameEngine Test Windows 32-bits" or "GameEngine Test Windows 64-bits"
+Currently, to run it, IntelliJ must be installed, and the "GameEngine Test Windows 32-bit" or "GameEngine Test Windows 64-bit"
 configuration must be selected. It should work with any Windows and Linux system.
 
 The latest video showing progress is on YouTube: http://www.youtube.com/watch?v=2-DbjhOgoNw

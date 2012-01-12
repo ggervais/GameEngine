@@ -207,7 +207,7 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="GameEngine Test Windows 64-bits" type="Application" factoryName="Application">
+    <configuration default="false" name="GameEngine Test Windows 64-bit" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.testapp.Main" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=$PROJECT_DIR$/lib/jinput;$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-amd64/lib" />
@@ -233,7 +233,7 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="GameEngine Test Windows 32-bits" type="Application" factoryName="Application">
+    <configuration default="false" name="GameEngine Test Windows 32-bit" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="com.ggervais.gameengine.testapp.Main" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=$PROJECT_DIR$/lib/jinput;$PROJECT_DIR$/lib/jogl-2.0-b23-20110303-windows-i586/lib" />
