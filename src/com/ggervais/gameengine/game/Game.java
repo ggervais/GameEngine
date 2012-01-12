@@ -37,8 +37,8 @@ public class Game {
 	private SceneRenderer renderer;
 	private JFrame frame;
 	private static final int QUANTUM = (int) (1000.0f / 60.0f); // About 16 or 17 milliseconds.
-	private static int WIDTH = 1024;
-	private static int HEIGHT = 768;
+	private static int WIDTH = 1140;
+	private static int HEIGHT = 900;
     private boolean isPreviousSpaceDown;
     private boolean isPreviousEscapeDown;
     private boolean isControlled;

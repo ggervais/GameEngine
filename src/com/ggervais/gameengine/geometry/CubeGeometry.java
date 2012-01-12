@@ -91,15 +91,15 @@ public class CubeGeometry extends Geometry {
 		    TextureCoords texture01 = new TextureCoords(min.x() + 0 * w, min.y() + 1 * h);
 		    TextureCoords texture11 = new TextureCoords(min.x() + 1 * w, min.y() + 1 * h);
 
-            effect.clearTextureCoordinates(i, 3);
+            int vertexIndex = 0;
             for (int j = 0; j <= 6; j++) {
-                effect.addTextureCoordinates(i, 3, texture00);
-                effect.addTextureCoordinates(i, 3, texture01);
-                effect.addTextureCoordinates(i, 3, texture11);
+                
+                effect.addTextureCoordinatesForVertex(0, vertexIndex, texture00);
+                effect.addTextureCoordinatesForVertex(0, vertexIndex + 1, texture10);
+                effect.addTextureCoordinatesForVertex(0, vertexIndex + 2, texture11);
+                effect.addTextureCoordinatesForVertex(0, vertexIndex + 3, texture01);
 
-                effect.addTextureCoordinates(i, 3, texture11);
-                effect.addTextureCoordinates(i, 3, texture10);
-                effect.addTextureCoordinates(i, 3, texture00);
+                vertexIndex += 4;
             }
         }
     }

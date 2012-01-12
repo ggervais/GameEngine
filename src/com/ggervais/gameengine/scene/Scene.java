@@ -41,7 +41,7 @@ public class Scene extends Observable {
 		this.entities = new ArrayList<DisplayableEntity>();
 		this.particles = new ArrayList<DisplayableEntity>();
         this.textures = new ArrayList<Texture>();
-        this.viewport = new Viewport(0, 0, 1024, 768);
+        this.viewport = new Viewport(0, 0, 1440, 900);
         this.modelViewMatrix = Matrix4x4.createIdentity();
         this.projectionMatrix = Matrix4x4.createIdentity();
 	}
@@ -128,69 +128,12 @@ public class Scene extends Observable {
 
 		float fortyFiveDegrees = (float) Math.toRadians(45);
 
-		DisplayableEntity sphere1 = new DisplayableEntity(new Sphere());
-        sphere1.setRotation(new Vector3D(0, fortyFiveDegrees, 0));
-        sphere1.setPosition(new Point3D(2, 2, 2));
-		//this.entities.add(sphere1);
-		
-		DisplayableEntity cube1 = new DisplayableEntity(new Cube());
-		cube1.setPosition(new Point3D(0, 0, 0));
-		cube1.setScale(new Vector3D(1, 1, 1));
-		cube1.setRotation(new Vector3D(0, 0, 0));
-		cube1.setMaterial(matGuillaume);
-		
-		DisplayableEntity cube2 = new DisplayableEntity(new Cube(), cube1);
-		cube2.setPosition(new Point3D(1, 1, -2));
-		cube2.setScale(new Vector3D(1, 1, 1));
-		cube2.setMaterial(matGraffiti);
-		
-		Grid gridModel = new Grid(50, 50);
-		gridModel.elevateWithHeighMap(texTerrain);
-		
-		this.entities.add(cube1);
-		this.entities.add(cube2);
-	
-		Terrain terrain = new Terrain(gridModel);
-		terrain.setScale(new Vector3D(50, 50, 50));
-		terrain.setPosition(new Point3D(0, 0, 0));
-        terrain.setMaterial(matTerrain);
-
-		//this.entities.add(terrain);
-
-        DisplayableEntity quad1 = new DisplayableEntity(new Quad());
-        quad1.setPosition(new Point3D(0, 0, 0));
-        quad1.setMaterial(matSmoke);
-        this.particles.add(quad1);
-
-        DisplayableEntity quad2 = new DisplayableEntity(new Quad());
-        quad2.setPosition(new Point3D(-0.25f, -0.25f, 0));
-        quad2.setMaterial(matSmoke);
-        this.particles.add(quad2);
-
-        DisplayableEntity quad3 = new DisplayableEntity(new Quad());
-        quad3.setPosition(new Point3D(0.25f, 0.25f, 0));
-        quad3.setMaterial(matSmoke);
-        this.particles.add(quad3);
-
-        DisplayableEntity quad4 = new DisplayableEntity(new Quad());
-        quad4.setPosition(new Point3D(-0.25f, 0.35f, 0));
-        quad4.setMaterial(matSmoke);
-        this.particles.add(quad4);
-
-        FireEmitter fireEmitter1 = new FireEmitter(new Point3D(-5, 0, 0), 2);
-        ParticleSubsystem.getInstance().addEmitter(fireEmitter1);
-
-        FireEmitter fireEmitter2 = new FireEmitter(new Point3D(5, 0, 0), 1);
-        ParticleSubsystem.getInstance().addEmitter(fireEmitter2);
-
-        FireEmitter fireEmitter3 = new FireEmitter(new Point3D(10, 0, 0), 0.5f);
-        ParticleSubsystem.getInstance().addEmitter(fireEmitter3);
-
-        FireEmitter fireEmitter4 = new FireEmitter(new Point3D(12.5f, 0, 0), 0.25f);
-        ParticleSubsystem.getInstance().addEmitter(fireEmitter4);
 
         // SceneGraph initialization
 
+
+        GlobalState lightingOn = new LightingState(true);
+        GlobalState lightingOff = new LightingState(false);
         WireframeState wireframeStateOn = new WireframeState(true);
         WireframeState wireframeStateOff = new WireframeState(false);
         ZBufferState zBufferState = new ZBufferState(true, true);
@@ -201,8 +144,11 @@ public class Scene extends Observable {
 
         Effect cubeEffect = new Effect();
         //cubeEffect.addTexture(texAscii);
+       // cubeEffect.addTexture(texGraffiti);
         cubeEffect.addTexture(texGraffiti);
-        cubeEffect.addTexture(texGuillaume);
+        Transformation gCube1Transformation = new Transformation();
+        gCube1Transformation.setTranslation(0, 0, -5);
+        gCube1.setLocalTransformation(gCube1Transformation);
         gCube1.setEffect(cubeEffect);
 
         Transformation second = new Transformation();
@@ -227,7 +173,7 @@ public class Scene extends Observable {
         secondCubeNode.addGlobalState(wireframeStateOn);
         secondCubeNode.setLocalTransformation(second);
 
-        //firstCubeNode.addChild(gCube1);
+        firstCubeNode.addChild(gCube1);
         //firstCubeNode.addChild(secondCubeNode);
         //firstCubeNode.setLocalTransformation(rootTransform);
 
@@ -275,7 +221,7 @@ public class Scene extends Observable {
         fireNode.addChild(fireParticles);
         fireNode.addChild(smokeParticles);
         Transformation fireNodeTransformation = new Transformation();
-        fireNodeTransformation.setTranslation(20, 20, 20);
+        fireNodeTransformation.setTranslation(-10, 0, 0);
         fireNode.setLocalTransformation(fireNodeTransformation);
 
         CubeGeometry bezierCube = new CubeGeometry();
@@ -289,6 +235,7 @@ public class Scene extends Observable {
         controlPoints.add(new Point3D(2.5f, 2.5f, -10));
         controlPoints.add(new Point3D(4f, -8f, -15));
         BezierCurve bezierCurve = new BezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 500);
+        bezierCube.addGlobalState(lightingOn);
         bezierCurveController.setBezierCurve(bezierCurve);
 
 
@@ -301,6 +248,7 @@ public class Scene extends Observable {
         sphereGeometry.setEffect(blueEffect);
         sphereTransformation.setTranslation(0, 0, 0);
         sphereGeometry.setLocalTransformation(sphereTransformation);
+        sphereGeometry.addGlobalState(lightingOn);
 
         Transformation immobileCubeTransformation = new Transformation();
         CubeGeometry immobileCube = new CubeGeometry();
@@ -310,9 +258,6 @@ public class Scene extends Observable {
         immobileCube.setLocalTransformation(immobileCubeTransformation);
         immobileCube.setEffect(immobileCubeEffect);
 
-
-        GlobalState lightingOn = new LightingState(true);
-        GlobalState lightingOff = new LightingState(false);
 
         Effect colorEffect = new Effect();
         colorEffect.setColor(new Color(0, 255, 0));
@@ -424,6 +369,8 @@ public class Scene extends Observable {
         sphereGeometry.addController(sphereController);
         this.sceneGraphRoot.addChild(sphereGeometry);
         //spaceship.addController(new InputControlledController());
+
+        this.sceneGraphRoot.addChild(gCube1);
 
         //this.camera = new TerrainFollowingFreeFlyCamera(terrain);
 		this.camera = new FreeFlyCamera();
