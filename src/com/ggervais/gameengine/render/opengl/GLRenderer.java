@@ -31,10 +31,7 @@ import com.ggervais.gameengine.scene.Camera;
 import com.ggervais.gameengine.scene.Scene;
 import com.ggervais.gameengine.material.texture.Texture;
 import com.ggervais.gameengine.scene.scenegraph.*;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.AlphaBlendingState;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.LightingState;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.WireframeState;
-import com.ggervais.gameengine.scene.scenegraph.renderstates.ZBufferState;
+import com.ggervais.gameengine.scene.scenegraph.renderstates.*;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.gl2.GLUT;
 import org.apache.log4j.Logger;
@@ -55,6 +52,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     private int modelViewMatrixUniformLocation;
     private int textureUniformLocation;
     private int useTextureUniformLocation;
+    private int useLightingUniformLocation;
     private int positionAttributeLocation;
     private int colorAttributeLocation;
     private int texCoordsAttributeLocation;
@@ -85,6 +83,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         this.modelViewMatrixUniformLocation = -1;
         this.textureUniformLocation = -1;
         this.useTextureUniformLocation = -1;
+        this.useLightingUniformLocation = -1;
         this.positionAttributeLocation = -1;
         this.colorAttributeLocation = -1;
         this.texCoordsAttributeLocation = -1;
@@ -145,12 +144,18 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         boolean vertexShaderCompilationSuccess = vertexShader.compile();
         if (vertexShaderCompilationSuccess) {
             log.info("Vertex shader compiled!");
+        } else {
+            log.fatal("Unable to compile vertex shader!");
+            System.exit(-1);
         }
 
         Shader fragmentShader = this.shaderFactory.buildFragmentShader("shaders/fragment/hello-gl.f.glsl");
         boolean fragmentShaderCompilationSuccess = fragmentShader.compile();
         if (fragmentShaderCompilationSuccess) {
             log.info("Fragment shader compiled!");
+        } else {
+            log.fatal("Unable to compile fragment shader!");
+            System.exit(-1);
         }
 
         if (vertexShaderCompilationSuccess && fragmentShaderCompilationSuccess) {
@@ -164,6 +169,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 this.modelViewMatrixUniformLocation = gl.glGetUniformLocation(this.program.getId(), "modelViewMatrix");
                 this.textureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "texture");
                 this.useTextureUniformLocation = gl.glGetUniformLocation(this.program.getId(), "useTexture");
+                this.useLightingUniformLocation = gl.glGetUniformLocation(this.program.getId(), "useLighting");
                 this.positionAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "position");
                 this.colorAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "color");
                 this.texCoordsAttributeLocation = gl.glGetAttribLocation(this.program.getId(), "texCoords");
@@ -175,6 +181,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 log.info("Color attribute location: " + this.colorAttributeLocation);
                 log.info("TexCoords attribute location: " + this.texCoordsAttributeLocation);
                 log.info("Normal attribute location: " + this.normalAttributeLocation);
+            } else {
+                log.fatal("Unable to link main rendering program!");
+                System.exit(-1);
             }
         }
 
@@ -218,6 +227,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             log.info("Framebuffer initialized!");
         } else {
             log.fatal("Could not create framebuffer!");
+            System.exit(-1);
         }
 
         gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, 0);
@@ -239,11 +249,17 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         boolean vertexCompile = postEffectVertexShader.compile();
         if (vertexCompile) {
             log.info("Post effect vertex shader compiled!");
+        } else {
+            log.fatal("Unable to compile post-processing vertex shader!");
+            System.exit(-1);
         }
 
         boolean fragmentCompile = postEffectFragmentShader.compile();
         if (fragmentCompile) {
             log.info("Post effect fragment shader compiled!");
+        } else {
+            log.fatal("Unable to compile post-processing fragment shader!");
+            System.exit(-1);
         }
 
         if (vertexCompile && fragmentCompile) {
@@ -253,6 +269,9 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
                 this.fboVerticesPositionAttributeLocation = gl.glGetAttribLocation(this.postEffectProgram.getId(), "v_coord");
                 this.screenTextureUniformLocation = gl.glGetUniformLocation(this.postEffectProgram.getId(), "texture");
                 log.info("Screen texture uniform location: " + this.screenTextureUniformLocation);
+            } else {
+                log.fatal("Unable to link post-processing program!");
+                System.exit(-1);
             }
         }
     }
@@ -348,6 +367,13 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             } else {
                 gl.glUniform1i(this.useTextureUniformLocation, 0);
             }
+            
+            LightingState lightingState = (LightingState) geometry.getGlobalState(GlobalStateType.LIGHTING);
+            if (lightingState != null && lightingState.isEnabled()) {
+                gl.glUniform1i(this.useLightingUniformLocation, 1);
+            } else {
+                gl.glUniform1i(this.useLightingUniformLocation, 0);
+            }
 
             gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vertexBuffer.getId());
             gl.glVertexAttribPointer(this.positionAttributeLocation, 4, GL.GL_FLOAT, false, Buffers.SIZEOF_FLOAT * 7, 0);
@@ -369,59 +395,6 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
             gl.glDisableVertexAttribArray(this.colorAttributeLocation);
             gl.glDisableVertexAttribArray(this.normalAttributeLocation);
             gl.glDisableVertexAttribArray(this.positionAttributeLocation);
-
-            /*List<Integer> subIndexBuffer = indexBuffer.getSubIndexBuffer(nbVerticesPerFace);
-            gl.glBegin(glPrimitiveType);
-                for(int i = 0; i < subIndexBuffer.size(); i++) {
-                    int index = subIndexBuffer.get(i);
-                    if (index < vertexBuffer.size()) {
-
-                        Vertex vertex = vertexBuffer.getVertex(index);
-                        Point3D vertexPosition = vertex.getPosition();
-                        Vector3D normal = geometry.getNormal(index);
-
-                        if (effect != null) {
-                            Color color = effect.getColor(index);
-                            gl.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-                        }
-
-                        if (effect != null) {
-                            for (int textureIndex = 0; textureIndex < effect.nbTextures(); textureIndex++) {
-                                TextureCoords coords = null;
-                                try {
-                                    if (effect.hasTexturesCoordsPerVertex()) {
-                                        coords = effect.getTextureCoordsForVertex(textureIndex, index);
-                                    } else {
-                                        coords = effect.getTextureCoords(textureIndex, nbVerticesPerFace, i); // i refers to loop index for the sub index buffer.
-                                    }
-                                } catch (Exception e) {
-
-                                }
-
-                                if (coords != null) {
-                                    float tu = coords.getTextureU();
-                                    float tv = coords.getTextureV();
-
-                                    gl.glMultiTexCoord2f(GL.GL_TEXTURE0 + textureIndex, tu, tv);
-                                }
-
-                                if (textureIndex == 0) {
-                                    gl.glActiveTexture(GL.GL_TEXTURE0 + textureIndex);
-                                    gl.glBindTexture(GL.GL_TEXTURE_2D, effect.getTexture(textureIndex).getId());
-                                    gl.glUniform1i(this.textureUniformLocation, textureIndex);
-                                }
-                            }
-                        }
-
-                        if (normal != null) {
-                            gl.glNormal3f(normal.x(), normal.y(), normal.z());
-                        }
-
-                        gl.glVertex3f(vertexPosition.x(), vertexPosition.y(), vertexPosition.z());
-                    }
-                }
-            gl.glEnd(); */
-            
         }
 
         geometry.setNeedsGeometryDataUpdate(false);
@@ -649,7 +622,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         log.info("=====");     */
     }
 
-    private void drawCursor(GL2 gl) {
+    private void drawHUD(GL2 gl) {
         int w = (int) this.scene.getViewport().getWidth();
         int h = (int) this.scene.getViewport().getHeight();
 
@@ -670,8 +643,8 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glLoadIdentity();
 
 
+        gl.glColor4f(1, 1, 1, 1);
         gl.glBegin(GL2.GL_LINES);
-            gl.glColor4f(1, 1, 1, 1);
             gl.glVertex2f(w / 2f - cursorWidth / 2f, h / 2f);
             gl.glVertex2f(w / 2f + cursorWidth / 2f, h / 2f);
             gl.glVertex2f(w / 2f, h / 2f - cursorHeight / 2f);
@@ -701,15 +674,13 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         OpenGLUtils.drawAxisGrid(gl, 50);
         OpenGLUtils.drawBaseAxis(gl, Point3D.zero(), 1.0f);
 
-        drawCursor(gl);
-
         List<Point3D> controlPoints = new ArrayList<Point3D>();
         controlPoints.add(new Point3D(-2.5f, -2.5f, -10));
         controlPoints.add(new Point3D(2.5f, 2.5f, -10));
         controlPoints.add(new Point3D(4f, -8f, -15));
         drawBezierCurve(new Point3D(-5, 0, -10), new Point3D(5, 0, -10), controlPoints, 100);
 
-        gl.glEnable(GL2.GL_LIGHTING);
+        //gl.glEnable(GL2.GL_LIGHTING);
 
         // Unbind FBO
         gl.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, 0);
@@ -734,7 +705,11 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
         gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, 4);
         gl.glDisableVertexAttribArray(this.fboVerticesPositionAttributeLocation);
 
+        gl.glBindTexture(GL.GL_TEXTURE_2D, -1);
         gl.glUseProgram(0);
+
+
+        drawHUD(gl);
 
         gl.glFlush();
     }
@@ -742,6 +717,7 @@ public class GLRenderer extends SceneRenderer implements GLEventListener {
     public void drawBezierCurve(Point3D startPoint, Point3D endPoint, List<Point3D> controlPoints, int resolution) {
 
         gl.glBegin(GL2.GL_LINE_STRIP);
+        gl.glColor4f(1, 1, 1, 1);
         for (int i = 0; i <= resolution; i++) {
             float ratio = (i + 0f) / resolution;
             List<Point3D> pointsToProcess = new ArrayList<Point3D>();

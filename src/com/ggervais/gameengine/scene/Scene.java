@@ -334,13 +334,13 @@ public class Scene extends Observable {
         MotionController sphereController = new MotionController(Vector3D.zero(), 1, 0, 0);
 
 
-        Geometry spaceship = ObjFileLoader.loadFile("assets/models/suzanne.obj");
+        Geometry spaceship = ObjFileLoader.loadFile("assets/models/Spaceship.obj");
         Transformation spaceshipTransformation = new Transformation();
-        //spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
+        spaceshipTransformation.setScale(0.25f, 0.25f, 0.25f);
         spaceshipTransformation.setTranslation(5, 0, 0);
         spaceship.setLocalTransformation(spaceshipTransformation);
         //spaceship.getEffect().addTexture(texSpaceship);
-        spaceship.addGlobalState(lightingOff);
+        spaceship.addGlobalState(lightingOn);
 
         log.info(this.sceneGraphRoot);
         Node lastNode = null;
@@ -365,7 +365,7 @@ public class Scene extends Observable {
         Transformation warriorTransformation = new Transformation();
         warriorTransformation.setScale(0.1f);
         warrior.setLocalTransformation(warriorTransformation);
-        warrior.addGlobalState(lightingOff);
+        warrior.addGlobalState(lightingOn);
         warrior.addController(new AnimationController());
         this.sceneGraphRoot.addChild(warrior);
 
@@ -374,7 +374,7 @@ public class Scene extends Observable {
         cylinderTransformation.setScale(0.1f);
         cylinderTransformation.setTranslation(10, 0, 0);
         cylinder.setLocalTransformation(cylinderTransformation);
-        cylinder.addGlobalState(lightingOff);
+        cylinder.addGlobalState(lightingOn);
         cylinder.addController(new AnimationController(5000));
         this.sceneGraphRoot.addChild(cylinder);
 
@@ -384,7 +384,7 @@ public class Scene extends Observable {
         cochDanseTransformation.setRotation((float) Math.toRadians(90), (float) Math.toRadians(180), 0);
         cochDanseTransformation.setScale(0.1f);
         cochDanse.setLocalTransformation(cochDanseTransformation);
-        cochDanse.addGlobalState(lightingOff);
+        cochDanse.addGlobalState(lightingOn);
         cochDanse.addController(new AnimationController(5000, true));
         this.sceneGraphRoot.addChild(cochDanse);
 

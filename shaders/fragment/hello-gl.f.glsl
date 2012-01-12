@@ -4,6 +4,7 @@ uniform sampler2D texture;
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 uniform int useTexture;
+uniform int useLighting;
 
 varying vec2 fragTexCoords;
 varying vec3 fragNormal;
@@ -43,12 +44,13 @@ void main()
     if (useTexture == 1) {
         fragDiffuse *= textureColor;
     }
-    //vec4 fragDiffuse = color;
-    vec4 diffuseFactor = max(warpDiffuse(-dot(normal, lightDir)), 0.0) * lightDiffuse;
-    vec4 ambientDiffuseFactor = diffuseFactor + lightAmbient;
-    vec4 specularFactor = max(pow(-dot(reflection, eye), fragShininess), 0.0) * lightSpecular;
 
-    gl_FragColor = specularFactor * fragSpecular + ambientDiffuseFactor * fragDiffuse;
-    //gl_FragColor = fragDiffuse * color;
-    //gl_FragColor = vec4(fragNormal.xyz, 1);
+    vec4 finalColor = fragDiffuse;
+    if (useLighting == 1) {
+        vec4 diffuseFactor = max(warpDiffuse(-dot(normal, lightDir)), 0.0) * lightDiffuse;
+        vec4 ambientDiffuseFactor = diffuseFactor + lightAmbient;
+        vec4 specularFactor = max(pow(-dot(reflection, eye), fragShininess), 0.0) * lightSpecular;
+        finalColor = specularFactor * fragSpecular + ambientDiffuseFactor * fragDiffuse;
+    }
+    gl_FragColor = finalColor;
 }
